@@ -1,0 +1,23 @@
+{
+  "name": "nodedemons",
+  "version": "1.0.0",
+  "description": "CSC 307 Final Project",
+  "homepage": "https://github.com/akshatk1001/NodeDemons#readme",
+  "bugs": {
+    "url": "https://github.com/akshatk1001/NodeDemons/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akshatk1001/NodeDemons.git"
+  },
+  "license": "ISC",
+  "author": "Akshat, Danny, Kody",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
