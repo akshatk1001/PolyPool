@@ -23,3 +23,7 @@ mongoose
   .catch((error) => {
     console.error('✗ MongoDB connection error:', error);
   });
+
+app.listen(port, () => {
+  console.log(`App listening at http://localhost:${port}`);
+});
