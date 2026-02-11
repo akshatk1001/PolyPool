@@ -20,7 +20,9 @@
   },
   "dependencies": {
     "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
     "express": "^5.2.1",
+    "mongodb": "^7.0.0",
     "mongoose": "^9.1.6"
   }
 }
