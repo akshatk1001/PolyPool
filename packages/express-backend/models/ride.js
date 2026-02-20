@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import User from './user.js';
 
 const RideSchema = new mongoose.Schema(
   {
@@ -18,11 +17,13 @@ const RideSchema = new mongoose.Schema(
       required: true,
     },
     driver: {
-      type: User,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
     other_riders: {
-      type: [User],
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'User',
       required: false,
     },
     cost: {
