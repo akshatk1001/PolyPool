@@ -15,24 +15,28 @@
 /* Green navbar */
 .navbar {
   background-color: #106b21;
+  height: 10%;
   padding: 16px 24px;
   display: flex;
   align-items: center;
 }
 
-.navbar img {
-  height: 60px;
-  width: auto;
-}
-
 /* White bold logo text */
 .navbar-logo {
-  height: clamp(30px, 5vw, 50px);
+  height: 40px;
+  width: auto;
+  display: block;
+  margin-top: 1px;
+  margin-left: auto;
+  margin-right: auto;
+
 }
 
-/* White bold logo text */
+/* car logo */
 .navbar-icon {
-  height: clamp(30px, 5vw, 50px);
+  height: 10px;
+  width: auto;
+  display: block;
 }
 
 /* Gray page background fills remaining space */
@@ -40,6 +44,27 @@
   flex: 1;
   background-color: #f0f0f0;
 }
+
+/*search bar*/
+.search-bar {
+  display: flex;
+  margin: 0 auto;
+  margin-top: 5%;
+  height: 50px;
+  width: 80%;
+  padding: 18px;
+  border-radius: 70px;
+  border: none;
+  background: #cfcfcf;
+  font-size: 30px;
+  outline: none;
+}
+
+.search-bar:focus {
+  transition: 0.2s ease-in-out;
+  border: 1px solid blue;
+}
+
 
 /* Gold Create Ride button */
 .createRide-button {

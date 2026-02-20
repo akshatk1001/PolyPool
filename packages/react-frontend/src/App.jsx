@@ -2,9 +2,9 @@ import './App.css';
 import PolyPoolLogo from './imagesAndIcons/PolyPoolLogo.png';
 import PolyPoolIcon from './imagesAndIcons/PolyPoolIcon.png';
 import PlusIcon from './imagesAndIcons/PlusIcon.png';
-import RideForm from './RideForm';
 import { useState } from 'react';
 import CreateRideWindow from './CreateRideWindow';
+import SearchBar from './SearchBar.jsx';
 
 function App() {
   const [showCreateRide, setShowCreateRide] = useState(false);
@@ -30,7 +30,9 @@ function App() {
           <CreateRideWindow onClose={() => setShowCreateRide(false)} />
         )}
       </nav>
-      <main className="main-content"></main>
+      <main className="main-content">
+        <SearchBar />
+      </main>
     </div>
   );
 }
