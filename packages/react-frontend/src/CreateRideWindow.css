@@ -71,6 +71,21 @@
   gap: 30px;
 }
 
+/* Form field wrapper */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;;
+  flex: 1;
+}
+
+.form-field label {
+  font-size: 16px;
+  font-weight: 500;
+  margin-left: 5px;
+  color: #333;
+}
+
 /* Inputs */
 .create-ride-form input {
   flex: 1;
@@ -85,7 +100,7 @@
 .create-ride-form textarea {
   width: 100%;
   padding: 18px;
-  border-radius: 25px;
+  border-radius: 10px;
   border: 1px solid #ccc;
   font-size: 16px;
   font-family: inherit;
@@ -98,6 +113,10 @@
 
 /* Full width input */
 .full-width {
+  width: 100%;
+}
+
+.form-field.full-width {
   width: 100%;
 }
 
