@@ -42,6 +42,10 @@ const RideSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    description: {
+      type: String,
+      required: false,
+    },
     cities_along_route: {
       type: [String],
       required: true,
