@@ -57,7 +57,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="search-container" style={{ position: 'relative', width: '300px' }}>
+    <div className="search-container">
       
       <input
         type="text"
@@ -68,7 +68,7 @@ const SearchBar = () => {
           setValue(e.target.value);
         }}
         onKeyDown={handleKeyDown}
-        style={{ width: '100%', padding: '8px' }}
+        style={{ width: '80%', padding: '8px' }}
       />
 
       {showDropdown && cityOptions.length > 0 && (

@@ -54,11 +54,7 @@
   background: #cfcfcf;
   font-size: 30px;
   outline: none;
-}
-
-.search-bar:focus {
-  transition: 0.2s ease-in-out;
-  border: 1px solid blue;
+  text-indent: 1%;
 }
 
 /* Gold Create Ride button */
