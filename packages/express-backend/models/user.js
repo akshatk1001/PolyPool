@@ -46,7 +46,7 @@ const UserSchema = new mongoose.Schema(
       trim: true,
     },
     grade: {
-      type: int,
+      type: Number,
       required: true,
     },
     major: {

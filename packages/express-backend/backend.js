@@ -55,7 +55,8 @@ app.post('/api/rides', async (req, res) => {
 
 // Get all rides
 app.get('/api/rides', async (req, res) => {
-  const dest = req.query.dest;
+  console.log("the console is working");
+  const dest = req.query.dest;  
   const price = req.query.price;
   const date = req.query.date;
   try {

@@ -6,7 +6,7 @@ const SearchBar = () => {
   const [cityOptions, setCityOptions] = useState([]); 
   const [rides, setRides] = useState([]); 
   const [showDropdown, setShowDropdown] = useState(false);
-
+  /*
   useEffect(() => {
     const fetchCities = async () => {
       if (!value.trim()) {
@@ -27,7 +27,7 @@ const SearchBar = () => {
     };
 
     fetchCities();
-  }, [value]);
+  }, [value]);*/
 
   const executeSearch = async (searchTerm) => {
     const query = searchTerm || value; 
