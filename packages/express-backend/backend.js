@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 
 import userService from './services/user-service.js';
 import rideService from './services/ride-service.js';
+import Ride from './models/ride.js';
 
 dotenv.config();
 
@@ -54,8 +55,11 @@ app.post('/api/rides', async (req, res) => {
 
 // Get all rides
 app.get('/api/rides', async (req, res) => {
+  const dest = req.query.dest;
+  const price = req.query.price;
+  const date = req.query.date;
   try {
-    const rides = await Ride.find();
+    const rides = await rideService.SearchRide(dest, price, date);
     res.status(200).json(rides);
   } catch (error) {
     res.status(500).json({ error: error.message });
