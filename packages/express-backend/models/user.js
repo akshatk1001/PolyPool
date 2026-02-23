@@ -40,6 +40,20 @@ const UserSchema = new mongoose.Schema(
       required: false,
       trim: true,
     },
+    instagram: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+    grade: {
+      type: int,
+      required: true,
+    },
+    major: {
+      type: String,
+      required: true,
+      trim: true,
+    },
   },
 
   { collection: 'users_list' },

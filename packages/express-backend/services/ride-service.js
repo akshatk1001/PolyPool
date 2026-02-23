@@ -4,18 +4,7 @@ import rideModel from '../models/ride.js';
 
 mongoose.set('debug', true);
 
-// function to get rides going to that destination
-// function getRides(destination, date) {
-//   const promise = new Promise((req, res) => {
-//     rideModel.find({ destination: destination, date: date }
-//         .then((rides) => { res.send(rides) }
-//             .catch((err) => { send(err) })
-//         )
-//     })
-// }
-
-//main search rides function
-function SearchRide(destination, date, price) {
+function searchRide(destination, date, price) {
   let promise;
   if (destination === undefined && date === undefined && price === undefined){
     promise = rideModel.find();
@@ -74,7 +63,7 @@ function createRide(ride) {
 }
 
 export default {
-  SearchRide,
+  searchRide,
   getRideById,
   deleteRide,
   createRide,
