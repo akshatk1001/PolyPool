@@ -62,6 +62,7 @@ function CreateRideWindow({ onClose }) {
       if (promise.status === 201) {
         // TODO: Show success message
         console.log('Ride created successfully', promise.status);
+        onClose();
       } else {
         // TODO: Show error message
         console.log('Server response error:', promise.status);
@@ -220,8 +221,7 @@ function CreateRideWindow({ onClose }) {
 
           <button
             className="create-button"
-            onClick={submitForm}
-          >
+            onClick={submitForm}>
             Create
           </button>
         </form>
