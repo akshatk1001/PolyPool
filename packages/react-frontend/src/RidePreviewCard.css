@@ -1,0 +1,85 @@
+.ride-preview {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 25px;
+
+  background: #e6e6e6;
+  border: 10px;
+  border-radius: 12px;
+  padding: 25px;
+  width: 100%;
+
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  transition: 0.2s ease;
+}
+
+.ride-preview:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+.ride-preview:active {
+  transform: scale(0.98);
+}
+
+.ride-left {
+  flex-shrink: 0;
+  justify-content: left;
+  flex-direction: row;
+}
+
+.profile-pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.ride-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ride-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.destination {
+  font-size: 28px;
+  margin: 0;
+}
+
+.driver-name {
+  font-size: 16px;
+  color: #555;
+}
+
+.rating {
+  font-size: 14px;
+  color: #777;
+}
+
+.star-icon {
+  width: 20px;
+  height: 20px;
+  margin-left: 4px;
+  margin-top: 10px;
+}
+
+.price {
+  font-size: 32px;
+  font-weight: bold;
+  color: #106b21;
+}
+
+.ride-details {
+  font-size: 16px;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}

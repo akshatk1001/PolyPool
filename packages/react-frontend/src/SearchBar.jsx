@@ -3,8 +3,8 @@ import './App.css';
 
 const SearchBar = () => {
   const [value, setValue] = useState('');
-  const [cityOptions, setCityOptions] = useState([]); 
-  const [rides, setRides] = useState([]); 
+  const [cityOptions, setCityOptions] = useState([]);
+  const [rides, setRides] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   /*
   useEffect(() => {
@@ -30,18 +30,20 @@ const SearchBar = () => {
   }, [value]);*/
 
   const executeSearch = async (searchTerm) => {
-    const query = searchTerm || value; 
-    
+    const query = searchTerm || value;
+
     if (!query.trim()) return;
 
     try {
-      const response = await fetch(`http://localhost:8000/api/rides?dest=${query}`);
+      const response = await fetch(
+        `http://localhost:8000/api/rides?dest=${query}`,
+      );
       const data = await response.json();
-      
-      setRides(data); 
+
+      setRides(data);
       setShowDropdown(false);
     } catch (error) {
-      console.log("Fetch error:", error);
+      console.log('Fetch error:', error);
     }
   };
 
@@ -52,13 +54,12 @@ const SearchBar = () => {
   };
 
   const handleOptionClick = (city) => {
-    setValue(city); 
-    executeSearch(city); 
+    setValue(city);
+    executeSearch(city);
   };
 
   return (
     <div className="search-container">
-      
       <input
         type="text"
         className="search-bar"
@@ -72,30 +73,36 @@ const SearchBar = () => {
       />
 
       {showDropdown && cityOptions.length > 0 && (
-        <ul className="suggestions-dropdown" style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          right: 0,
-          backgroundColor: 'white',
-          border: '1px solid #ccc',
-          listStyle: 'none',
-          padding: 0,
-          margin: 0,
-          zIndex: 1000 
-        }}>
+        <ul
+          className="suggestions-dropdown"
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            backgroundColor: 'white',
+            border: '1px solid #ccc',
+            listStyle: 'none',
+            padding: 0,
+            margin: 0,
+            zIndex: 1000,
+          }}
+        >
           {cityOptions.map((city, index) => (
-            <li 
-              key={index} 
+            <li
+              key={index}
               onClick={() => handleOptionClick(city)}
-              style={{ padding: '8px', cursor: 'pointer', borderBottom: '1px solid #eee' }}
+              style={{
+                padding: '8px',
+                cursor: 'pointer',
+                borderBottom: '1px solid #eee',
+              }}
             >
               {city}
             </li>
           ))}
         </ul>
       )}
-
     </div>
   );
 };

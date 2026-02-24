@@ -55,12 +55,13 @@ app.post('/api/rides', async (req, res) => {
 
 // Get all rides
 app.get('/api/rides', async (req, res) => {
-  console.log("the console is working");
-  const dest = req.query.dest;  
+  console.log('the console is working');
+  const dest = req.query.dest;
   const price = req.query.price;
   const date = req.query.date;
   try {
     const rides = await rideService.searchRide(dest, price, date);
+    //.populate('driver');
     res.status(200).json(rides);
   } catch (error) {
     res.status(500).json({ error: error.message });
