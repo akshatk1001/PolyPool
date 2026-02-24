@@ -13,33 +13,30 @@ function RidePreviewCard({ ride }) {
 
   return (
     <button className="ride-preview">
-      <div className="ride-left">
-        <img
-          src={ride.driver?.profile_pic || ProfilePic}
-          alt="driver"
-          className="profile-pic"
-        />
+      <img
+        src={ride.driver?.profile_pic || ProfilePic}
+        alt="driver"
+        className="profile-pic"
+      />
+
+      <div className="ride-info">
+        <h2 className="destination">{ride.destination}</h2>
+        <div className="driver-row">
+          <span className="driver-name">{ride.driver?.name || 'Driver'}</span>
+          <span className="rating">
+            Rating: {ride.driver?.rating || 0}{' '}
+            <img className="star-icon" src={Star} alt="star" />
+          </span>
+        </div>
       </div>
 
-      <div className="ride-right">
-        <div className="ride-top">
-          <div>
-            <h2 className="destination">{ride.destination}</h2>
-            <div className="driver-name">{ride.driver?.name || 'Driver'}</div>
-            <div className="rating">Rating: {ride.driver?.rating || 0}</div>
-            <img src={Star} alt="star" className="star-icon" />
-          </div>
-
-          <div className="price">${ride.cost}</div>
+      <div className="ride-meta">
+        <div className="price">${ride.cost}</div>
+        <div className="time">
+          <strong>Date/Time:</strong> {formattedDate}
         </div>
-
-        <div className="ride-details">
-          <div>
-            <strong>Date/Time:</strong> {formattedDate}
-          </div>
-          <div>
-            <strong>Number of Seats:</strong> {ride.seats}
-          </div>
+        <div className="seats">
+          <strong>Seats:</strong> {ride.seats}
         </div>
       </div>
     </button>
