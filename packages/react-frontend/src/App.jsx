@@ -10,7 +10,6 @@ import RidePreviewCard from './RidePreviewCard.jsx';
 
 function App() {
   const [showCreateRide, setShowCreateRide] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
   const [rides, setRides] = useState([]);
 
   useEffect(() => {
