@@ -16,7 +16,7 @@ const SearchBar = () => {
       }
 
       try {
-        const response = await fetch(`http://localhost:8000/api/cities?dest=${value}`);
+        const response = await fetch(`http://localhost:8000/api/cities/autofill?dest=${value}`);
         const data = await response.json();
         
         setCityOptions(data); 

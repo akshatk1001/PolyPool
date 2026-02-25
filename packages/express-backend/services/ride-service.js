@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import userModel from '../models/user.js';
 import rideModel from '../models/ride.js';
 
 mongoose.set('debug', true);

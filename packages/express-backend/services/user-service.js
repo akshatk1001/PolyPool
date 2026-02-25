@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import userModel from '../models/user.js';
 
 // Create a new user with required fields.

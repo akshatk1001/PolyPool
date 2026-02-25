@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 
 import userService from './services/user-service.js';
 import rideService from './services/ride-service.js';
-import Ride from './models/ride.js';
+import cityService from './services/city-service.js';
 
 dotenv.config();
 
@@ -81,7 +81,6 @@ app.patch('/api/users/:id', async (req, res) => {
 
 // Get all rides
 app.get('/api/rides', async (req, res) => {
-  console.log('the console is working');
   const dest = req.query.dest;
   const price = req.query.price;
   const date = req.query.date;
@@ -89,6 +88,16 @@ app.get('/api/rides', async (req, res) => {
     const rides = await rideService.searchRide(dest, price, date);
     //.populate('driver');
     res.status(200).json(rides);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('api/cities/autofill', ) async (req, res) => {
+  const dest = req.query.dest;
+  try {
+    const cities = await cityService.autofill(dest);
+    res.status(200).json(cities);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
