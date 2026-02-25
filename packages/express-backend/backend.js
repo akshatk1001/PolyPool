@@ -87,6 +87,7 @@ app.get('/api/rides', async (req, res) => {
   const date = req.query.date;
   try {
     const rides = await rideService.searchRide(dest, price, date);
+    //.populate('driver');
     res.status(200).json(rides);
   } catch (error) {
     res.status(500).json({ error: error.message });

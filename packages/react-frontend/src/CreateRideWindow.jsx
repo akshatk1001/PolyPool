@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './CreateRideWindow.css';
 
-function CreateRideWindow({ onClose }) {
+function CreateRideWindow({ onClose, onRideCreated }) {
   const [ride, setRide] = useState({
     starting_point: '',
     destination: '',
@@ -63,6 +63,7 @@ function CreateRideWindow({ onClose }) {
         // TODO: Show success message
         console.log('Ride created successfully', promise.status);
         onClose();
+        onRideCreated();
       } else {
         // TODO: Show error message
         console.log('Server response error:', promise.status);
