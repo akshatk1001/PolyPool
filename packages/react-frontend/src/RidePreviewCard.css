@@ -1,69 +1,97 @@
 .ride-preview {
   display: flex;
-  align-items: center;
-  flex-direction: row;
-  gap: 25px;
+  align-items: stretch;
+  gap: 20px;
 
-  background: #e6e6e6;
-  border: 10px;
+  background: #f2f2f2;
+  border: none;
   border-radius: 12px;
-  padding: 25px;
+  padding: 24px;
   width: 100%;
+  max-width: 600px;
 
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-  transition: 0.2s ease;
+  cursor: pointer;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
 }
 
 .ride-preview:hover {
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
-}
-
-.ride-preview:active {
-  transform: scale(0.98);
+  background: #ebebeb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .profile-pic {
-  width: 80px;
-  height: 80px;
-  margin-right: auto;
-  margin-bottom: auto;
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.ride-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
 }
 
 .destination {
-  font-size: 28px;
-  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: #000;
+  margin: 0 0 6px 0;
+}
+
+.driver-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .driver-name {
   font-size: 16px;
-  color: #555;
-  margin-left: auto;
+  font-weight: 500;
+  color: #333;
 }
 
 .rating {
   font-size: 14px;
-  color: #777;
+  color: #666;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 4px;
 }
 
-.rating img {
-  width: 20px;
-  height: 20px;
-  align-items: center;
-  justify-content: center;
+.star-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.ride-details {
+  display: flex;
+  gap: 40px;
+  font-size: 14px;
+  margin-top: 14px;
+}
+
+.time strong,
+.seats strong {
+  font-weight: 700;
+}
+
+.ride-meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  min-width: 100px;
 }
 
 .price {
-  font-size: 32px;
-  font-weight: bold;
-  color: #106b21;
-}
-
-.time,
-.seats {
-  font-size: 16px;
-  color: #555;
-  margin-right: auto;
+  font-size: 38px;
+  font-weight: 900;
+  color: #1a7a2e;
+  line-height: 1;
 }

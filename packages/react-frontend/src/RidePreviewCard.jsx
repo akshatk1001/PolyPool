@@ -28,16 +28,18 @@ function RidePreviewCard({ ride }) {
             <img className="star-icon" src={Star} alt="star" />
           </span>
         </div>
+        <div className="ride-details">
+          <div className="time">
+            <strong>Date/Time:</strong> {formattedDate}
+          </div>
+          <div className="seats">
+            <strong>Seats:</strong> {ride.seats}
+          </div>
+        </div>
       </div>
 
       <div className="ride-meta">
         <div className="price">${ride.cost}</div>
-        <div className="time">
-          <strong>Date/Time:</strong> {formattedDate}
-        </div>
-        <div className="seats">
-          <strong>Seats:</strong> {ride.seats}
-        </div>
       </div>
     </button>
   );
