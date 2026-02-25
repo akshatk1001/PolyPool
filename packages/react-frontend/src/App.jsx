@@ -43,8 +43,8 @@ function App() {
           Create Ride
         </button>
         {showCreateRide && (
-          <CreateRideWindow onClose={() => setShowCreateRide(false)} />
-        )}
+          <CreateRideWindow onClose={() => setShowCreateRide(false)} onRideCreated={fetchRides} />)
+        }
       </nav>
       <main className="main-content">
         <div className="search-bar-container">
