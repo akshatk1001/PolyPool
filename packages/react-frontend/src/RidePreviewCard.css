@@ -22,6 +22,10 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+.ride-preview:active {
+    transform: scale(0.98);
+}
+
 .profile-pic {
   width: 75px;
   height: 75px;
