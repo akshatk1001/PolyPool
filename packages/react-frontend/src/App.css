@@ -87,3 +87,25 @@
 .createRide-button:active {
   transform: scale(0.96);
 }
+
+/* Circular profile button with grey person icon */
+.profile-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 15px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: 0.2s ease;
+}
+
+.profile-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.profile-button:active {
+  transform: scale(0.96);
+}

@@ -219,9 +219,7 @@ function CreateRideWindow({ onClose }) {
             />
           </div>
 
-          <button
-            className="create-button"
-            onClick={submitForm}>
+          <button className="create-button" onClick={submitForm}>
             Create
           </button>
         </form>

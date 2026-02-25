@@ -53,10 +53,36 @@ app.post('/api/rides', async (req, res) => {
   }
 });
 
+// Get a single user by ID
+app.get('/api/users/:id', async (req, res) => {
+  try {
+    const user = await userService.getUserById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update a user by ID
+app.patch('/api/users/:id', async (req, res) => {
+  try {
+    const user = await userService.updateUser(req.params.id, req.body);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 // Get all rides
 app.get('/api/rides', async (req, res) => {
-  console.log("the console is working");
-  const dest = req.query.dest;  
+  console.log('the console is working');
+  const dest = req.query.dest;
   const price = req.query.price;
   const date = req.query.date;
   try {
