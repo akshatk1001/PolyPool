@@ -12,11 +12,11 @@ function autofill(dest){
     const promise = cityModel
     .filter((city) => city.name.includes(dest))
     .sort();
-    
+
     return promise;
 }
 
 export default {
-  getCities
+  getAll,
   autofill
 };

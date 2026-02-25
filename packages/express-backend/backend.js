@@ -86,14 +86,13 @@ app.get('/api/rides', async (req, res) => {
   const date = req.query.date;
   try {
     const rides = await rideService.searchRide(dest, price, date);
-    //.populate('driver');
     res.status(200).json(rides);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-app.get('api/cities/autofill', ) async (req, res) => {
+app.get('api/cities/autofill',  async (req, res) => {
   const dest = req.query.dest;
   try {
     const cities = await cityService.autofill(dest);
