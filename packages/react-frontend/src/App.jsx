@@ -25,6 +25,7 @@ function App() {
       console.log('Error fetching rides:', error);
     }
   }
+  const [showProfile, setShowProfile] = useState(false);
 
   return (
     <div className="app">
