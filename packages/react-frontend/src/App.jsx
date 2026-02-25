@@ -30,10 +30,7 @@ function App() {
         </button>
 
         {/* Grey person icon — opens the profile modal */}
-        <button
-          className="profile-button"
-          onClick={() => setShowProfile(true)}
-        >
+        <button className="profile-button" onClick={() => setShowProfile(true)}>
           <svg
             width="30"
             height="30"
@@ -51,9 +48,7 @@ function App() {
         {showCreateRide && (
           <CreateRideWindow onClose={() => setShowCreateRide(false)} />
         )}
-        {showProfile && (
-          <ProfileWindow onClose={() => setShowProfile(false)} />
-        )}
+        {showProfile && <ProfileWindow onClose={() => setShowProfile(false)} />}
       </nav>
       <main className="main-content">
         <SearchBar />

@@ -6,23 +6,23 @@ mongoose.set('debug', true);
 
 function searchRide(destination, date, price) {
   let promise;
-  if (destination === undefined && date === undefined && price === undefined){
+  if (destination === undefined && date === undefined && price === undefined) {
     promise = rideModel.find();
-  }else if(date === undefined && price === undefined){
+  } else if (date === undefined && price === undefined) {
     promise = getRides(destination);
-  }else if(price === undefined){
+  } else if (price === undefined) {
     promise = getRidesByDate(destination, date);
-  }else {
+  } else {
     promise = getRidesByDP(destination, date, price);
   }
   return promise;
 }
 
-function getRidesByDP(destination, date, price){
+function getRidesByDP(destination, date, price) {
   const promise = rideModel
-    .find({ destination: destination, date: date, price: price})
+    .find({ destination: destination, date: date, price: price })
     .catch((err) => console.log(err));
-  return promise
+  return promise;
 }
 
 //function to get rides going to that destination regardless of date
