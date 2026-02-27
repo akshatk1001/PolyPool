@@ -6,11 +6,11 @@ const SearchBar = () => {
   const [cityOptions, setCityOptions] = useState([]);
   const [rides, setRides] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  /*
+  
   useEffect(() => {
     const fetchCities = async () => {
       if (!value.trim()) {
-        setCityOptions([]); //eventually should autofill with most common destinations
+        setCityOptions([]); 
         setShowDropdown(false);
         return;
       }
@@ -27,7 +27,7 @@ const SearchBar = () => {
     };
 
     fetchCities();
-  }, [value]);*/
+  }, [value]);
 
   const executeSearch = async (searchTerm) => {
     const query = searchTerm || value;
@@ -59,7 +59,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="search-container">
+    <div className="search-container" style={{ position: 'relative'}}>
       <input
         type="text"
         className="search-bar"
@@ -77,28 +77,29 @@ const SearchBar = () => {
           className="suggestions-dropdown"
           style={{
             position: 'absolute',
+            width: '75%',
             top: '100%',
-            left: 0,
-            right: 0,
+            left: '12.5%',
             backgroundColor: 'white',
-            border: '1px solid #ccc',
+            border: '1px solid #cfcfcf',
             listStyle: 'none',
             padding: 0,
             margin: 0,
             zIndex: 1000,
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)' 
           }}
         >
           {cityOptions.map((city, index) => (
             <li
               key={index}
-              onClick={() => handleOptionClick(city)}
+              onClick={() => handleOptionClick(city.name)}
               style={{
                 padding: '8px',
                 cursor: 'pointer',
                 borderBottom: '1px solid #eee',
               }}
             >
-              {city}
+              {city.name}
             </li>
           ))}
         </ul>

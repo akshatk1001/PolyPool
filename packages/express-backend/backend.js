@@ -92,10 +92,19 @@ app.get('/api/rides', async (req, res) => {
   }
 });
 
-app.get('api/cities/autofill',  async (req, res) => {
+app.get('/api/cities/autofill',  async (req, res) => {
   const dest = req.query.dest;
   try {
     const cities = await cityService.autofill(dest);
+    res.status(200).json(cities);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/cities',  async (req, res) => {
+  try {
+    const cities = await cityService.getAll();
     res.status(200).json(cities);
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -10,9 +10,9 @@ function getAll(){
 
 function autofill(dest){
     const promise = cityModel
-    .filter((city) => city.name.includes(dest))
-    .sort();
-
+    .find({name: { $regex: dest, $options: 'i' }})
+    .sort({population : -1})
+    .limit(5);
     return promise;
 }
 
