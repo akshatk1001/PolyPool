@@ -1,33 +1,27 @@
 .create-ride-window {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-
+  background: var(--color-overlay-seal);
   display: flex;
   justify-content: center;
   align-items: center;
-
   z-index: 1000;
 }
 
-/* Main white card */
 .create-ride-card {
   width: 800px;
   max-height: 60vh;
-
   display: flex;
   flex-direction: column;
-
-  background: #f4f4f4;
+  background: var(--color-surface-card);
   border-radius: 30px;
   overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-modal);
 }
 
-/* Green header */
 .create-ride-header {
-  background: #106b21; /* Cal Poly green */
-  color: white;
+  background: var(--color-brand-green);
+  color: var(--color-white);
   padding: 30px;
   display: flex;
   justify-content: space-between;
@@ -45,13 +39,11 @@
   cursor: pointer;
 }
 
-/* Form body */
 .create-ride-form {
   padding: 40px;
   display: flex;
   flex-direction: column;
   gap: 25px;
-
   overflow-y: auto;
   flex: 1;
 }
@@ -61,17 +53,15 @@
 }
 
 .create-ride-form::-webkit-scrollbar-thumb {
-  background: #ccc;
+  background: var(--color-border-muted);
   border-radius: 10px;
 }
 
-/* Two column rows */
 .form-row {
   display: flex;
   gap: 30px;
 }
 
-/* Form field wrapper */
 .form-field {
   display: flex;
   flex-direction: column;
@@ -83,32 +73,37 @@
   font-size: 16px;
   font-weight: 500;
   margin-left: 5px;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
-/* Inputs */
 .create-ride-form input {
   flex: 1;
   padding: 18px;
   border-radius: 10px;
   border: none;
-  background: #cfcfcf;
+  background: var(--color-input-bg);
   font-size: 16px;
   outline: none;
 }
 
-/* Remove spinner buttons from number inputs */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Input with prefix (like dollar sign) */
+.full-width {
+  width: 100%;
+}
+
+.form-field.full-width {
+  width: 100%;
+}
+
 .input-with-prefix {
   display: flex;
   align-items: center;
-  background: #cfcfcf;
+  background: var(--color-input-bg);
   border-radius: 10px;
   padding: 18px;
 }
@@ -116,7 +111,7 @@ input::-webkit-inner-spin-button {
 .input-prefix {
   font-size: 16px;
   font-weight: 400;
-  color: #333;
+  color: var(--color-text-primary);
   margin-right: 4px;
   line-height: 1;
 }
@@ -132,41 +127,30 @@ input::-webkit-inner-spin-button {
   width: 100%;
   padding: 18px;
   border-radius: 10px;
-  border: 1px solid #ccc;
   font-size: 16px;
   font-family: inherit;
-  background: #cfcfcf;
+  background: var(--color-input-bg);
   resize: none;
   min-height: 150px;
   outline: none;
-  transition: 0.2s ease;
+  transition: var(--transition-fast);
 }
 
-/* Full width input */
-.full-width {
-  width: 100%;
-}
-
-.form-field.full-width {
-  width: 100%;
-}
-
-/* Gold create button */
 .create-button {
   align-self: flex-end;
-  background: #c69314;
-  color: white;
+  background: var(--color-brand-gold);
+  color: var(--color-brand-green);
   border: none;
   padding: 15px 35px;
   border-radius: 25px;
   font-size: 20px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: var(--transition-fast);
 }
 
 .create-button:hover {
-  background: #a8770f;
+  background: var(--color-brand-gold-hover);
 }
 
 .create-button:active {
