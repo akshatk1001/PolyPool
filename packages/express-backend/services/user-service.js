@@ -1,13 +1,6 @@
 import mongoose from 'mongoose';
 import userModel from '../models/user.js';
 
-// Create a new user with required fields.
-function createUser(userData) {
-  const user = new userModel(userData);
-  const promise = user.save().catch((err) => console.log(err));
-  return promise;
-}
-
 // Get a list of users, optionally filtered by name.
 function getUsers(name) {
   const query = name ? { name: name } : {};
@@ -69,8 +62,27 @@ function getUsersByMinRating(minRating) {
   return promise;
 }
 
+// Find or create a user from a Microsoft SSO profile.
+async function findOrCreateMicrosoftUser(profile) {
+  console.log("INPUTTED PROFILE TO CREATE MS USER:", profile);
+  const microsoftId = profile.oid;
+  const email =
+    profile.preferred_username ||
+    profile.email ||
+    profile.upn;
+
+  // see if the account already exists in our database and return it
+  const user = await userModel.findOne({ microsoftId }).catch((err) => {
+    console.log(err);
+  });
+  if (user) return user;
+
+  // if account doesn't exist, create a new one and return it
+  const newUser = new userModel({ name: profile.name, email: email, microsoftId: microsoftId });
+  return newUser.save().catch(err => console.log(err));
+}
+
 export default {
-  createUser,
   getUsers,
   getUserById,
   updateUser,
@@ -78,5 +90,6 @@ export default {
   getVenmo,
   getPaypal,
   addRating,
+  findOrCreateMicrosoftUser,
   getUsersByMinRating,
 };
