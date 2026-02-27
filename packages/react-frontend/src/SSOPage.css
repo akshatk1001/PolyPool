@@ -1,0 +1,40 @@
+.background {
+  color: #106b21;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sso-frame{
+  width: 400px;
+  height: 500px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.sso-button{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #c69314;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.sso-logo {
+  height: 30px;
+  width: auto;
+}

@@ -7,13 +7,17 @@ const CitySchema = new mongoose.Schema(
         required: true,
         trim: true
     },
-    latitude: {
+    lat: {
         type: Number,
         required: true,
     },
-    long: {
-        type: Number,
-        required: true,
+    lng: {
+      type: Number,
+      required: true,
+    },
+    population: {
+      type: Number,
+      required: true,
     }
   },
 
