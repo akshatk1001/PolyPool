@@ -36,6 +36,8 @@ app.use(express.json());
 app.use(
   session({
     secret: SESSION_SECRET || 'SESSION SECRET NOT FOUND',
+    resave: false,
+    saveUninitialized: false,
     cookie: { secure: false }, // SET TO SECURE IN PROD - DO NOT FORGET
   }),
 );
