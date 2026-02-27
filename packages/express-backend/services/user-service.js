@@ -65,7 +65,7 @@ function getUsersByMinRating(minRating) {
 // Find or create a user from a Microsoft SSO profile.
 async function findOrCreateMicrosoftUser(profile) {
   console.log("INPUTTED PROFILE TO CREATE MS USER:", profile);
-  const microsoftId = profile.oid;
+  const microsoftId = profile.oid || profile.openid;
   const email =
     profile.preferred_username ||
     profile.email ||
@@ -78,7 +78,7 @@ async function findOrCreateMicrosoftUser(profile) {
   if (user) return user;
 
   // if account doesn't exist, create a new one and return it
-  const newUser = new userModel({ name: profile.name, email: email, microsoftId: microsoftId });
+  const newUser = new userModel({ name: profile.displayName, email: email, microsoftId: microsoftId });
   return newUser.save().catch(err => console.log(err));
 }
 
