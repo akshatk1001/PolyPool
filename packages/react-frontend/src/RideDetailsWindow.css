@@ -1,0 +1,81 @@
+.ride-details-window {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+
+.ride-details-card {
+  width: 760px;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  background: #f4f4f4;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.ride-details-header {
+  background: #106b21;
+  color: white;
+  padding: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ride-details-header h2 {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 600;
+}
+
+.ride-details-header .close-btn {
+  font-size: 40px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ride-details-body {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.ride-details-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ride-details-body::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+
+.details-row {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  align-items: start;
+  gap: 14px;
+}
+
+.details-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+}
+
+.details-value {
+  font-size: 16px;
+  color: #222;
+  word-break: break-word;
+}
+
+.details-row-description .details-value {
+  white-space: pre-wrap;
+}
