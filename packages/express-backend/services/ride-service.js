@@ -3,10 +3,16 @@ import rideModel from '../models/ride.js';
 
 mongoose.set('debug', true);
 
+function populateRideUsers(query) {
+  return query
+    .populate('driver', 'name')
+    .populate('other_riders', 'name');
+}
+
 function searchRide(destination, date, price) {
   let promise;
   if (destination === undefined && date === undefined && price === undefined) {
-    promise = rideModel.find();
+    promise = populateRideUsers(rideModel.find());
   } else if (date === undefined && price === undefined) {
     promise = getRides(destination);
   } else if (price === undefined) {
@@ -18,31 +24,32 @@ function searchRide(destination, date, price) {
 }
 
 function getRidesByDP(destination, date, price) {
-  const promise = rideModel
-    .find({ destination: destination, date: date, price: price })
+  const promise = populateRideUsers(
+    rideModel.find({ destination: destination, date: date, price: price }),
+  )
     .catch((err) => console.log(err));
   return promise;
 }
 
 //function to get rides going to that destination regardless of date
 function getRides(destination) {
-  const promise = rideModel
-    .find({ destination: destination })
+  const promise = populateRideUsers(rideModel.find({ destination: destination }))
     .catch((err) => console.log(err));
   return promise;
 }
 
 //function to get rides going to that destination on that date
 function getRidesByDate(destination, date) {
-  const promise = rideModel
-    .find({ destination: destination, date: date })
+  const promise = populateRideUsers(
+    rideModel.find({ destination: destination, date: date }),
+  )
     .catch((err) => console.log(err));
   return promise;
 }
 
 //function to get a ride by its id
 function getRideById(rideId) {
-  const promise = rideModel.findById(rideId).catch((err) => console.log(err));
+  const promise = populateRideUsers(rideModel.findById(rideId)).catch((err) => console.log(err));
   return promise;
 }
 
