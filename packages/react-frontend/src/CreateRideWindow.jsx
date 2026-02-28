@@ -93,7 +93,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       <div className="create-ride-card">
         <div className="create-ride-header">
           <h2>Create Ride</h2>
-          <span className="close-btn" onClick={onClose}>
+          <span className="modal-close-btn" onClick={onClose}>
             ×
           </span>
         </div>
