@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CreateRideWindow.css';
+import useFetchUser from './utils/fetchUser';
 
 function CreateRideWindow({ onClose, onRideCreated }) {
+  const user = useFetchUser();
+
+  useEffect(() => {
+    if (user === null) {
+      console.error('User is not signed in');
+    }
+  }, [user]);
+
   const [ride, setRide] = useState({
     starting_point: '',
     destination: '',
     start_date: '',
     start_time: '',
-    driver: '6998d357fcc3234ed1ed6825', // TODO: Replace with actual Driver ID after SSO
+    driver: user?._id,
     other_riders: [],
     cost: 0,
     car: '',
@@ -44,11 +53,16 @@ function CreateRideWindow({ onClose, onRideCreated }) {
     event.preventDefault();
     const datetime = new Date(`${ride.start_date}T${ride.start_time}`);
 
+    if (!user) {
+      console.error('No user found. Cannot create ride without a driver.');
+      return;
+    }
+
     const rideData = {
       starting_point: ride.starting_point,
       destination: ride.destination,
       start_time: datetime,
-      driver: ride.driver,
+      driver: user._id,
       other_riders: ride.other_riders,
       cost: ride.cost,
       car: ride.car,
@@ -78,7 +92,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       destination: '',
       start_date: '',
       start_time: '',
-      driver: '6998d357fcc3234ed1ed6825', // TODO: Replace with actual Driver ID after SSO
+      driver: user._id,
       other_riders: [],
       cost: 0,
       car: '',

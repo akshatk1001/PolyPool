@@ -1,34 +1,23 @@
 import './App.css';
-import { useState } from 'react';
-import SSOPage from './SSOPage';``
-import CreateRideWindow from './CreateRideWindow';
-import ProfileWindow from './ProfileWindow';
-import AppNavbar from './AppNavbar';
-import AppMainContent from './AppMainContent';
-import useRides from './hooks/useRides';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import HomePage from './HomePage';
+import SSOPage from './SSOPage';
+import ProtectedRoute from './ProtectedRoute';
 
 function App() {
-  const [showCreateRide, setShowCreateRide] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
-  const { rides, fetchRides } = useRides();
-
   return (
-    <div className="app">
-      <AppNavbar
-        onCreateRideClick={() => setShowCreateRide(true)}
-        onProfileClick={() => setShowProfile(true)}
-      >
-        {showCreateRide && (
-          <CreateRideWindow
-            onClose={() => setShowCreateRide(false)}
-            onRideCreated={fetchRides}
-          />
-        )}
-        {showProfile && <ProfileWindow onClose={() => setShowProfile(false)} />}
-      </AppNavbar>
-      <AppMainContent rides={rides} />
-      <SSOPage />
-    </div>
+    <Routes>
+      <Route path="/" element={<SSOPage />} />
+      <Route
+        path="/home"
+        element={
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 

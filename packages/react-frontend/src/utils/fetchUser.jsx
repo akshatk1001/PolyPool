@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 function useFetchUser() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(undefined); // undefined = loading, null = not logged in
 
   useEffect(() => {
     fetch('http://localhost:8000/api/auth/me', { credentials: 'include' })

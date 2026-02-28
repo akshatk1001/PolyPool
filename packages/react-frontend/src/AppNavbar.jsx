@@ -2,7 +2,7 @@ import PolyPoolLogo from './imagesAndIcons/PolyPoolLogo.png';
 import PolyPoolIcon from './imagesAndIcons/PolyPoolIcon.png';
 import PlusIcon from './imagesAndIcons/PlusIcon.png';
 
-function AppNavbar({ onCreateRideClick, onProfileClick, children }) {
+function AppNavbar({ onCreateRideClick, onProfileClick, onSignOutClick, children }) {
   return (
     <nav className="navbar">
       <span className="navbar-icon">
@@ -28,6 +28,10 @@ function AppNavbar({ onCreateRideClick, onProfileClick, children }) {
           <path d="M4 20c0-4 4-7 8-7s8 3 8 7" />
         </svg>
       </button>
+
+    <button className = "createRide-button" onClick={onSignOutClick}>
+      Sign Out
+    </button>
 
       {children}
     </nav>

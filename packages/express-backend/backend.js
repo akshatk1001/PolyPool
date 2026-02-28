@@ -182,7 +182,7 @@ app.post('/api/auth/logout', (req, res, next) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
-    res.json({ message: 'Logged out' });
+    res.status(200).json({ message: 'Logged out' });
   });
 });
 

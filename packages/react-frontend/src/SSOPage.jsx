@@ -15,7 +15,7 @@ function SSOPage() {
     if (user) {
       navigate('/home');
     }
-  }, [user]);
+  }, [user, navigate]);
 
   function signIn() {
     window.location.href = 'http://localhost:8000/auth/microsoft';
