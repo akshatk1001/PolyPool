@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'; // Added useEffect
-import './App.css';
+import './SearchBar.css';
 
 const SearchBar = () => {
   const [value, setValue] = useState('');
@@ -59,7 +59,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="search-container" style={{ position: 'relative'}}>
+    <div className="search-container">
       <input
         type="text"
         className="search-bar"
@@ -69,35 +69,14 @@ const SearchBar = () => {
           setValue(e.target.value);
         }}
         onKeyDown={handleKeyDown}
-        style={{ width: '80%', padding: '8px' }}
       />
 
       {showDropdown && cityOptions.length > 0 && (
-        <ul
-          className="suggestions-dropdown"
-          style={{
-            position: 'absolute',
-            width: '75%',
-            top: '100%',
-            left: '12.5%',
-            backgroundColor: 'white',
-            border: '1px solid #cfcfcf',
-            listStyle: 'none',
-            padding: 0,
-            margin: 0,
-            zIndex: 1000,
-            boxShadow: '0 4px 6px rgba(0,0,0,0.1)' 
-          }}
-        >
+        <ul className="suggestions-dropdown">
           {cityOptions.map((city, index) => (
             <li
               key={index}
               onClick={() => handleOptionClick(city.name)}
-              style={{
-                padding: '8px',
-                cursor: 'pointer',
-                borderBottom: '1px solid #eee',
-              }}
             >
               {city.name}
             </li>
