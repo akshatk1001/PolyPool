@@ -2,6 +2,51 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+  --cp-poly-green: #154734;
+  --cp-mustang-gold: #bd8b13;
+  --cp-farmers-market: #3a913f;
+  --cp-dexter-green: #a4d65e;
+  --cp-poly-canyon: #f2c75c;
+  --cp-stadium-gold: #f8e08e;
+  --cp-surf-blue: #5cb8b2;
+  --cp-sky-blue: #b5e3d8;
+  --cp-morro-blue: #abcae9;
+  --cp-serenity: #d5e4f4;
+  --cp-pismo-sand: #cac7a7;
+  --cp-mission-beige: #e4e3d3;
+  --cp-coast-sage: #b7cdc2;
+  --cp-sycamore: #789f90;
+  --cp-seal-gray: #54585a;
+  --cp-kennedy-gray: #8e9089;
+
+  --color-white: #fff;
+  --color-text-primary: var(--cp-seal-gray);
+  --color-text-secondary: var(--cp-kennedy-gray);
+  --color-brand-green: var(--cp-poly-green);
+  --color-brand-green-alt: var(--cp-farmers-market);
+  --color-brand-green-strong: var(--cp-poly-green);
+  --color-brand-gold: var(--cp-mustang-gold);
+  --color-brand-gold-hover: var(--cp-poly-canyon);
+  --color-brand-gold-alt: var(--cp-poly-canyon);
+  --color-brand-gold-alt-hover: var(--cp-stadium-gold);
+  --color-surface-page: var(--cp-mission-beige);
+  --color-surface-card: var(--cp-mission-beige);
+  --color-surface-card-soft: var(--cp-mission-beige);
+  --color-surface-card-hover: var(--cp-pismo-sand);
+  --color-input-bg: var(--cp-serenity);
+  --color-border-muted: var(--cp-pismo-sand);
+  --color-border-light: var(--cp-coast-sage);
+  --color-overlay: rgba(21, 71, 52, 0.4);
+  --color-overlay-strong: rgba(21, 71, 52, 0.5);
+  --color-overlay-seal: rgba(84, 88, 90, 0.55);
+  --color-panel-tint: rgba(228, 227, 211, 0.9);
+  --color-nav-icon: var(--cp-mission-beige);
+  --color-nav-hover-bg: rgba(248, 224, 142, 0.24);
+  --shadow-modal: 0 20px 40px rgba(21, 71, 52, 0.2);
+  --shadow-modal-strong: 0 24px 48px rgba(21, 71, 52, 0.25);
+  --shadow-card: 0 2px 8px rgba(21, 71, 52, 0.14);
+  --shadow-card-hover: 0 4px 12px rgba(21, 71, 52, 0.2);
+  --transition-fast: 0.2s ease;
 }
 
 body {
