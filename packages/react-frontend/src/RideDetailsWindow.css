@@ -1,7 +1,7 @@
 .ride-details-window {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--color-overlay-strong);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -13,15 +13,15 @@
   max-height: 80vh;
   display: flex;
   flex-direction: column;
-  background: #ffffff;
+  background: var(--color-white);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-modal-strong);
 }
 
 .rd-header {
-  background: #1a6e2e;
-  color: #fff;
+  background: var(--color-brand-green-alt);
+  color: var(--color-white);
   padding: 22px 32px;
   display: flex;
   justify-content: space-between;
@@ -38,7 +38,7 @@
 .rd-close {
   font-size: 26px;
   cursor: pointer;
-  color: #fff;
+  color: var(--color-white);
   opacity: 0.85;
   transition: opacity 0.15s;
 }
@@ -58,7 +58,7 @@
   width: 6px;
 }
 .rd-body::-webkit-scrollbar-thumb {
-  background: #c4c4c4;
+  background: var(--color-border-muted);
   border-radius: 6px;
 }
 
@@ -72,13 +72,13 @@
   margin: 0;
   font-size: 22px;
   font-weight: 700;
-  color: #1a6e2e;
+  color: var(--color-brand-green-alt);
 }
 
 .rd-price {
   font-size: 32px;
   font-weight: 800;
-  color: #1a6e2e;
+  color: var(--color-brand-green-alt);
 }
 
 .rd-info-grid {
@@ -93,25 +93,21 @@
   align-items: center;
   gap: 10px;
   font-size: 15px;
-  color: #333;
-}
-
-.rd-info-full {
-  grid-column: 1 / -1;
+  color: var(--color-text-primary);
 }
 
 .rd-icon {
   width: 22px;
   height: 22px;
   flex-shrink: 0;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .rd-description {
   font-size: 15px;
-  color: #333;
+  color: var(--color-text-primary);
   line-height: 1.5;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--color-border-light);
   padding-top: 14px;
 }
 
@@ -126,8 +122,8 @@
 }
 
 .rd-request-btn {
-  background: #d4a017;
-  color: #fff;
+  background: var(--color-brand-gold-alt);
+  color: var(--color-brand-green);
   border: none;
   padding: 12px 32px;
   font-size: 17px;
@@ -137,5 +133,5 @@
   transition: background 0.15s;
 }
 .rd-request-btn:hover {
-  background: #b8880f;
+  background: var(--color-brand-gold-alt-hover);
 }
