@@ -1,5 +1,5 @@
 .background {
-  color: #106b21;
+  color: var(--color-brand-green);
   background-size: cover;
   background-position: center;
   height: 100vh;
@@ -11,7 +11,7 @@
 .sso-frame{
   width: 400px;
   height: 500px;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--color-panel-tint);
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -23,15 +23,15 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #c69314;
-  color: white;
+  background: var(--color-brand-gold);
+  color: var(--color-brand-green);
   border: none;
   padding: 10px 20px;
   border-radius: 25px;
   font-size: 20px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: var(--transition-fast);
 }
 
 .sso-logo {
