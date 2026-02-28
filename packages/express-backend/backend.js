@@ -19,9 +19,9 @@ const {
   MONGO_CONNECTION_STRING,
   MICROSOFT_CLIENT_ID,
   MICROSOFT_CLIENT_SECRET,
-  MICROSOFT_TENANT_ID,
   SESSION_SECRET,
 } = process.env;
+const microsoftTenant = 'common'
 mongoose.set('debug', true);
 
 // ----Middleware----
@@ -53,8 +53,9 @@ passport.use(
       clientID: MICROSOFT_CLIENT_ID,
       clientSecret: MICROSOFT_CLIENT_SECRET,
       callbackURL: 'http://localhost:8000/auth/microsoft/callback',
-      scope: ['openid', 'User.Read'], // use openid connect protocol, and read profile info 
-      tenant: MICROSOFT_TENANT_ID || 'TENANT ID NOT FOUND',
+      scope: ['openid', 'profile', 'email', 'User.Read'], // use openid connect protocol, and read profile info 
+      addUPNAsEmail: true, // include userPrincipalName when mail is blank
+      tenant: microsoftTenant,
     },
     async (_accessToken, _refreshToken, profile, done) => {
       try {
@@ -150,7 +151,12 @@ app.get('/api/rides', async (req, res) => {
 });
 
 // redirect user to Microsoft login
-app.get('/auth/microsoft', passport.authenticate('microsoft'));
+app.get(
+  '/auth/microsoft',
+  passport.authenticate('microsoft', {
+    prompt: 'select_account', // always show account chooser
+  }),
+);
 
 // make Microsoft redirect back here after login
 app.get(
