@@ -1,5 +1,6 @@
 .background {
   color: var(--color-brand-green);
+  background-color: var(--color-brand-green);
   background-size: cover;
   background-position: center;
   height: 100vh;
@@ -9,17 +10,21 @@
 }
 
 .sso-frame{
+  position: relative;
   width: 400px;
-  height: 500px;
+  height: 30%;
   background-color: var(--color-panel-tint);
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: 40px;
 }
 
 .sso-button{
+  position: absolute;
+  top: 50%;
   display: flex;
   align-items: center;
   gap: 10px;
