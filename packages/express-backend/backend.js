@@ -21,7 +21,7 @@ const {
   MICROSOFT_CLIENT_SECRET,
   SESSION_SECRET,
 } = process.env;
-const microsoftTenant = 'common'
+const microsoftTenant = 'common';
 mongoose.set('debug', true);
 
 // ----Middleware----
@@ -42,9 +42,8 @@ app.use(
   }),
 );
 
-app.use(passport.initialize()); 
+app.use(passport.initialize());
 app.use(passport.session()); // calls deserializeUser on every request to get user info
-
 
 // ----Microsoft SSO config----
 passport.use(
@@ -53,13 +52,13 @@ passport.use(
       clientID: MICROSOFT_CLIENT_ID,
       clientSecret: MICROSOFT_CLIENT_SECRET,
       callbackURL: 'http://localhost:8000/auth/microsoft/callback',
-      scope: ['openid', 'profile', 'email', 'User.Read'], // use openid connect protocol, and read profile info 
+      scope: ['openid', 'profile', 'email', 'User.Read'], // use openid connect protocol, and read profile info
       addUPNAsEmail: true, // include userPrincipalName when mail is blank
       tenant: microsoftTenant,
     },
     async (_accessToken, _refreshToken, profile, done) => {
       try {
-        const user = await userService.findOrCreateMicrosoftUser(profile);
+        const user = await userService.findOrCreateMicrosoftUser(profile); // returns a mongo document of the user
         return done(null, user); // tell passport.use that it's job is done
       } catch (err) {
         return done(err);
@@ -84,7 +83,6 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-
 // ----Connect to MongoDB----
 mongoose
   .connect(MONGO_CONNECTION_STRING)
@@ -98,7 +96,6 @@ mongoose
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
-
 
 // ----API Endpoints----
 // Create a new ride
@@ -161,10 +158,12 @@ app.get(
 // make Microsoft redirect back here after login
 app.get(
   '/auth/microsoft/callback',
-  passport.authenticate('microsoft', { failureRedirect: 'http://localhost:5173?auth=failed' }),
+  passport.authenticate('microsoft', {
+    failureRedirect: 'http://localhost:5173?auth=failed',
+  }),
   (req, res) => {
     // Successful login — redirect back to the frontend
-    res.redirect('http://localhost:5173?auth=success'); // use auth=success to signal to frontend that login 
+    res.redirect('http://localhost:5173?auth=success'); // use auth=success to signal to frontend that login
   },
 );
 
@@ -185,7 +184,7 @@ app.post('/api/auth/logout', (req, res, next) => {
   });
 });
 
-app.get('/api/cities/autofill',  async (req, res) => {
+app.get('/api/cities/autofill', async (req, res) => {
   const dest = req.query.dest;
   try {
     const cities = await cityService.autofill(dest);
@@ -195,7 +194,7 @@ app.get('/api/cities/autofill',  async (req, res) => {
   }
 });
 
-app.get('/api/cities',  async (req, res) => {
+app.get('/api/cities', async (req, res) => {
   try {
     const cities = await cityService.getAll();
     res.status(200).json(cities);
