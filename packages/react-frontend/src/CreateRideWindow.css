@@ -34,11 +34,6 @@
   font-weight: 600;
 }
 
-.close-btn {
-  font-size: 40px;
-  cursor: pointer;
-}
-
 .create-ride-form {
   padding: 40px;
   display: flex;
@@ -57,25 +52,6 @@
   border-radius: 10px;
 }
 
-.form-row {
-  display: flex;
-  gap: 30px;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  flex: 1;
-}
-
-.form-field label {
-  font-size: 16px;
-  font-weight: 500;
-  margin-left: 5px;
-  color: var(--color-text-primary);
-}
-
 .create-ride-form input {
   flex: 1;
   padding: 18px;
@@ -84,20 +60,6 @@
   background: var(--color-input-bg);
   font-size: 16px;
   outline: none;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.full-width {
-  width: 100%;
-}
-
-.form-field.full-width {
-  width: 100%;
 }
 
 .input-with-prefix {
