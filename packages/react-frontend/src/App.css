@@ -34,22 +34,6 @@
   background-color: var(--color-surface-page);
 }
 
-/*search bar*/
-.search-bar {
-  display: flex;
-  margin: 0 auto;
-  margin-top: 2%;
-  height: 50px;
-  width: 80%;
-  padding: 18px;
-  border-radius: 70px;
-  border: none;
-  background: var(--color-input-bg);
-  font-size: 30px;
-  outline: none;
-  text-indent: 1%;
-}
-
 /* Gold Create Ride button */
 .createRide-button {
   display: flex;
