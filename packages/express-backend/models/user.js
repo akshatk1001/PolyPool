@@ -29,7 +29,7 @@ const UserSchema = new mongoose.Schema(
     },
     phone_num: {
       type: Number,
-      required: true,
+      required: false,
     },
     email: {
       type: String,
