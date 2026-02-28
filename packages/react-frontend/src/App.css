@@ -15,11 +15,11 @@
   position: relative;
 }
 
-/* White bold logo text — absolutely centered in navbar */
+/* White bold logo text — centered between icon and buttons */
 .navbar-logo {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  flex: 1;
+  display: flex;
+  justify-content: center;
   pointer-events: none;
 }
 
@@ -61,6 +61,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition-fast);
+  white-space: nowrap;
 }
 
 .signout-button {
@@ -77,6 +78,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition-fast);
+  white-space: nowrap;
 }
 
 .signout-button:hover {
@@ -191,15 +193,16 @@ input::-webkit-inner-spin-button {
 }
 
 /* ---- Mobile responsive ---- */
+@media (max-width: 850px) {
+  .navbar-logo {
+    display: none;
+  }
+}
+
 @media (max-width: 600px) {
   .navbar {
     padding: 8px 10px;
     gap: 6px;
-  }
-
-  /* Hide text logo on mobile — icon is enough */
-  .navbar-logo {
-    display: none;
   }
 
   .navbar-icon img {
