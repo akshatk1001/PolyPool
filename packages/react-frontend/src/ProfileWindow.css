@@ -1,33 +1,27 @@
 .profile-window {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-
+  background: var(--color-overlay);
   display: flex;
   justify-content: center;
   align-items: center;
-
   z-index: 1000;
 }
 
-/* Main white card */
 .profile-card {
   width: 800px;
   max-height: 60vh;
-
   display: flex;
   flex-direction: column;
-
-  background: #f4f4f4;
+  background: var(--color-surface-card);
   border-radius: 30px;
   overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-modal);
 }
 
-/* Green header */
 .profile-header {
-  background: #106b21;
-  color: white;
+  background: var(--color-brand-green);
+  color: var(--color-white);
   padding: 30px;
   display: flex;
   justify-content: space-between;
@@ -40,13 +34,11 @@
   font-weight: 600;
 }
 
-/* Form body */
 .profile-form {
   padding: 40px;
   display: flex;
   flex-direction: column;
   gap: 25px;
-
   overflow-y: auto;
   flex: 1;
 }
@@ -56,7 +48,7 @@
 }
 
 .profile-form::-webkit-scrollbar-thumb {
-  background: #ccc;
+  background: var(--color-border-muted);
   border-radius: 10px;
 }
 
@@ -65,7 +57,7 @@
   padding: 18px;
   border-radius: 10px;
   border: none;
-  background: #cfcfcf;
+  background: var(--color-input-bg);
   font-size: 16px;
   outline: none;
 }
@@ -73,25 +65,24 @@
 .profile-name {
   font-size: 24px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
-/* Gold save button */
 .save-button {
   align-self: flex-end;
-  background: #c69314;
-  color: white;
+  background: var(--color-brand-gold);
+  color: var(--color-brand-green);
   border: none;
   padding: 15px 35px;
   border-radius: 25px;
   font-size: 20px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: var(--transition-fast);
 }
 
 .save-button:hover {
-  background: #a8770f;
+  background: var(--color-brand-gold-hover);
 }
 
 .save-button:active {

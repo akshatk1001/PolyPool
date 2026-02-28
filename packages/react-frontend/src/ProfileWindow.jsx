@@ -65,7 +65,7 @@ function ProfileWindow({ onClose }) {
       <div className="profile-card">
         <div className="profile-header">
           <h2>Profile</h2>
-          <span className="close-btn" onClick={onClose}>
+          <span className="modal-close-btn" onClick={onClose}>
             ×
           </span>
         </div>

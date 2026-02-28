@@ -1,13 +1,6 @@
 import mongoose from 'mongoose';
 import userModel from '../models/user.js';
 
-// Create a new user with required fields.
-function createUser(userData) {
-  const user = new userModel(userData);
-  const promise = user.save().catch((err) => console.log(err));
-  return promise;
-}
-
 // Get a list of users, optionally filtered by name.
 function getUsers(name) {
   const query = name ? { name: name } : {};
@@ -69,8 +62,36 @@ function getUsersByMinRating(minRating) {
   return promise;
 }
 
+// Find or create a user from a Microsoft SSO profile.
+async function findOrCreateMicrosoftUser(profile) {
+  const microsoftId = profile.id;
+  const email = profile.emails?.[0]?.value || profile._json?.mail;
+
+  if (!microsoftId || !email) {
+    throw new Error(
+      `Microsoft profile is missing id ${microsoftId} or email ${email}.`,
+    );
+  }
+
+  // try to find if this user already exists
+  const userByMicrosoftId = await userModel
+    .findOne({ microsoftId })
+    .catch((err) => {
+      console.log(err);
+    });
+  if (userByMicrosoftId) return userByMicrosoftId;
+
+  // create a new user if one doesn't already exist with this Microsoft ID
+  const newUser = new userModel({
+    microsoftId: microsoftId,
+    name: profile.displayName,
+    email: email,
+    phone_num: profile._json?.mobilePhone || null,
+  });
+  return newUser.save().catch((err) => console.log(err));
+}
+
 export default {
-  createUser,
   getUsers,
   getUserById,
   updateUser,
@@ -78,5 +99,6 @@ export default {
   getVenmo,
   getPaypal,
   addRating,
+  findOrCreateMicrosoftUser,
   getUsersByMinRating,
 };

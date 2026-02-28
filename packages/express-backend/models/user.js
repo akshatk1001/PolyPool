@@ -2,6 +2,11 @@ import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema(
   {
+    microsoftId: {
+      type: String,
+      required: false,
+      trim: true,
+    },
     name: {
       type: String,
       required: true,
@@ -15,6 +20,7 @@ const UserSchema = new mongoose.Schema(
     ratings: {
       type: [Number],
       required: true,
+      default: [],
     },
     car: {
       type: String,
@@ -23,7 +29,7 @@ const UserSchema = new mongoose.Schema(
     },
     phone_num: {
       type: Number,
-      required: true,
+      required: false,
     },
     email: {
       type: String,
@@ -47,11 +53,11 @@ const UserSchema = new mongoose.Schema(
     },
     grade: {
       type: Number,
-      required: true,
+      required: false,
     },
     major: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
     },
     profile_pic: {
