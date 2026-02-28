@@ -1,10 +1,3 @@
-/* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 /* Full-height app container */
 .app {
   min-height: 100vh;
@@ -14,7 +7,7 @@
 
 /* Green navbar */
 .navbar {
-  background-color: #106b21;
+  background-color: var(--color-brand-green);
   height: 10%;
   padding: 16px 24px;
   display: flex;
@@ -38,7 +31,7 @@
 /* Gray page background fills remaining space */
 .main-content {
   flex: 1;
-  background-color: #f0f0f0;
+  background-color: var(--color-surface-page);
 }
 
 /*search bar*/
@@ -51,7 +44,7 @@
   padding: 18px;
   border-radius: 70px;
   border: none;
-  background: #cfcfcf;
+  background: var(--color-input-bg);
   font-size: 30px;
   outline: none;
   text-indent: 1%;
@@ -64,15 +57,15 @@
   justify-content: center;
   gap: 10px;
   margin-left: auto;
-  background: #c69314;
-  color: white;
+  background: var(--color-brand-gold);
+  color: var(--color-brand-green);
   border: none;
   padding: 10px 20px;
   border-radius: 25px;
   font-size: 20px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: var(--transition-fast);
 }
 
 .createRide-button img {
@@ -81,7 +74,7 @@
 }
 
 .createRide-button:hover {
-  background: #a8770f;
+  background: var(--color-brand-gold-hover);
 }
 
 .createRide-button:active {
@@ -107,7 +100,7 @@
 }
 
 .ride-grid::-webkit-scrollbar-thumb {
-  background: #ccc;
+  background: var(--color-border-muted);
   border-radius: 10px;
 }
 
@@ -118,6 +111,7 @@
 .profile-button {
   background: none;
   border: none;
+  color: var(--color-nav-icon);
   cursor: pointer;
   margin-left: 15px;
   padding: 5px;
@@ -125,40 +119,53 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: 0.2s ease;
+  transition: var(--transition-fast);
 }
 
 .profile-button:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--color-nav-hover-bg);
 }
 
 .profile-button:active {
   transform: scale(0.96);
 }
 
-.ride-grid {
-  margin-top: 2%;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+/* ---- Shared modal styles (ProfileWindow + CreateRideWindow) ---- */
+.modal-close-btn {
+  font-size: 40px;
+  cursor: pointer;
+}
+
+/* ---- Shared form styles (ProfileWindow + CreateRideWindow) ---- */
+.form-row {
+  display: flex;
   gap: 30px;
-  width: 70%;
-  margin-left: auto;
-  margin-right: auto;
-  max-height: 70vh;
-  overflow-y: auto;
-  padding-right: 10px;
-  padding-bottom: 20px;
 }
 
-.ride-grid::-webkit-scrollbar {
-  width: 8px;
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
 }
 
-.ride-grid::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 10px;
+.form-field label {
+  font-size: 16px;
+  font-weight: 500;
+  margin-left: 5px;
+  color: var(--color-text-primary);
 }
 
-.ride-grid::-webkit-scrollbar-track {
-  background: transparent;
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-field.full-width {
+  width: 100%;
 }
