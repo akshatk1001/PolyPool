@@ -1,5 +1,6 @@
 import './App.css';
 import { useState } from 'react';
+import SignInWithMS from './utils/SignInWithMS';
 import CreateRideWindow from './CreateRideWindow';
 import ProfileWindow from './ProfileWindow';
 import AppNavbar from './AppNavbar';
@@ -26,6 +27,7 @@ function App() {
         {showProfile && <ProfileWindow onClose={() => setShowProfile(false)} />}
       </AppNavbar>
       <AppMainContent rides={rides} />
+      <SignInWithMS />
     </div>
   );
 }
