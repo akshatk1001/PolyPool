@@ -43,3 +43,11 @@
   height: 30px;
   width: auto;
 }
+
+.sso-button:hover {
+  background: var(--color-brand-gold-hover);
+}
+
+.sso-button:active {
+  transform: scale(0.96);
+}
