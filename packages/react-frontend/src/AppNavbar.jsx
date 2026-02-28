@@ -29,7 +29,7 @@ function AppNavbar({ onCreateRideClick, onProfileClick, onSignOutClick, children
         </svg>
       </button>
 
-    <button className = "createRide-button" onClick={onSignOutClick}>
+    <button className="signout-button" onClick={onSignOutClick}>
       Sign Out
     </button>
 

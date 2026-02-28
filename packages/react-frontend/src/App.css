@@ -12,9 +12,17 @@
   padding: 16px 24px;
   display: flex;
   align-items: center;
+  position: relative;
 }
 
-/* White bold logo text */
+/* White bold logo text — absolutely centered in navbar */
+.navbar-logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
 .navbar-logo img {
   height: 70px;
   width: auto;
@@ -31,6 +39,9 @@
 /* Gray page background fills remaining space */
 .main-content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   background-color: var(--color-surface-page);
 }
 
@@ -52,6 +63,30 @@
   transition: var(--transition-fast);
 }
 
+.signout-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 15px;
+  background: var(--color-brand-gold);
+  color: var(--color-brand-green);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.signout-button:hover {
+  background: var(--color-brand-gold-hover);
+}
+
+.signout-button:active {
+  transform: scale(0.96);
+}
+
 .createRide-button img {
   height: 30px;
   padding: 0%;
@@ -68,12 +103,13 @@
 .ride-grid {
   margin-top: 2%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
   gap: 30px;
   width: 70%;
   margin-left: auto;
   margin-right: auto;
-  max-height: 70vh;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding-right: 10px;
   padding-bottom: 20px;
@@ -152,4 +188,56 @@ input::-webkit-inner-spin-button {
 
 .form-field.full-width {
   width: 100%;
+}
+
+/* ---- Mobile responsive ---- */
+@media (max-width: 600px) {
+  .navbar {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  /* Hide text logo on mobile — icon is enough */
+  .navbar-logo {
+    display: none;
+  }
+
+  .navbar-icon img {
+    height: 36px;
+  }
+
+  .createRide-button {
+    font-size: 13px;
+    padding: 7px 10px;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  .createRide-button img {
+    height: 16px;
+  }
+
+  .signout-button {
+    font-size: 13px;
+    padding: 7px 10px;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+
+  .profile-button {
+    margin-left: 6px;
+    padding: 4px;
+  }
+
+  .profile-button svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .ride-grid {
+    grid-template-columns: 1fr;
+    width: 96%;
+    gap: 12px;
+    margin-top: 12px;
+  }
 }
