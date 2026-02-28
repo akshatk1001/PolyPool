@@ -3,7 +3,7 @@
   align-items: stretch;
   gap: 20px;
 
-  background: #f2f2f2;
+  background: var(--color-surface-card-soft);
   border: none;
   border-radius: 12px;
   padding: 24px;
@@ -12,14 +12,14 @@
 
   cursor: pointer;
   text-align: left;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
   transition: all 0.2s ease-in-out;
 }
 
 .ride-preview:hover {
-  background: #ebebeb;
+  background: var(--color-surface-card-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .ride-preview:active {
@@ -45,7 +45,7 @@
 .destination {
   font-size: 24px;
   font-weight: 800;
-  color: #000;
+  color: var(--color-brand-green);
   margin: 0 0 6px 0;
 }
 
@@ -58,12 +58,12 @@
 .driver-name {
   font-size: 16px;
   font-weight: 500;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .rating {
   font-size: 14px;
-  color: #666;
+  color: var(--color-text-secondary);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -96,6 +96,6 @@
 .price {
   font-size: 38px;
   font-weight: 900;
-  color: #1a7a2e;
+  color: var(--color-brand-green-strong);
   line-height: 1;
 }
