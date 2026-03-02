@@ -1,14 +1,14 @@
 .ride-preview {
   display: flex;
-  align-items: stretch;
+  align-items: flex-start;
   gap: 20px;
 
   background: var(--color-surface-card-soft);
   border: none;
   border-radius: 12px;
   padding: 24px;
-  width: 100%;
-  max-width: 100%;
+  max-width: fit-content;
+  max-height: fit-content;
   box-sizing: border-box;
 
   cursor: pointer;
