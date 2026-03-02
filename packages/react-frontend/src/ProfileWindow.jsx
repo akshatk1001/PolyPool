@@ -33,6 +33,7 @@ function ProfileWindow({ onClose }) {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          name: profile.name,
           phone_num: profile.phone_num,
           grade: profile.grade,
           major: profile.major,
@@ -71,10 +72,17 @@ function ProfileWindow({ onClose }) {
         </div>
 
         <form className="profile-form">
-          {/* Name is read-only — displayed as text, not an input */}
+
           <div className="form-field full-width">
-            <label>Name</label>
-            <p className="profile-name">{profile.name}</p>
+            <label htmlFor="name">Name</label>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              placeholder="Name"
+              value={profile.name || ''}
+              onChange={handleChange}
+            />
           </div>
 
           <div className="form-row">
