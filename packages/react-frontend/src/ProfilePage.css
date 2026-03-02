@@ -1,0 +1,33 @@
+.profile-pic-large {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+.profile-content {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-content h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-brand-green);
+  margin: 0;
+}
+
+.profile-content p {
+  font-size: 18px;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.profile-content p strong {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}

@@ -152,13 +152,13 @@
   transform: scale(0.96);
 }
 
-/* ---- Shared modal styles (ProfileWindow + CreateRideWindow) ---- */
+/* ---- Shared modal styles (ProfileEditWindow + CreateRideWindow) ---- */
 .modal-close-btn {
   font-size: 40px;
   cursor: pointer;
 }
 
-/* ---- Shared form styles (ProfileWindow + CreateRideWindow) ---- */
+/* ---- Shared form styles (ProfileEditWindow + CreateRideWindow) ---- */
 .form-row {
   display: flex;
   gap: 30px;
