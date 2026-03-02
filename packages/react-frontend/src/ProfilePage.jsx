@@ -22,7 +22,6 @@ function ProfilePage(user) {
             onRideCreated={fetchRides}
           />
         )}
-        {showProfile && <ProfilePage onClose={() => setShowProfile(false)} />}
       </AppNavbar>
       <div className='profile-content'>
         <img profile-pic src={user.profile_pic} alt="Profile" className="profile-pic-large" />
