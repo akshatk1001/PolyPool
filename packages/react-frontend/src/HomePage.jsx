@@ -27,6 +27,7 @@ function HomePage() {
             onRideCreated={fetchRides}
           />
         )}
+        {showProfile && <ProfilePage onClose={() => setShowProfile(false)} />}
       </AppNavbar>
       <AppMainContent rides={rides} />
     </div>
