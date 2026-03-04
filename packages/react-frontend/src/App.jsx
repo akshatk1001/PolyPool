@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import HomePage from './HomePage';
 import SSOPage from './SSOPage';
 import ProtectedRoute from './ProtectedRoute';
+import ProfilePage from './ProfilePage';
 
 function App() {
   return (
@@ -13,6 +14,14 @@ function App() {
         element={
           <ProtectedRoute>
             <HomePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
           </ProtectedRoute>
         }
       />
