@@ -68,13 +68,15 @@ function App() {
       </nav>
       <main className="main-content">
         <div className="search-bar-container">
-          <SearchBar />
+          <SearchBar onSearchResults={setRides} />
         </div>
 
         <div className="ride-grid">
-          {rides.map((ride) => (
-            <RidePreviewCard key={ride._id} ride={ride} />
-          ))}
+          {rides.length > 0 ? (
+            rides.map((ride) => <RidePreviewCard key={ride._id} ride={ride} />)
+          ) : (
+            <p>No rides found matching your search.</p>
+          )}
         </div>
       </main>
     </div>
