@@ -3,7 +3,7 @@ import AppNavbar from './AppNavbar';
 import AppMainContent from './AppMainContent';
 import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
-import useRides from './hooks/useRides';
+import useRides from './utils/useRides';
 import { useNavigate } from 'react-router-dom';
 
 function HomePage() {

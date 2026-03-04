@@ -6,7 +6,7 @@ mongoose.set('debug', true);
 function populateRideUsers(query) {
   return query
     .populate('driver', 'name')
-    .populate('other_riders', 'name');
+    .populate('other_passengers', 'name');
 }
 
 function searchRide(dest, date, price) {
