@@ -65,6 +65,16 @@ const UserSchema = new mongoose.Schema(
       required: false,
       trim: true,
     },
+    rides_as_driver: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'Ride',
+      required: false,
+    },
+    rides_as_rider: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'Ride',
+      required: false,
+    },
   },
 
   { collection: 'users_list' },
