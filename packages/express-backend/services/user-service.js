@@ -85,12 +85,19 @@ async function findOrCreateMicrosoftUser(profile) {
     });
   if (userByMicrosoftId) return userByMicrosoftId;
 
-  // create a new user if one doesn't already exist with this Microsoft ID
+  // New user — always throw error to ask for phone number before account creation
+  const err = new Error('needs_phone_number');
+  err.pendingUser = { microsoftId, name: profile.displayName, email };
+  throw err;
+}
+
+// Create a new Microsoft user after they have provided their phone number.
+async function createMicrosoftUser(microsoftId, name, email, phoneNum) {
   const newUser = new userModel({
     microsoftId: microsoftId,
-    name: profile.displayName,
+    name: name,
     email: email,
-    phone_num: profile._json?.mobilePhone || null,
+    phone_num: phoneNum,
   });
   return newUser.save().catch((err) => console.log(err));
 }
@@ -104,5 +111,6 @@ export default {
   getPaypal,
   addRating,
   findOrCreateMicrosoftUser,
+  createMicrosoftUser,
   getUsersByMinRating,
 };
