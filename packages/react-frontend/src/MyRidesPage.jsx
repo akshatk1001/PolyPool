@@ -4,16 +4,19 @@ import AppMainContent from './AppMainContent';
 import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
 import useRides from './hooks/useRides';
+import useAuth from './hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
-function MyRidesPage(user) {
+
+function MyRidesPage() {
   const navigate = useNavigate();
+  const { currentUser: user } = useAuth();
   const [showCreateRide, setShowCreateRide] = useState(false);
   const { rides, fetchRides } = useRides();
   const signOut = useSignOut();
 
   return (
-    <div className="app">
+    <div className="my-rides-page">
       <AppNavbar
         onCreateRideClick={() => setShowCreateRide(true)}
         onProfileClick={() => navigate('/profile')}
