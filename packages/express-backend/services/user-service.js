@@ -73,6 +73,10 @@ async function findOrCreateMicrosoftUser(profile) {
     );
   }
 
+  if (!email.endsWith('@calpoly.edu')) {
+    throw new Error('non_calpoly_email');
+  }
+
   // try to find if this user already exists
   const userByMicrosoftId = await userModel
     .findOne({ microsoftId })

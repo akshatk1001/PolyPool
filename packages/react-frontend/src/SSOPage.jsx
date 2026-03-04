@@ -17,6 +17,18 @@ function SSOPage() {
     }
   }, [user, navigate]);
 
+  // show alert if failed auth
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search); // ie http://localhost:5173?auth=failed
+    if (params.get('auth') === 'failed') {
+      alert(
+        'Only Cal Poly email addresses (@calpoly.edu) are allowed to sign in. Please try again with a valid Cal Poly account.',
+      );
+      // reset URL to remove all the params to resend to SSO
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
+
   function signIn() {
     window.location.href = 'http://localhost:8000/auth/microsoft';
   }

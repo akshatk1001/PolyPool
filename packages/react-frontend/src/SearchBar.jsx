@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'; // Added useEffect
+import Slider from '@mui/material/Slider';
 import './SearchBar.css';
 
 const SearchBar = ({onSearchResults}) => {
@@ -6,6 +7,8 @@ const SearchBar = ({onSearchResults}) => {
   const [cityOptions, setCityOptions] = useState([]);
   const [rides, setRides] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [dt_value, setDtValue] = useState('');
+
   
   useEffect(() => {
     const fetchCities = async () => {
@@ -35,7 +38,7 @@ const SearchBar = ({onSearchResults}) => {
 
     try {
       const url = query 
-      ? `http://localhost:8000/api/rides?dest=${query}`
+      ? `http://localhost:8000/api/rides?dest=${query.toLowerCase()}&date=${dt_value}`
       : `http://localhost:8000/api/rides`;
 
       const response = await fetch(url);
@@ -84,6 +87,24 @@ const SearchBar = ({onSearchResults}) => {
           ))}
         </ul>
       )}
+      <div className="dateTime-container" style={{position: 'relative'}}>
+        <label htmlFor="search_dt">Start Date</label>
+          <input
+            type='datetime-local'
+            name="search_dt"
+            id="search_dt"
+            value={dt_value.search_dt}
+            onChange={(e) => setDtValue(e.target.value)}
+            style = {{padding: '6px', boxSizing: 'border-box'}}
+            />
+      </div>
+      <Slider
+        getAriaLabel={() => 'Temperature range'}
+        value={value}
+        onChange={handleChange}
+        valueLabelDisplay="auto"
+        getAriaValueText={valuetext}
+      />
     </div>
   );
 };

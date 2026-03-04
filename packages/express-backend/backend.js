@@ -61,6 +61,9 @@ passport.use(
         const user = await userService.findOrCreateMicrosoftUser(profile); // returns a mongo document of the user
         return done(null, user); // tell passport.use that it's job is done
       } catch (err) {
+        if (err.message === 'non_calpoly_email') {
+          return done(null, false); // signals auth failure → triggers failureRedirect
+        }
         return done(err);
       }
     },
