@@ -2,7 +2,7 @@ import PolyPoolLogo from './imagesAndIcons/PolyPoolLogo.png';
 import PolyPoolIcon from './imagesAndIcons/PolyPoolIcon.png';
 import PlusIcon from './imagesAndIcons/PlusIcon.png';
 
-function AppNavbar({ onCreateRideClick, onProfileClick, onSignOutClick, children }) {
+function AppNavbar({ onCreateRideClick, onProfileClick, onSignOutClick, onMyRidesClick, children }) {
   return (
     <nav className="navbar">
       <span className="navbar-icon">
@@ -15,6 +15,10 @@ function AppNavbar({ onCreateRideClick, onProfileClick, onSignOutClick, children
       <button className="createRide-button" onClick={onCreateRideClick}>
         <img src={PlusIcon} alt="Plus Icon"></img>
         Create Ride
+      </button>
+
+      <button className="my-rides-button" onClick={onMyRidesClick}>
+        My Rides
       </button>
 
       <button className="profile-button" onClick={onProfileClick}>
