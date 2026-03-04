@@ -17,6 +17,7 @@ function HomePage() {
       <AppNavbar
         onCreateRideClick={() => setShowCreateRide(true)}
         onProfileClick={() => navigate('/profile')}
+        onMyRidesClick={() => navigate('/my-rides')}
         onSignOutClick={signOut}
       >
         {showCreateRide && (
