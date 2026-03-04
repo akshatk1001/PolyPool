@@ -70,12 +70,12 @@ const UserSchema = new mongoose.Schema(
       ref: 'Ride',
       required: false,
     },
-    rides_as_rider: {
+    rides_as_passenger: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: 'Ride',
       required: false,
     },
-    requested_rides_as_driver: {
+    requested_rides: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: 'Ride',
       required: false,

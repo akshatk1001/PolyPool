@@ -3,14 +3,14 @@ import AppNavbar from './AppNavbar';
 import AppMainContent from './AppMainContent';
 import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
-import useRides from './hooks/useRides';
-import useAuth from './hooks/useAuth';
+import useRides from './utils/useRides';
+import fetchUser from './utils/fetchUser';
 import { useNavigate } from 'react-router-dom';
 
 
 function MyRidesPage() {
   const navigate = useNavigate();
-  const { currentUser: user } = useAuth();
+  const user  = fetchUser();
   const [showCreateRide, setShowCreateRide] = useState(false);
   const { rides, fetchRides } = useRides();
   const signOut = useSignOut();
@@ -31,8 +31,8 @@ function MyRidesPage() {
       </AppNavbar>
       <div className="rides-list">
         <h2>As Driver</h2>
-        {user.rides_as_driver.length > 0 ? (
-          user.rides_as_driver.map((rideId) => 
+        {user?.rides_as_driver.length > 0 ? (
+          user?.rides_as_driver.map((rideId) => 
           <RidePreviewCard key={rideId} ride={rides.find((r) => r._id === rideId)} />)
            ) : (
              <p>No rides found matching your search.</p>
@@ -40,8 +40,8 @@ function MyRidesPage() {
       </div>
       <div className="rides-list">
         <h2>As Passenger</h2>
-        {user.rides_as_rider.length > 0 ? (
-          user.rides_as_rider.map((rideId) => 
+        {user?.rides_as_passenger.length > 0 ? (
+          user?.rides_as_passenger.map((rideId) => 
           <RidePreviewCard key={rideId} ride={rides.find((r) => r._id === rideId)} />)
            ) : (
              <p>No rides found matching your search.</p>
