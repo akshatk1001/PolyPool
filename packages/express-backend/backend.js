@@ -117,7 +117,7 @@ app.get('/api/rides', async (req, res) => {
   const price = req.query.price;
   const date = req.query.date;
   try {
-    const rides = await rideService.searchRide(dest, price, date);
+    const rides = await rideService.searchRide(dest, date, price);
     res.status(200).json(rides);
   } catch (error) {
     res.status(500).json({ error: error.message });
