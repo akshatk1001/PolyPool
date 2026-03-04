@@ -9,39 +9,40 @@ function populateRideUsers(query) {
     .populate('other_riders', 'name');
 }
 
-function searchRide(destination, date, price) {
+function searchRide(dest, date, price) {
   let promise;
-  if (destination === undefined && date === undefined && price === undefined) {
+  if ((dest === undefined) && date === undefined && price === undefined) {
     promise = populateRideUsers(rideModel.find());
   } else if (date === undefined && price === undefined) {
-    promise = getRides(destination);
+    promise = getRides(dest);
   } else if (price === undefined) {
-    promise = getRidesByDate(destination, date);
+    promise = getRidesByDate(dest, date);
   } else {
-    promise = getRidesByDP(destination, date, price);
+    promise = getRidesByDP(dest, date, price);
   }
   return promise;
 }
 
-function getRidesByDP(destination, date, price) {
+function getRidesByDP(dest, date, price) {
   const promise = populateRideUsers(
-    rideModel.find({ destination: destination, date: date, price: price }),
+    rideModel.find({ destination: dest, date: date, price: price }),
   )
     .catch((err) => console.log(err));
   return promise;
 }
 
 //function to get rides going to that destination regardless of date
-function getRides(destination) {
-  const promise = populateRideUsers(rideModel.find({ destination: destination }))
-    .catch((err) => console.log(err));
+function getRides(dest) {
+  const promise = populateRideUsers(
+    rideModel.find({ destination: { $regex: dest, $options: 'i' } })
+  ).catch((err) => console.log(err));
   return promise;
 }
 
 //function to get rides going to that destination on that date
-function getRidesByDate(destination, date) {
+function getRidesByDate(dest, date) {
   const promise = populateRideUsers(
-    rideModel.find({ destination: destination, date: date }),
+    rideModel.find({ destination: { $regex: dest, $options: 'i' }, date: date }),
   )
     .catch((err) => console.log(err));
   return promise;

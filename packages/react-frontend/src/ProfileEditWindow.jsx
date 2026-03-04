@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import './ProfileWindow.css';
+import './ProfileEditWindow.css';
 
 // Same hardcoded user ID used in CreateRideWindow
 const userId = '6998d357fcc3234ed1ed6825';
 
-function ProfileWindow({ onClose }) {
+function ProfileEditWindow({ onClose }) {
   // profile holds all the user fields from the backend
   const [profile, setProfile] = useState(null);
 
@@ -208,4 +208,4 @@ function ProfileWindow({ onClose }) {
   );
 }
 
-export default ProfileWindow;
+export default ProfileEditWindow;

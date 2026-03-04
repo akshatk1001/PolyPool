@@ -1,12 +1,21 @@
 import { useState, useEffect } from 'react'; // Added useEffect
+import Slider from '@mui/material/Slider';
 import './SearchBar.css';
 
-const SearchBar = () => {
+const SearchBar = ({onSearchResults}) => {
   const [value, setValue] = useState('');
   const [cityOptions, setCityOptions] = useState([]);
   const [rides, setRides] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  
+  const [dt_value, setDtValue] = useState('');
+  const [price_value, setPriceSearch] = useState([0, 100]);
+
+  const valuetext = (value) => `$${value}`;
+
+  const handleSlider = (event, newValue) => {
+    setPriceSearch(newValue);
+  };
+
   useEffect(() => {
     const fetchCities = async () => {
       if (!value.trim()) {
@@ -26,21 +35,23 @@ const SearchBar = () => {
       }
     };
 
-    fetchCities();
+    const debounceTimer = setTimeout(fetchCities, 300); 
+    return () => clearTimeout(debounceTimer);
   }, [value]);
 
   const executeSearch = async (searchTerm) => {
     const query = searchTerm || value;
-
-    if (!query.trim()) return;
+    const dateParam = dt_value ? `&date=${dt_value}` : '';
 
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/rides?dest=${query}`,
-      );
+      const url = query 
+      ? `http://localhost:8000/api/rides?dest=${query}${dateParam}`
+      : `http://localhost:8000/api/rides`;
+
+      const response = await fetch(url);
       const data = await response.json();
 
-      setRides(data);
+      onSearchResults(data);
       setShowDropdown(false);
     } catch (error) {
       console.log('Fetch error:', error);
@@ -83,6 +94,25 @@ const SearchBar = () => {
           ))}
         </ul>
       )}
+      <div className="dateTime-container" style={{position: 'relative'}}>
+        <label htmlFor="search_dt">Start Date</label>
+          <input
+            type='datetime-local'
+            name="search_dt"
+            id="search_dt"
+            value={dt_value.search_dt}
+            onChange={(e) => setDtValue(e.target.value)}
+            style = {{padding: '6px', boxSizing: 'border-box'}}
+            />
+      </div>
+      <Slider
+        label='Price range'
+        value={value}
+        onChange={handleSlider}
+        valueLabelDisplay="auto"
+        getAriaValueText={valuetext}
+        color= "blue"
+      />
     </div>
   );
 };

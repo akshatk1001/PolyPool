@@ -7,7 +7,7 @@ import useSignOut from './utils/signOut';
 import useRides from './hooks/useRides';
 import { useNavigate } from 'react-router-dom';
 
-function HomePage() {
+function MyRidesPage(user) {
   const navigate = useNavigate();
   const [showCreateRide, setShowCreateRide] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
@@ -28,9 +28,24 @@ function HomePage() {
           />
         )}
       </AppNavbar>
-      <AppMainContent rides={rides} />
+      <div className="rides-list">
+        <h2>As Driver</h2>
+        {rides.length > 0 ? (
+             rides.map((ride) => <RidePreviewCard key={ride._id} ride={ride} />)
+           ) : (
+             <p>No rides found matching your search.</p>
+           )}
+      </div>
+      <div className="rides-list">
+        <h2>As Passenger</h2>
+        {rides.length > 0 ? (
+             rides.map((ride) => <RidePreviewCard key={ride._id} ride={ride} />)
+           ) : (
+             <p>No rides found matching your search.</p>
+           )}
+      </div>
     </div>
   );
 }
 
-export default HomePage;
+export default MyRidesPage;
