@@ -8,8 +8,14 @@ const SearchBar = ({onSearchResults}) => {
   const [rides, setRides] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [dt_value, setDtValue] = useState('');
+  const [price_value, setPriceSearch] = useState([0, 100]);
 
-  
+  const valuetext = (value) => `$${value}`;
+
+  const handleSlider = (event, newValue) => {
+    setPriceSearch(newValue);
+  };
+
   useEffect(() => {
     const fetchCities = async () => {
       if (!value.trim()) {
@@ -35,10 +41,11 @@ const SearchBar = ({onSearchResults}) => {
 
   const executeSearch = async (searchTerm) => {
     const query = searchTerm || value;
+    const dateParam = dt_value ? `&date=${dt_value}` : '';
 
     try {
       const url = query 
-      ? `http://localhost:8000/api/rides?dest=${query.toLowerCase()}&date=${dt_value}`
+      ? `http://localhost:8000/api/rides?dest=${query}${dateParam}`
       : `http://localhost:8000/api/rides`;
 
       const response = await fetch(url);
@@ -99,11 +106,12 @@ const SearchBar = ({onSearchResults}) => {
             />
       </div>
       <Slider
-        getAriaLabel={() => 'Temperature range'}
+        label='Price range'
         value={value}
-        onChange={handleChange}
+        onChange={handleSlider}
         valueLabelDisplay="auto"
         getAriaValueText={valuetext}
+        color= "blue"
       />
     </div>
   );
