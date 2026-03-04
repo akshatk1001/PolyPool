@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'; // Added useEffect
 import './SearchBar.css';
 
-const SearchBar = () => {
+const SearchBar = ({onSearchResults}) => {
   const [value, setValue] = useState('');
   const [cityOptions, setCityOptions] = useState([]);
   const [rides, setRides] = useState([]);
@@ -26,21 +26,22 @@ const SearchBar = () => {
       }
     };
 
-    fetchCities();
+    const debounceTimer = setTimeout(fetchCities, 300); 
+    return () => clearTimeout(debounceTimer);
   }, [value]);
 
   const executeSearch = async (searchTerm) => {
     const query = searchTerm || value;
 
-    if (!query.trim()) return;
-
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/rides?dest=${query}`,
-      );
+      const url = query 
+      ? `http://localhost:8000/api/rides?dest=${query}`
+      : `http://localhost:8000/api/rides`;
+
+      const response = await fetch(url);
       const data = await response.json();
 
-      setRides(data);
+      onSearchResults(data);
       setShowDropdown(false);
     } catch (error) {
       console.log('Fetch error:', error);

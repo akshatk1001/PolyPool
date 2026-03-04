@@ -11,7 +11,7 @@ function populateRideUsers(query) {
 
 function searchRide(destination, date, price) {
   let promise;
-  if (destination === undefined && date === undefined && price === undefined) {
+  if ((destination === undefined) && date === undefined && price === undefined) {
     promise = populateRideUsers(rideModel.find());
   } else if (date === undefined && price === undefined) {
     promise = getRides(destination);
