@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-function useFetchUser() {
+function useFetchUser(refreshKey = 0) {
   const [user, setUser] = useState(undefined); // undefined = loading, null = not logged in
 
   useEffect(() => {
@@ -11,7 +11,7 @@ function useFetchUser() {
       })
       .then((data) => setUser(data))
       .catch((err) => console.error('Error fetching user:', err));
-  }, []);
+  }, [refreshKey]);
 
   return user;
 }

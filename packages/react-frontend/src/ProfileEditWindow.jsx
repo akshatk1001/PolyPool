@@ -1,20 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import './ProfileEditWindow.css';
 
-// Same hardcoded user ID used in CreateRideWindow
-const userId = '6998d357fcc3234ed1ed6825';
-
-function ProfileEditWindow({ onClose }) {
+function ProfileEditWindow({ currentUser, onClose, onSaved }) {
   // profile holds all the user fields from the backend
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState(currentUser ?? null);
+
+  const userId = currentUser?._id || currentUser?.id;
 
   // Fetch user data when the modal opens
   useEffect(() => {
-    fetch('http://localhost:8000/api/users/' + userId)
-      .then((res) => res.json())
+    if (!currentUser) {
+      setProfile(null);
+      return;
+    }
+
+    setProfile(currentUser);
+
+    if (!userId) {
+      return;
+    }
+
+    fetch(`http://localhost:8000/api/users/${userId}`, { credentials: 'include' })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Failed to load profile: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => setProfile(data))
       .catch((err) => console.log('Failed to load profile:', err));
-  }, []);
+  }, [currentUser, userId]);
 
   // Updates a single field in the profile state when an input changes
   function handleChange(event) {
@@ -28,10 +43,16 @@ function ProfileEditWindow({ onClose }) {
   // Sends the updated fields to the backend via PATCH
   async function handleSave(event) {
     event.preventDefault();
+    if (!userId) {
+      console.log('Cannot save profile: missing user ID');
+      return;
+    }
+
     try {
-      const res = await fetch('http://localhost:8000/api/users/' + userId, {
+      const res = await fetch(`http://localhost:8000/api/users/${userId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           name: profile.name,
           phone_num: profile.phone_num,
@@ -47,6 +68,9 @@ function ProfileEditWindow({ onClose }) {
       });
       if (res.ok) {
         console.log('Profile saved');
+        if (onSaved) {
+          onSaved();
+        }
         onClose();
       } else {
         console.log('Failed to save profile:', res.status);
@@ -58,7 +82,21 @@ function ProfileEditWindow({ onClose }) {
 
   // Show nothing while data is loading
   if (!profile) {
-    return null;
+    return (
+      <div className="profile-window">
+        <div className="profile-card">
+          <div className="profile-header">
+            <h2>Profile</h2>
+            <span className="modal-close-btn" onClick={onClose}>
+              ×
+            </span>
+          </div>
+          <form className="profile-form">
+            <p>Unable to load profile data.</p>
+          </form>
+        </div>
+      </div>
+    );
   }
 
   return (
