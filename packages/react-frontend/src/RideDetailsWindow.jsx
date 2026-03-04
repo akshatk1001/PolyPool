@@ -1,6 +1,22 @@
 import './RideDetailsWindow.css';
+import { useState, useEffect } from 'react';
 
 function RideDetailsWindow({ ride, onClose }) {
+  const [requested, setRequested] = useState(false);
+
+  // Call updateUserAPI to add this user to the drivers requested rides
+  useEffect(() => {
+    if (requested && ride.seats !== 0 && user && ride.driver) {
+      fetch(`/api/users/${ride.driver}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ $push: { requested_rides_as_driver: user.id } })
+      })
+      .then(res => res.json())
+      .catch(err => console.error(err));
+    }
+  }, [requested, ride, user]);
+
   if (!ride) {
     return null;
   }
@@ -147,7 +163,9 @@ function RideDetailsWindow({ ride, onClose }) {
           )}
 
           <div className="rd-action-row">
-            <button className="rd-request-btn">Request Ride</button>
+            <button className="rd-request-btn" onClick={() => setRequested(true)}>
+              Request Ride
+            </button>
           </div>
         </div>
       </div>
