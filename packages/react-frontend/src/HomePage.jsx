@@ -2,7 +2,6 @@ import { useState } from 'react';
 import AppNavbar from './AppNavbar';
 import AppMainContent from './AppMainContent';
 import CreateRideWindow from './CreateRideWindow';
-import ProfilePage from './ProfilePage';
 import useSignOut from './utils/signOut';
 import useRides from './hooks/useRides';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 function HomePage() {
   const navigate = useNavigate();
   const [showCreateRide, setShowCreateRide] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
   const { rides, fetchRides } = useRides();
   const signOut = useSignOut();
 

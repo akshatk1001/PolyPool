@@ -2,7 +2,6 @@ import { useState } from 'react';
 import AppNavbar from './AppNavbar';
 import AppMainContent from './AppMainContent';
 import CreateRideWindow from './CreateRideWindow';
-import ProfilePage from './ProfilePage';
 import useSignOut from './utils/signOut';
 import useRides from './hooks/useRides';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 function MyRidesPage(user) {
   const navigate = useNavigate();
   const [showCreateRide, setShowCreateRide] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
   const { rides, fetchRides } = useRides();
   const signOut = useSignOut();
 
@@ -30,16 +28,18 @@ function MyRidesPage(user) {
       </AppNavbar>
       <div className="rides-list">
         <h2>As Driver</h2>
-        {rides.length > 0 ? (
-             rides.map((ride) => <RidePreviewCard key={ride._id} ride={ride} />)
+        {user.rides_as_driver.length > 0 ? (
+          user.rides_as_driver.map((rideId) => 
+          <RidePreviewCard key={rideId} ride={rides.find((r) => r._id === rideId)} />)
            ) : (
              <p>No rides found matching your search.</p>
            )}
       </div>
       <div className="rides-list">
         <h2>As Passenger</h2>
-        {rides.length > 0 ? (
-             rides.map((ride) => <RidePreviewCard key={ride._id} ride={ride} />)
+        {user.rides_as_rider.length > 0 ? (
+          user.rides_as_rider.map((rideId) => 
+          <RidePreviewCard key={rideId} ride={rides.find((r) => r._id === rideId)} />)
            ) : (
              <p>No rides found matching your search.</p>
            )}
