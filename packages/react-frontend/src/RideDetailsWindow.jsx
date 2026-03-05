@@ -3,25 +3,21 @@ import { useState, useEffect } from 'react';
 import fetchUser from './utils/fetchUser';
 
 function RideDetailsWindow({ ride, onClose }) {
-  const [requested, setRequested] = useState(false);
   const user = fetchUser();
 
   // Call updateUserAPI to add this user to the drivers requested rides
-  useEffect(() => {
-    if (requested && ride.seats !== 0 && user && ride.driver) {
+  function createRequest() {
+    if (ride.seats !== 0) {
+      console.log('Requesting ride with ID:', ride._id);
       fetch(`http://localhost:8000/api/rides/${ride._id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ $push: { other_passengers: user.id } })
+        body: JSON.stringify({ other_rider: user._id })
       })
       .then(res => res.json())
-      .catch(err => console.error(err));
+      .catch(err => console.error(err)); 
     }
-  }, [requested, ride, user]);
-
-  if (!ride) {
-    return null;
-  }
+  }  
 
 
   const driverName =
@@ -46,8 +42,8 @@ function RideDetailsWindow({ ride, onClose }) {
       })
     : 'N/A';
 
-  const passengerNames = Array.isArray(ride.other_passengers)
-    ? ride.other_passengers
+  const passengerNames = Array.isArray(ride.other_riders)
+    ? ride.other_riders
         .map((r) => {
           if (typeof r === 'object' && r !== null) return r.name || '';
           return typeof r === 'string' && !/^[a-f\d]{24}$/i.test(r) ? r : '';
@@ -165,7 +161,7 @@ function RideDetailsWindow({ ride, onClose }) {
           )}
 
           <div className="rd-action-row">
-            <button className="rd-request-btn" onClick={() => setRequested(true)}>
+            <button className="rd-request-btn" onClick={() => createRequest()}>
               Request Ride
             </button>
           </div>
