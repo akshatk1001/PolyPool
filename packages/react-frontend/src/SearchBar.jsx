@@ -5,7 +5,6 @@ import './SearchBar.css';
 const SearchBar = ({onSearchResults}) => {
   const [value, setValue] = useState('');
   const [cityOptions, setCityOptions] = useState([]);
-  const [rides, setRides] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [dt_value, setDtValue] = useState('');
   const [price_value, setPriceSearch] = useState(100);
@@ -41,12 +40,17 @@ const SearchBar = ({onSearchResults}) => {
 
   const executeSearch = async (searchTerm) => {
     const query = searchTerm || value;
-    const dateParam = dt_value ? `&date=${dt_value}` : '';
-    const priceParam = price_value ? '&price==${price_value}' :'';
+    let dateParam;
+    if (dt_value){
+      dateParam = new Date(dt_value).toISOString();
+    }else{
+      dateParam = new Date().toISOString();
+    }
+    const priceParam = price_value ? `&price=${price_value}` :'';
 
     try {
       const url = query 
-      ? `http://localhost:8000/api/rides?dest=${query}${dateParam}${priceParam}`
+      ? `http://localhost:8000/api/rides?dest=${query}&date=${dateParam}${priceParam}`
       : `http://localhost:8000/api/rides`;
 
       const response = await fetch(url);
@@ -102,7 +106,7 @@ const SearchBar = ({onSearchResults}) => {
               type='datetime-local'
               name="search_dt"
               id="search_dt"
-              value={dt_value.search_dt}
+              value={dt_value}
               onChange={(e) => setDtValue(e.target.value)}
               />
         </div>
