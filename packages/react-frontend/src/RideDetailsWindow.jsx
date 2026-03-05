@@ -9,6 +9,7 @@ function RideDetailsWindow({ ride, onClose }) {
   function createRequest() {
     if (ride.seats !== 0) {
       console.log('Requesting ride with ID:', ride._id);
+      onClose();
       fetch(`http://localhost:8000/api/rides/${ride._id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -25,7 +26,6 @@ function RideDetailsWindow({ ride, onClose }) {
         .catch(err => console.error(err));
       });
     }
-    onClose();
   }  
 
 
