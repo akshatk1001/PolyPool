@@ -11,7 +11,7 @@ function AppMainContent({ rides }) {
 
   return (
     <main className="main-content">
-      <div className="search-bar-container">
+      <div className="search-bar-container" >
         <SearchBar onSearchResults={setFilteredRides} />
       </div>
 

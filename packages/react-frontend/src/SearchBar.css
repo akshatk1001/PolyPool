@@ -1,11 +1,20 @@
 .search-container {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers the filter-row relative to the container */
+  width: 100%;
+  margin: 0 auto;
+}
+
+.input-group {
+  position: relative;
+  width: 100%;
 }
 
 .search-bar {
   display: flex;
-  margin: 0 auto;
-  margin-top: 2%;
+  margin: 2% auto 0; /* Combined margin-top and margin: auto */
   height: 50px;
   width: 80%;
   padding: 8px;
@@ -19,9 +28,9 @@
 
 .suggestions-dropdown {
   position: absolute;
-  width: 75%;
+  width: 80%;
   top: 100%;
-  left: 12.5%;
+  left: 10%; 
   background-color: var(--color-surface-card);
   border: 1px solid var(--color-border-muted);
   list-style: none;
@@ -29,6 +38,7 @@
   margin: 0;
   z-index: 1000;
   box-shadow: var(--shadow-card);
+  border-radius: 0 0 20px 20px; /* Optional: rounds bottom to match search bar */
 }
 
 .suggestions-dropdown li {
@@ -36,4 +46,44 @@
   cursor: pointer;
   border-bottom: 1px solid var(--color-border-light);
   color: var(--color-text-primary);
+}
+
+.suggestions-dropdown li:last-child {
+  border-bottom: none;
+}
+
+
+.filter-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 40px;
+  margin-top: 20px;
+  width: 80%; /* Matched to search-bar width for perfect alignment */
+  z-index: 1; 
+}
+
+.dateTime-container {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+}
+
+.dateTime-container label, 
+.slider-container label {
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.date-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.slider-container {
+  flex: 1;
+  padding-bottom: 5px;
 }
