@@ -16,6 +16,9 @@ function MyRidesPage() {
   const { rides, fetchRides } = useRides();
   const signOut = useSignOut();
 
+  const driverRides = rides.filter(ride => user?.rides_as_driver?.includes(ride._id));
+  const passengerRides = rides.filter(ride => user?.rides_as_passenger?.includes(ride._id));
+
   return (
     <div className="my-rides-page">
       <AppNavbar
@@ -32,8 +35,8 @@ function MyRidesPage() {
       </AppNavbar>
       <div className="rides-list">
         <h2>As Driver</h2>
-        {user?.rides_as_driver.length > 0 ? (
-          user?.rides_as_driver.map((ride) => 
+        {driverRides.length > 0 ? (
+          driverRides.map((ride) => 
           <RidePreviewCard key={ride._id} ride={ride} />)
            ) : (
              <p>No rides found matching your search.</p>
@@ -41,8 +44,8 @@ function MyRidesPage() {
       </div>
       <div className="rides-list">
         <h2>As Passenger</h2>
-        {user?.rides_as_passenger.length > 0 ? (
-          user?.rides_as_passenger.map((ride) => 
+        {passengerRides.length > 0 ? (
+          passengerRides.map((ride) => 
           <RidePreviewCard key={ride._id} ride={ride} />)
            ) : (
              <p>No rides found matching your search.</p>

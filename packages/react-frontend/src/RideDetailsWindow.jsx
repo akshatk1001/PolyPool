@@ -16,7 +16,6 @@ function RideDetailsWindow({ ride, onClose }) {
       })
       .then(res => res.json())
       .catch(err => console.error(err)).then(() => {
-
         fetch(`http://localhost:8000/api/users/${user._id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
@@ -26,6 +25,7 @@ function RideDetailsWindow({ ride, onClose }) {
         .catch(err => console.error(err));
       });
     }
+    onClose();
   }  
 
 
