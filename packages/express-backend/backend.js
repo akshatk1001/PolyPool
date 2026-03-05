@@ -134,6 +134,15 @@ app.put('/api/users/:id', async (req, res) => {
   }
 });
 
+app.patch('/api/rides/:id', async (req, res) => {
+  try {
+    const result = await rideService.updateRide(req.params.id, req.body);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // redirect user to Microsoft login
 app.get(
   '/auth/microsoft',

@@ -21,7 +21,7 @@ const RideSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    other_passengers: {
+    other_riders: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: 'User',
       required: false,
