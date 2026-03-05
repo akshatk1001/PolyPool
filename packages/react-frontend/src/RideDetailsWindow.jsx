@@ -15,7 +15,16 @@ function RideDetailsWindow({ ride, onClose }) {
         body: JSON.stringify({ other_rider: user._id })
       })
       .then(res => res.json())
-      .catch(err => console.error(err)); 
+      .catch(err => console.error(err)).then(() => {
+
+        fetch(`http://localhost:8000/api/users/${user._id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rides_as_passenger: ride._id })
+        })
+        .then(res => res.json())
+        .catch(err => console.error(err));
+      });
     }
   }  
 

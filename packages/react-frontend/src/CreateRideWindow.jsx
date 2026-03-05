@@ -72,15 +72,27 @@ function CreateRideWindow({ onClose, onRideCreated }) {
     };
 
     try {
-      const promise = await postRide(rideData);
-      if (promise.status === 201) {
-        // TODO: Show success message
-        console.log('Ride created successfully', promise.status);
+      const response = await postRide(rideData);
+      if (response.status === 201) {
+        // Parse the response to get the created ride with its ID
+        const createdRide = await response.json();
+        console.log('Ride created successfully', response.status, createdRide);
         onClose();
         onRideCreated();
+
+        // Add this ride to the user's rides_as_driver list using the created ride's ID
+        fetch(`http://localhost:8000/api/users/${user._id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rides_as_driver: createdRide._id })
+        })
+        .then(res => res.json())
+        .then(data => console.log('User updated with new ride:', data))
+        .catch(err => console.error('Error updating user:', err));
+
       } else {
         // TODO: Show error message
-        console.log('Server response error:', promise.status);
+        console.log('Server response error:', response.status);
       }
     } catch (error) {
       console.log('Request completely failed:', error);
