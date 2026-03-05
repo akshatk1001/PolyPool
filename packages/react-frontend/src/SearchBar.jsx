@@ -8,7 +8,7 @@ const SearchBar = ({onSearchResults}) => {
   const [rides, setRides] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [dt_value, setDtValue] = useState('');
-  const [price_value, setPriceSearch] = useState([0, 100]);
+  const [price_value, setPriceSearch] = useState(100);
 
   const valuetext = (value) => `$${value}`;
 
@@ -24,7 +24,7 @@ const SearchBar = ({onSearchResults}) => {
         return;
       }
 
-      try {
+      try { 
         const response = await fetch(`http://localhost:8000/api/cities/autofill?dest=${value}`);
         const data = await response.json();
         
@@ -42,10 +42,11 @@ const SearchBar = ({onSearchResults}) => {
   const executeSearch = async (searchTerm) => {
     const query = searchTerm || value;
     const dateParam = dt_value ? `&date=${dt_value}` : '';
+    const priceParam = price_value ? '&price==${price_value}' :'';
 
     try {
       const url = query 
-      ? `http://localhost:8000/api/rides?dest=${query}${dateParam}`
+      ? `http://localhost:8000/api/rides?dest=${query}${dateParam}${priceParam}`
       : `http://localhost:8000/api/rides`;
 
       const response = await fetch(url);
@@ -70,7 +71,7 @@ const SearchBar = ({onSearchResults}) => {
   };
 
   return (
-    <div className="search-container">
+    <div className="search-container" >
       <input
         type="text"
         className="search-bar"
@@ -94,25 +95,31 @@ const SearchBar = ({onSearchResults}) => {
           ))}
         </ul>
       )}
-      <div className="dateTime-container" style={{position: 'relative'}}>
-        <label htmlFor="search_dt">Start Date</label>
-          <input
-            type='datetime-local'
-            name="search_dt"
-            id="search_dt"
-            value={dt_value.search_dt}
-            onChange={(e) => setDtValue(e.target.value)}
-            style = {{padding: '6px', boxSizing: 'border-box'}}
-            />
+      <div className="filter-row">
+        <div className="dateTime-container" >
+          <label htmlFor="search_dt">Date/Time</label>
+            <input
+              type='datetime-local'
+              name="search_dt"
+              id="search_dt"
+              value={dt_value.search_dt}
+              onChange={(e) => setDtValue(e.target.value)}
+              />
+        </div>
+
+        <div className="slider-container">
+          <label>Price Range: 0 - ${price_value}</label>
+          <Slider
+            value={price_value}
+            onChange={handleSlider}
+            valueLabelDisplay="auto"
+            getAriaValueText={valuetext}
+            min={0}
+            max={100}
+            color= "blue"
+          />
+        </div>
       </div>
-      <Slider
-        label='Price range'
-        value={value}
-        onChange={handleSlider}
-        valueLabelDisplay="auto"
-        getAriaValueText={valuetext}
-        color= "blue"
-      />
     </div>
   );
 };
