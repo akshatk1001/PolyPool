@@ -20,7 +20,10 @@
   flex: 1;
   display: flex;
   justify-content: center;
-  pointer-events: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .navbar-logo img {
@@ -30,6 +33,15 @@
 }
 
 /* car logo */
+.navbar-icon {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
 .navbar-icon img {
   height: 40px;
   width: auto;
@@ -69,7 +81,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin-left: auto;
+  margin-left: 14px;
   background: var(--color-brand-gold);
   color: var(--color-brand-green);
   border: none;
@@ -239,6 +251,13 @@ input::-webkit-inner-spin-button {
     font-size: 13px;
     padding: 7px 10px;
     gap: 4px;
+    white-space: nowrap;
+  }
+
+  .my-rides-button {
+    font-size: 13px;
+    padding: 7px 10px;
+    margin-left: 6px;
     white-space: nowrap;
   }
 

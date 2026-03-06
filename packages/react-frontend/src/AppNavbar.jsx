@@ -1,16 +1,21 @@
 import PolyPoolLogo from './imagesAndIcons/PolyPoolLogo.png';
 import PolyPoolIcon from './imagesAndIcons/PolyPoolIcon.png';
 import PlusIcon from './imagesAndIcons/PlusIcon.png';
+import { useNavigate } from 'react-router-dom';
 
 function AppNavbar({ onCreateRideClick, onProfileClick, onSignOutClick, onMyRidesClick, children }) {
+  const navigate = useNavigate();
+
+  const goHome = () => navigate('/home');
+
   return (
     <nav className="navbar">
-      <span className="navbar-icon">
+      <button className="navbar-icon" onClick={goHome} type="button" aria-label="Go to home">
         <img src={PolyPoolIcon} alt="PolyPool Icon" />
-      </span>
-      <span className="navbar-logo">
+      </button>
+      <button className="navbar-logo" onClick={goHome} type="button" aria-label="Go to home">
         <img src={PolyPoolLogo} alt="PolyPool Logo" />
-      </span>
+      </button>
 
       <button className="createRide-button" onClick={onCreateRideClick}>
         <img src={PlusIcon} alt="Plus Icon"></img>
