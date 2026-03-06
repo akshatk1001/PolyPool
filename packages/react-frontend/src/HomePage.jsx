@@ -1,24 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import AppNavbar from './AppNavbar';
 import AppMainContent from './AppMainContent';
 import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
-import fetchRides from './utils/useRides';
+import useRides from './utils/useRides';
 import { useNavigate } from 'react-router-dom';
 
 function HomePage() {
   const navigate = useNavigate();
   const [showCreateRide, setShowCreateRide] = useState(false);
-  const [rides, setRides] = useState([]);
+  const { rides, fetchRides } = useRides();
   const signOut = useSignOut();
-
-  function loadRides() {
-    fetchRides().then(setRides).catch(console.error);
-  }
-
-  useEffect(() => {
-    loadRides();
-  }, []);
 
   return (
     <div className="app">
@@ -31,7 +23,7 @@ function HomePage() {
         {showCreateRide && (
           <CreateRideWindow
             onClose={() => setShowCreateRide(false)}
-            onRideCreated={loadRides}
+            onRideCreated={fetchRides}
           />
         )}
       </AppNavbar>

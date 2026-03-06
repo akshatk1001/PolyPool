@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import AppNavbar from './AppNavbar';
+import AppMainContent from './AppMainContent';
 import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
-import fetchRides from './utils/useRides';
+import useRides from './utils/useRides';
 import fetchUser from './utils/fetchUser';
 import { useNavigate } from 'react-router-dom';
 import RidePreviewCard from './RidePreviewCard';
@@ -12,16 +13,8 @@ function MyRidesPage() {
   const navigate = useNavigate();
   const user  = fetchUser();
   const [showCreateRide, setShowCreateRide] = useState(false);
-  const [rides, setRides] = useState([]);
+  const { rides, fetchRides } = useRides();
   const signOut = useSignOut();
-
-  function loadRides() {
-    fetchRides().then(setRides).catch(console.error);
-  }
-
-  useEffect(() => {
-    loadRides();
-  }, []);
 
   const driverRides = rides.filter(ride => user?.rides_as_driver?.includes(ride._id));
   const passengerRides = rides.filter(ride => user?.rides_as_passenger?.includes(ride._id));
@@ -36,7 +29,7 @@ function MyRidesPage() {
         {showCreateRide && (
           <CreateRideWindow
             onClose={() => setShowCreateRide(false)}
-            onRideCreated={loadRides}
+            onRideCreated={fetchRides}
           />
         )}
       </AppNavbar>

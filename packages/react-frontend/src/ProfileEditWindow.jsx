@@ -1,40 +1,115 @@
 import { useState, useEffect } from 'react';
 import './ProfileEditWindow.css';
+import CAL_POLY_MAJORS from './constants/calPolyMajors';
 
-// Same hardcoded user ID used in CreateRideWindow
-const userId = '6998d357fcc3234ed1ed6825';
+const YEAR_OPTIONS = [
+  { label: 'Freshman', value: '1' },
+  { label: 'Sophomore', value: '2' },
+  { label: 'Junior', value: '3' },
+  { label: 'Senior', value: '4' },
+  { label: '5th Year+', value: '5' },
+  { label: 'Graduate Student', value: '6' },
+];
 
-function ProfileEditWindow({ onClose }) {
+function formatPhoneNumber(value) {
+  const digits = String(value || '').replace(/\D/g, '').slice(0, 10);
+  if (digits.length <= 3) {
+    return digits;
+  }
+  if (digits.length <= 6) {
+    return `${digits.slice(0, 3)} - ${digits.slice(3)}`;
+  }
+  return `${digits.slice(0, 3)} - ${digits.slice(3, 6)} - ${digits.slice(6)}`;
+}
+
+function parsePhoneNumber(value) {
+  const digits = String(value || '').replace(/\D/g, '').slice(0, 10);
+  if (digits.length !== 10) {
+    return null;
+  }
+  return Number(digits);
+}
+
+function normalizeProfileForForm(user) {
+  if (!user) {
+    return null;
+  }
+
+  return {
+    ...user,
+    phone_num: formatPhoneNumber(user.phone_num),
+  };
+}
+
+function sanitizeCarValue(value) {
+  return value
+    .replace(/[^a-zA-Z0-9 .,'-]/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .slice(0, 60);
+}
+
+function ProfileEditWindow({ currentUser, onClose, onSaved }) {
   // profile holds all the user fields from the backend
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState(normalizeProfileForForm(currentUser));
+
+  const userId = currentUser?._id || currentUser?.id;
 
   // Fetch user data when the modal opens
   useEffect(() => {
-    fetch('http://localhost:8000/api/users/' + userId)
-      .then((res) => res.json())
-      .then((data) => setProfile(data))
+    if (!currentUser) {
+      return;
+    }
+
+    if (!userId) {
+      return;
+    }
+
+    fetch(`http://localhost:8000/api/users/${userId}`, { credentials: 'include' })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Failed to load profile: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => setProfile(normalizeProfileForForm(data)))
       .catch((err) => console.log('Failed to load profile:', err));
-  }, []);
+  }, [currentUser, userId]);
 
   // Updates a single field in the profile state when an input changes
   function handleChange(event) {
     const { name, value } = event.target;
+    let normalizedValue = value;
+
+    if (name === 'phone_num') {
+      normalizedValue = formatPhoneNumber(value);
+    }
+
+    if (name === 'car') {
+      normalizedValue = sanitizeCarValue(value);
+    }
+
     setProfile({
       ...profile,
-      [name]: value,
+      [name]: normalizedValue,
     });
   }
 
   // Sends the updated fields to the backend via PATCH
   async function handleSave(event) {
     event.preventDefault();
+    if (!userId) {
+      console.log('Cannot save profile: missing user ID');
+      return;
+    }
+
     try {
-      const res = await fetch('http://localhost:8000/api/users/' + userId, {
+      const res = await fetch(`http://localhost:8000/api/users/${userId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           name: profile.name,
-          phone_num: profile.phone_num,
+          phone_num: parsePhoneNumber(profile.phone_num),
           grade: profile.grade,
           major: profile.major,
           home_address: profile.home_address,
@@ -47,6 +122,10 @@ function ProfileEditWindow({ onClose }) {
       });
       if (res.ok) {
         console.log('Profile saved');
+        const updatedUser = await res.json();
+        if (onSaved) {
+          onSaved(updatedUser);
+        }
         onClose();
       } else {
         console.log('Failed to save profile:', res.status);
@@ -58,7 +137,21 @@ function ProfileEditWindow({ onClose }) {
 
   // Show nothing while data is loading
   if (!profile) {
-    return null;
+    return (
+      <div className="profile-window">
+        <div className="profile-card">
+          <div className="profile-header">
+            <h2>Profile</h2>
+            <span className="modal-close-btn" onClick={onClose}>
+              ×
+            </span>
+          </div>
+          <form className="profile-form">
+            <p>Unable to load profile data.</p>
+          </form>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -71,7 +164,7 @@ function ProfileEditWindow({ onClose }) {
           </span>
         </div>
 
-        <form className="profile-form">
+        <form className="profile-form" onSubmit={handleSave}>
 
           <div className="form-field full-width">
             <label htmlFor="name">Name</label>
@@ -101,10 +194,10 @@ function ProfileEditWindow({ onClose }) {
             <div className="form-field">
               <label htmlFor="phone_num">Phone Number</label>
               <input
-                type="text"
+                type="tel"
                 name="phone_num"
                 id="phone_num"
-                placeholder="Phone Number"
+                placeholder="xxx - xxx - xxxx"
                 value={profile.phone_num || ''}
                 onChange={handleChange}
               />
@@ -114,14 +207,19 @@ function ProfileEditWindow({ onClose }) {
           <div className="form-row">
             <div className="form-field">
               <label htmlFor="grade">Grade (Year)</label>
-              <input
-                type="number"
+              <select
                 name="grade"
                 id="grade"
-                placeholder="Grade"
                 value={profile.grade || ''}
                 onChange={handleChange}
-              />
+              >
+                <option value="">Select year</option>
+                {YEAR_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="form-field">
@@ -130,10 +228,16 @@ function ProfileEditWindow({ onClose }) {
                 type="text"
                 name="major"
                 id="major"
+                list="cal-poly-major-options"
                 placeholder="Major"
                 value={profile.major || ''}
                 onChange={handleChange}
               />
+              <datalist id="cal-poly-major-options">
+                {CAL_POLY_MAJORS.map((major) => (
+                  <option key={major} value={major} />
+                ))}
+              </datalist>
             </div>
           </div>
 
@@ -155,7 +259,7 @@ function ProfileEditWindow({ onClose }) {
               type="text"
               name="car"
               id="car"
-              placeholder="Car Model"
+                placeholder="Car details"
               value={profile.car || ''}
               onChange={handleChange}
             />
@@ -199,7 +303,7 @@ function ProfileEditWindow({ onClose }) {
             />
           </div>
 
-          <button className="save-button" onClick={handleSave}>
+          <button className="save-button" type="submit">
             Save
           </button>
         </form>
