@@ -2,29 +2,27 @@ import { useState } from 'react';
 import AppNavbar from './AppNavbar';
 import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
-import ProfileEditWindow from './ProfileEditWindow';
 
 function ProfilePage(user) {
   const [showCreateRide, setShowCreateRide] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
   const signOut = useSignOut();
 
   return (
     <div className="profile-page">
       <AppNavbar
         onCreateRideClick={() => setShowCreateRide(true)}
-        onProfileClick={() => setShowProfile(true)}
+        onProfileClick={() => {}}
         onSignOutClick={signOut}
       >
         {showCreateRide && (
           <CreateRideWindow
             onClose={() => setShowCreateRide(false)}
-            onRideCreated={fetchRides}
+            onRideCreated={() => {}}
           />
         )}
       </AppNavbar>
       <div className='profile-content'>
-        <img profile-pic src={user.profile_pic} alt="Profile" className="profile-pic-large" />
+        <img src={user.profile_pic} alt="Profile" className="profile-pic-large" />
         <h1>{user.name}</h1>
         <p><strong>Email:</strong> {user.email}</p>
         <p><strong>Phone Number:</strong> {user.phone_num}</p>

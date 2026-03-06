@@ -1,6 +1,6 @@
 import './RidePreviewCard.css';
 import ProfilePic from './imagesAndIcons/ProfilePic.png';
-import Star from './imagesAndIcons/Star.png';
+import Star from './imagesAndIcons/star.png';
 import { useState } from 'react';
 import RideDetailsWindow from './RideDetailsWindow';
 

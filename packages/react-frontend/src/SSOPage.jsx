@@ -15,7 +15,7 @@ function SSOPage() {
     if (user) {
       navigate('/home');
     }
-  }, [user]);
+  }, [user, navigate]);
 
   // show alert if failed auth, or prompt for phone if new user
   useEffect(() => {
@@ -45,7 +45,7 @@ function SSOPage() {
         else alert('Sign-up failed.');
       });
     }
-  }, []);
+  }, [navigate]);
 
   function signIn() {
     window.location.href = 'http://localhost:8000/auth/microsoft';

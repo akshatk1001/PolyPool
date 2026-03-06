@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './ProfileEditWindow.css';
 
 // Same hardcoded user ID used in CreateRideWindow
