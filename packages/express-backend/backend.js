@@ -287,10 +287,6 @@ app.get('/api/users/:id', async (req, res) => {
     return res.status(400).json({ error: 'Invalid user id' });
   }
 
-  if (req.user?._id?.toString() !== id) {
-    return res.status(403).json({ error: 'Forbidden' });
-  }
-
   try {
     const user = await userService.getUserById(id);
 
@@ -314,11 +310,7 @@ app.patch('/api/users/:id', async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: 'Invalid user id' });
   }
-
-  if (req.user?._id?.toString() !== id) {
-    return res.status(403).json({ error: 'Forbidden' });
-  }
-
+  
   const updates = getNormalizedUserUpdates(req.body);
 
   try {
