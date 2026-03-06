@@ -76,29 +76,31 @@ const SearchBar = ({onSearchResults}) => {
 
   return (
     <div className="search-container" >
-      <input
-        type="text"
-        className="search-bar"
-        placeholder="Find Your Journey"
-        value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
-        }}
-        onKeyDown={handleKeyDown}
-      />
+      <div className="input-group">
+        <input
+          type="text"
+          className="search-bar"
+          placeholder="Find Your Journey"
+          value={value}
+          onChange={(e) => {
+            setValue(e.target.value);
+          }}
+          onKeyDown={handleKeyDown}
+        />
 
-      {showDropdown && cityOptions.length > 0 && (
-        <ul className="suggestions-dropdown">
-          {cityOptions.map((city, index) => (
-            <li
-              key={index}
-              onClick={() => handleOptionClick(city.name)}
-            >
-              {city.name}
-            </li>
-          ))}
-        </ul>
-      )}
+        {showDropdown && cityOptions.length > 0 && (
+          <ul className="suggestions-dropdown">
+            {cityOptions.map((city, index) => (
+              <li
+                key={index}
+                onClick={() => handleOptionClick(city.name)}
+              >
+                {city.name}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
       <div className="filter-row">
         <div className="dateTime-container" >
           <label htmlFor="search_dt">Date/Time</label>
