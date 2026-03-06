@@ -6,7 +6,7 @@ import useSignOut from './utils/signOut';
 import useRides from './utils/useRides';
 import fetchUser from './utils/fetchUser';
 import { useNavigate } from 'react-router-dom';
-import RidePreviewCard from './RidePreviewCard';
+import MyRidesDetails from './MyRidesDetails';
 
 
 function MyRidesPage() {
@@ -37,7 +37,7 @@ function MyRidesPage() {
         <h2>As Driver</h2>
         {driverRides.length > 0 ? (
           driverRides.map((ride) => 
-          <RidePreviewCard key={ride._id} ride={ride} />)
+          <MyRidesDetails key={ride._id} ride={ride} isDriver={true} onRideUpdated={fetchRides} />)
            ) : (
              <p>No rides found matching your search.</p>
            )}
@@ -46,7 +46,7 @@ function MyRidesPage() {
         <h2>As Passenger</h2>
         {passengerRides.length > 0 ? (
           passengerRides.map((ride) => 
-          <RidePreviewCard key={ride._id} ride={ride} />)
+          <MyRidesDetails key={ride._id} ride={ride} isDriver={false} onRideUpdated={fetchRides} />)
            ) : (
              <p>No rides found matching your search.</p>
            )}
