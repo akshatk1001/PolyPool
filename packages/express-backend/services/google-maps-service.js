@@ -30,7 +30,7 @@ app.get('/api/maps/route', async (req, res ) =>{
       method : 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Goog-Api-Key': 'AIzaSyA1xtEjGzdHRTBSfxC6MgHgIW-oPT7tQ2c',
+        'X-Goog-Api-Key': 'removed',
         'X-Goog-FieldMask': 'routes.duration,routes.distanceMeters,routes.polyline,routes.viewport'
       },
       body: ComputeRoutesRequest,
