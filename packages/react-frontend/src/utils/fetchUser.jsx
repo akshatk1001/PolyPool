@@ -10,7 +10,10 @@ function useFetchUser(refreshKey = 0) {
         return null;
       })
       .then((data) => setUser(data))
-      .catch((err) => console.error('Error fetching user:', err));
+      .catch((err) => {
+        console.error('Error fetching user:', err);
+        setUser(null);
+      });
   }, [refreshKey]);
 
   return user;

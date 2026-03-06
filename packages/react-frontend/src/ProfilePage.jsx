@@ -4,7 +4,7 @@ import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
 import ProfileEditWindow from './ProfileEditWindow';
 import useFetchUser from './utils/fetchUser';
-import useRides from './hooks/useRides';
+import useRides from './utils/useRides';
 import './ProfilePage.css';
 
 function ProfilePage() {
