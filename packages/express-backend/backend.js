@@ -130,25 +130,6 @@ app.get('/api/rides', async (req, res) => {
   }
 });
 
-//update user info
-app.put('/api/users/:id', async (req, res) => {
-  try {
-    const result = await userService.updateUser(req.params.userId, req.body);
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.patch('/api/users/:id', async (req, res) => {
-  try {
-    const result = await userService.updateUser(req.params.id, req.body);
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 app.patch('/api/rides/:id', async (req, res) => {
   try {
     const result = await rideService.updateRide(req.params.id, req.body);
