@@ -178,3 +178,105 @@ app.get('/api/cities', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+function normalizePhoneNumber(phoneNum) {
+  if (!phoneNum) {
+    return null;
+  }
+
+  const digitsOnly = String(phoneNum).replace(/\D/g, '').slice(0, 10);
+  if (digitsOnly.length !== 10) {
+    return null;
+  }
+
+  return Number(digitsOnly);
+}
+
+function normalizeCar(carValue) {
+  if (!carValue) {
+    return null;
+  }
+
+  const cleanCar = String(carValue)
+    .replace(/[^a-zA-Z0-9 .,'-]/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+    .slice(0, 60);
+
+  return cleanCar || null;
+}
+
+function getNormalizedUserUpdates(body) {
+  const updates = {
+    name: body.name?.trim(),
+    phone_num: normalizePhoneNumber(body.phone_num),
+    grade: body.grade ? Number(body.grade) : null,
+    major: body.major?.trim(),
+    home_address: body.home_address?.trim(),
+    car: normalizeCar(body.car),
+    email: body.email?.trim(),
+    venmo_username: body.venmo_username?.trim(),
+    paypal_id: body.paypal_id?.trim(),
+    instagram: body.instagram?.trim(),
+  };
+
+  return updates;
+}
+
+app.get('/api/users/:id', async (req, res) => {
+  const { id } = req.params;
+
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: 'Invalid user id' });
+  }
+
+  if (req.user?._id?.toString() !== id) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  try {
+    const user = await userService.getUserById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+app.patch('/api/users/:id', async (req, res) => {
+  const { id } = req.params;
+
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: 'Invalid user id' });
+  }
+
+  if (req.user?._id?.toString() !== id) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  const updates = getNormalizedUserUpdates(req.body);
+
+  try {
+    const user = await userService.updateUser(id, updates);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
