@@ -4,6 +4,7 @@ import HomePage from './HomePage';
 import SSOPage from './SSOPage';
 import ProtectedRoute from './ProtectedRoute';
 import ProfilePage from './ProfilePage';
+import MyRidesPage from './MyRidesPage';
 
 function App() {
   return (
@@ -22,6 +23,14 @@ function App() {
         element={
           <ProtectedRoute>
             <ProfilePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-rides"
+        element={
+          <ProtectedRoute>
+            <MyRidesPage />
           </ProtectedRoute>
         }
       />
