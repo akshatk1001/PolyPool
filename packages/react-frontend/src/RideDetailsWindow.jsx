@@ -1,9 +1,32 @@
 import './RideDetailsWindow.css';
+import { useState, useEffect } from 'react';
+import fetchUser from './utils/fetchUser';
 
 function RideDetailsWindow({ ride, onClose }) {
-  if (!ride) {
-    return null;
-  }
+  const user = fetchUser();
+
+  // Call updateUserAPI to add this user to the drivers requested rides
+  function createRequest() {
+    if (ride.seats !== 0) {
+      console.log('Requesting ride with ID:', ride._id);
+      onClose();
+      fetch(`http://localhost:8000/api/rides/${ride._id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ other_rider: user._id })
+      })
+      .then(res => res.json())
+      .catch(err => console.error(err)).then(() => {
+        fetch(`http://localhost:8000/api/users/${user._id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rides_as_passenger: ride._id })
+        })
+        .then(res => res.json())
+        .catch(err => console.error(err));
+      });
+    }
+  }  
 
 
   const driverName =
@@ -147,7 +170,9 @@ function RideDetailsWindow({ ride, onClose }) {
           )}
 
           <div className="rd-action-row">
-            <button className="rd-request-btn">Request Ride</button>
+            <button className="rd-request-btn" onClick={() => createRequest()}>
+              Request Ride
+            </button>
           </div>
         </div>
       </div>

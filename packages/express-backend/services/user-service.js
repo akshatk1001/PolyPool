@@ -14,12 +14,28 @@ function getUserById(userId) {
   return promise;
 }
 
-// Update user profile fields such as phone, car, or home address.
+
+// Update ride details such as destination, date, or price.
 function updateUser(userId, updates) {
-  const promise = userModel
-    .findByIdAndUpdate(userId, updates, { new: true })
+  if (updates.rides_as_passenger) {
+    const promise = userModel
+    .findByIdAndUpdate(userId,
+      {$addToSet: { rides_as_passenger: updates.rides_as_passenger }},
+      { new: true }
+    )
     .catch((err) => console.log(err));
   return promise;
+  }
+  if(updates.rides_as_driver) {
+    const promise = userModel
+    .findByIdAndUpdate(userId,
+      {$addToSet: { rides_as_driver: updates.rides_as_driver }},
+      { new: true }
+    )
+    .catch((err) => console.log(err));
+  return promise;
+  }
+  return userModel.findByIdAndUpdate(userId, updates, { new: true }).catch((err) => console.log(err));
 }
 
 // Delete a user entirely.

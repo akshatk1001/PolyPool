@@ -56,6 +56,20 @@ function getRideById(rideId) {
   return promise;
 }
 
+// Update ride details such as destination, date, or price.
+function updateRide(rideId, updates) {
+  if (updates.other_rider) {
+    const promise = rideModel
+    .findByIdAndUpdate(rideId,
+      {$addToSet: { other_riders: updates.other_rider}},
+      { new: true }
+    )
+    .catch((err) => console.log(err));
+  return promise;
+  }
+  return rideModel.findByIdAndUpdate(rideId, updates, { new: true }).catch((err) => console.log(err));
+}
+
 //function to delete a ride by its id
 function deleteRide(rideId) {
   const promise = rideModel
@@ -76,4 +90,5 @@ export default {
   getRideById,
   deleteRide,
   createRide,
+  updateRide
 };
