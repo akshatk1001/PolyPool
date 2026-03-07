@@ -1,0 +1,3 @@
+# Code owners are automatically requested for review on pull requests
+# that modify code they own. They can also approve and merge changes.
+* @akshatk1001 @Danny-Kullman @kodychou
