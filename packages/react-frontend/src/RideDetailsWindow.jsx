@@ -1,5 +1,4 @@
 import './RideDetailsWindow.css';
-import { useState, useEffect } from 'react';
 import fetchUser from './utils/fetchUser';
 import { API_URL } from './constants/api';
 import { CalendarIcon, ClockIcon, SeatIcon, PersonIcon, CarIcon, WavyIcon } from './imagesAndIcons/RideIcons';
