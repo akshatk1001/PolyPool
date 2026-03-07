@@ -101,10 +101,13 @@ async function findOrCreateMicrosoftUser(profile) {
     });
   if (userByMicrosoftId) return userByMicrosoftId;
 
-  // New user — always throw error to ask for phone number before account creation
-  const err = new Error('needs_phone_number');
-  err.pendingUser = { microsoftId, name: profile.displayName, email };
-  throw err;
+  // create new user account immediately 
+  const newUser = new userModel({
+    microsoftId,
+    name: profile.displayName,
+    email,
+  });
+  return newUser.save();
 }
 
 // Create a new Microsoft user after they have provided their phone number.
