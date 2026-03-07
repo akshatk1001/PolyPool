@@ -10,7 +10,7 @@
     "test": "echo \"No tests specified\"",
     "dev": "npx nodemon backend.js",
     "lint": "eslint .",
-    "start": "npx nodemon backend.js"
+    "start": "node backend.js"
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.2",
