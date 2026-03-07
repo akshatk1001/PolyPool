@@ -13,13 +13,15 @@ import cityService from './services/city-service.js';
 dotenv.config();
 
 const app = express();
-const port = 8000;
+const port = process.env.PORT || 8000; // azure automatically sets a PORT env var
 
 const {
   MONGO_CONNECTION_STRING,
   MICROSOFT_CLIENT_ID,
   MICROSOFT_CLIENT_SECRET,
   SESSION_SECRET,
+  FRONTEND_URL,
+  BACKEND_URL,
 } = process.env;
 const microsoftTenant = 'common';
 mongoose.set('debug', true);
@@ -27,7 +29,7 @@ mongoose.set('debug', true);
 // ----Middleware----
 app.use(
   cors({
-    origin: 'http://localhost:5173', // where requests are allowed to come from
+    origin: FRONTEND_URL, // where requests are allowed to come from
     credentials: true, // send the session cookie (users login state) across the site
   }),
 );
@@ -38,7 +40,7 @@ app.use(
     secret: SESSION_SECRET || 'SESSION SECRET NOT FOUND',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false }, // SET TO SECURE IN PROD - DO NOT FORGET
+    cookie: { secure: process.env.NODE_ENV === 'production' },
   }),
 );
 
@@ -51,7 +53,7 @@ passport.use(
     {
       clientID: MICROSOFT_CLIENT_ID,
       clientSecret: MICROSOFT_CLIENT_SECRET,
-      callbackURL: 'http://localhost:8000/auth/microsoft/callback',
+      callbackURL: `${BACKEND_URL}/auth/microsoft/callback`,
       scope: ['openid', 'profile', 'email', 'User.Read'], // use openid connect protocol, and read profile info
       addUPNAsEmail: true, // include userPrincipalName when mail is blank
       tenant: microsoftTenant,
@@ -109,6 +111,9 @@ app.listen(port, () => {
 // ----API Endpoints----
 // Create a new ride
 app.post('/api/rides', async (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
   try {
     const ride = await rideService.createRide(req.body);
     res.status(201).json(ride);
@@ -131,6 +136,9 @@ app.get('/api/rides', async (req, res) => {
 });
 
 app.patch('/api/rides/:id', async (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
   try {
     const result = await rideService.updateRide(req.params.id, req.body);
     res.json(result);
@@ -154,15 +162,15 @@ app.get('/auth/microsoft/callback', (req, res, next) => {
     if (!user) {
       // if they need phone number redirect to page with phone prompt
       if (req.session.pendingUser) {
-        return res.redirect('http://localhost:5173?auth=needs_phone');
+        return res.redirect(`${FRONTEND_URL}?auth=needs_phone`);
       }
       // otherwise just a normal auth failure
-      return res.redirect('http://localhost:5173?auth=failed');
+      return res.redirect(`${FRONTEND_URL}?auth=failed`);
     }
     // have to actually log in user to session if they exist when the callback occurs
     req.logIn(user, (loginErr) => {
       if (loginErr) return next(loginErr);
-      return res.redirect('http://localhost:5173?auth=success');
+      return res.redirect(`${FRONTEND_URL}?auth=success`);
     });
   })(req, res, next); // have to call the auth function otherwise window just got stuck
 });
