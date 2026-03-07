@@ -1,14 +1,18 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SSOPage.css';
 import PolyPoolLogo from './imagesAndIcons/PolyPoolLogo.png';
 import CalPolyLogo from './imagesAndIcons/Cal_Poly_Mustangs_logo.svg';
-import useFetchUser from './utils/fetchUser';
+import fetchUser from './utils/fetchUser';
 
 
 function SSOPage() {
   const navigate = useNavigate();
-  const user = useFetchUser();
+  const [user, setUser] = useState(undefined);
+
+  useEffect(() => {
+    fetchUser().then(setUser).catch(() => setUser(null));
+  }, []);
 
   // if user is already signed in, send them to home page
   useEffect(() => {

@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import './CreateRideWindow.css';
-import useFetchUser from './utils/fetchUser';
+import fetchUser from './utils/fetchUser';
 
 function CreateRideWindow({ onClose, onRideCreated }) {
-  const user = useFetchUser();
+  const [user, setUser] = useState(undefined);
+
+  useEffect(() => {
+    fetchUser().then(setUser).catch(() => setUser(null));
+  }, []);
 
   useEffect(() => {
     if (user === null) {
