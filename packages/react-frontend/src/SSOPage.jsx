@@ -20,7 +20,7 @@ function SSOPage() {
     if (user) {
       navigate('/home');
     }
-  }, [user]);
+  }, [user, navigate]);
 
   // show alert if failed auth, or prompt for phone if new user
   useEffect(() => {
@@ -50,7 +50,7 @@ function SSOPage() {
         else alert('Sign-up failed.');
       });
     }
-  }, []);
+  }, [navigate]);
 
   // show alert if failed auth, or prompt for phone if new user
   useEffect(() => {
