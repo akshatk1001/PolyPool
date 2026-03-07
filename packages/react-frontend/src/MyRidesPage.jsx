@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import AppNavbar from './AppNavbar';
-import AppMainContent from './AppMainContent';
 import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
 import fetchRides from './utils/useRides';
