@@ -4,14 +4,13 @@ import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
 import ProfileEditWindow from './ProfileEditWindow';
 import fetchUser from './utils/fetchUser';
-import useRides from './utils/useRides';
+import fetchRides from './utils/useRides';
 import './ProfilePage.css';
 
 function ProfilePage() {
   const [showCreateRide, setShowCreateRide] = useState(false);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
   const [user, setUser] = useState(undefined);
-  const { fetchRides } = useRides();
 
   function loadUser() {
     fetchUser().then(setUser).catch(() => setUser(null));
