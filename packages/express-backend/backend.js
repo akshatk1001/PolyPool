@@ -40,7 +40,10 @@ app.use(
     secret: SESSION_SECRET || 'SESSION SECRET NOT FOUND',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === 'production' },
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    },
   }),
 );
 
@@ -192,7 +195,7 @@ app.post('/api/auth/complete-signup', async (req, res, next) => {
     );
     // remove the pending user since now they are fully signed up
     delete req.session.pendingUser;
-    // log in user 
+    // log in user
     req.logIn(user, (err) => {
       if (err) return next(err);
       return res.json({ success: true });
@@ -318,7 +321,7 @@ app.patch('/api/users/:id', async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: 'Invalid user id' });
   }
-  
+
   const updates = getNormalizedUserUpdates(req.body);
 
   try {
