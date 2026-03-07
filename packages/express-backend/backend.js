@@ -24,6 +24,7 @@ const {
   BACKEND_URL,
 } = process.env;
 const microsoftTenant = 'common';
+const isProduction = process.env.NODE_ENV === 'production';
 mongoose.set('debug', true);
 
 // ----Middleware----
@@ -35,14 +36,20 @@ app.use(
 );
 app.use(express.json());
 
+// trust 1 proxy hop when in production so that cookies are sent over HTTPS
+if (isProduction) {
+  app.set('trust proxy', 1);
+}
+
 app.use(
   session({
     secret: SESSION_SECRET || 'SESSION SECRET NOT FOUND',
     resave: false,
     saveUninitialized: false,
+    proxy: isProduction, // required for secure cookies to work in proxy in prod
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
     },
   }),
 );
@@ -173,7 +180,13 @@ app.get('/auth/microsoft/callback', (req, res, next) => {
     // have to actually log in user to session if they exist when the callback occurs
     req.logIn(user, (loginErr) => {
       if (loginErr) return next(loginErr);
-      return res.redirect(`${FRONTEND_URL}?auth=success`);
+      
+      // make sure the login is saved to the Azure API session before redirecting to frontend
+      // this is so that when we call ../auth/me we have the session info to know who the user is
+      req.session.save((saveErr) => {
+        if (saveErr) return next(saveErr);
+        return res.redirect(`${FRONTEND_URL}?auth=success`);
+      });
     });
   })(req, res, next); // have to call the auth function otherwise window just got stuck
 });
