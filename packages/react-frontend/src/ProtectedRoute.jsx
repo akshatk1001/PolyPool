@@ -1,9 +1,10 @@
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
 import fetchUser from './utils/fetchUser';
 
 function ProtectedRoute({ children }) {
   const [user, setUser] = useState(undefined);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchUser().then(setUser).catch(() => setUser(null));
@@ -12,7 +13,8 @@ function ProtectedRoute({ children }) {
   if (user === undefined) return null; // still loading
 
   if (!user) {
-    return <Navigate to="/" replace />;
+    navigate('/'); // not logged in, redirect to login page
+    return null;
   }
 
   return children; // logged in
