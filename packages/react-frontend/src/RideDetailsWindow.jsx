@@ -1,6 +1,7 @@
 import './RideDetailsWindow.css';
 import { useState, useEffect } from 'react';
 import fetchUser from './utils/fetchUser';
+import { API_URL } from './constants/api';
 
 function RideDetailsWindow({ ride, onClose }) {
   const user = fetchUser();
@@ -10,14 +11,14 @@ function RideDetailsWindow({ ride, onClose }) {
     if (ride.seats !== 0) {
       console.log('Requesting ride with ID:', ride._id);
       onClose();
-      fetch(`http://localhost:8000/api/rides/${ride._id}`, {
+      fetch(`${API_URL}/api/rides/${ride._id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ other_rider: user._id })
       })
       .then(res => res.json())
       .catch(err => console.error(err)).then(() => {
-        fetch(`http://localhost:8000/api/users/${user._id}`, {
+        fetch(`${API_URL}/api/users/${user._id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ rides_as_passenger: ride._id })

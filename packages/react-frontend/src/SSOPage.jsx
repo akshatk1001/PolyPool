@@ -4,6 +4,7 @@ import './SSOPage.css';
 import PolyPoolLogo from './imagesAndIcons/PolyPoolLogo.png';
 import CalPolyLogo from './imagesAndIcons/Cal_Poly_Mustangs_logo.svg';
 import fetchUser from './utils/fetchUser';
+import { API_URL } from './constants/api';
 
 
 function SSOPage() {
@@ -39,7 +40,7 @@ function SSOPage() {
         return;
       }
 
-      fetch('http://localhost:8000/api/auth/complete-signup', {
+      fetch(`${API_URL}/api/auth/complete-signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -69,7 +70,7 @@ function SSOPage() {
         return;
       }
 
-      fetch('http://localhost:8000/api/auth/complete-signup', {
+      fetch(`${API_URL}/api/auth/complete-signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -82,7 +83,7 @@ function SSOPage() {
   }, [navigate]);
 
   function signIn() {
-    window.location.href = 'http://localhost:8000/auth/microsoft';
+    window.location.href = `${API_URL}/auth/microsoft`;
   }
 
   return (
