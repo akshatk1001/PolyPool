@@ -1,23 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { API_URL } from '../constants/api';
 
-function useRides() {
-  const [rides, setRides] = useState([]);
-
-  const fetchRides = useCallback(async () => {
-    try {
-      const response = await fetch('http://localhost:8000/api/rides');
-      const data = await response.json();
-      setRides(data);
-    } catch (error) {
-      console.log('Error fetching rides:', error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchRides();
-  }, [fetchRides]);
-
-  return { rides, fetchRides };
+async function fetchRides() {
+  const response = await fetch(`${API_URL}/api/rides`);
+  return response.json();
 }
 
-export default useRides;
+export default fetchRides;

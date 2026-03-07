@@ -1,9 +1,14 @@
 import { useNavigate } from 'react-router-dom';
-import useFetchUser from './utils/fetchUser';
+import { useEffect, useState } from 'react';
+import fetchUser from './utils/fetchUser';
 
 function ProtectedRoute({ children }) {
-  const user = useFetchUser();
+  const [user, setUser] = useState(undefined);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchUser().then(setUser).catch(() => setUser(null));
+  }, []);
 
   if (user === undefined) return null; // still loading
 

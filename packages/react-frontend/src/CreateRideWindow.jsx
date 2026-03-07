@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './CreateRideWindow.css';
-import useFetchUser from './utils/fetchUser';
+import fetchUser from './utils/fetchUser';
+import { API_URL } from './constants/api';
 
 function CreateRideWindow({ onClose, onRideCreated }) {
-  const user = useFetchUser();
+  const [user, setUser] = useState(undefined);
+
+  useEffect(() => {
+    fetchUser().then(setUser).catch(() => setUser(null));
+  }, []);
 
   useEffect(() => {
     if (user === null) {
@@ -39,7 +44,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
   }
 
   function postRide(rideData) {
-    const promise = fetch('http://localhost:8000/api/rides', {
+    const promise = fetch(`${API_URL}/api/rides`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -81,7 +86,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
         onRideCreated();
 
         // Add this ride to the user's rides_as_driver list using the created ride's ID
-        fetch(`http://localhost:8000/api/users/${user._id}`, {
+        fetch(`${API_URL}/api/users/${user._id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ rides_as_driver: createdRide._id })

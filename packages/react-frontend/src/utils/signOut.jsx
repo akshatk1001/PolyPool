@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../constants/api';
 
 function useSignOut() {
   const navigate = useNavigate();
 
   function signOut() {
-    fetch('http://localhost:8000/api/auth/logout', {
+    fetch(`${API_URL}/api/auth/logout`, {
       credentials: 'include',
       method: 'POST',
     })
