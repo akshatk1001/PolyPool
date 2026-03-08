@@ -22,10 +22,7 @@ function RideDetailsWindow({ ride, onClose }) {
 
   const passengerNames = Array.isArray(ride.other_riders)
     ? ride.other_riders
-        .map((other_rider) => {
-          if (typeof other_rider === 'object' && other_rider !== null)
-            return other_rider.name || '';
-        })
+        .map((otherRider) => otherRider.name || '')
     : [];
 
   const totalSeats = ride.seats;
@@ -78,12 +75,7 @@ function RideDetailsWindow({ ride, onClose }) {
     }
   }
 
-  const driverName =
-    typeof ride.driver === 'object' && ride.driver !== null
-      ? ride.driver.name || 'Unknown'
-      : typeof ride.driver === 'string' && !/^[a-f\d]{24}$/i.test(ride.driver)
-        ? ride.driver
-        : 'Unknown';
+  const driverName = ride.driver?.name || 'Unknown';
 
   const startDate = ride.start_time
     ? new Date(ride.start_time).toLocaleDateString('en-US', {
