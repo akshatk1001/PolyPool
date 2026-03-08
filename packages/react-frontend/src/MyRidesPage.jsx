@@ -8,7 +8,6 @@ import fetchUser from './utils/fetchUser';
 import { useNavigate } from 'react-router-dom';
 import MyRidesDetails from './MyRidesDetails';
 
-
 function MyRidesPage() {
   const navigate = useNavigate();
   const [user, setUser] = useState(undefined);
@@ -25,8 +24,14 @@ function MyRidesPage() {
   }, []);
   const signOut = useSignOut();
 
-  const driverRides = rides.filter(ride => user?.rides_as_driver?.includes(ride._id));
-  const passengerRides = rides.filter(ride => user?.rides_as_passenger?.includes(ride._id));
+  // all rides where the users ID is listed as the driver
+  const driverRides = rides.filter((ride) => ride.driver?._id === user?._id);
+  // all rides where the users ID is lisetd as a passenger
+  const passengerRides = rides.filter((ride) =>
+    Array.isArray(ride.other_riders)
+      ? ride.other_riders.some((rider) => rider._id === user?._id)
+      : false,
+  );
 
   return (
     <div className="my-rides-page">
