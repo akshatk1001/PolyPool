@@ -1,11 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './CreateRideWindow.css';
-import fetchUser from './utils/fetchUser';
 import { API_URL } from './constants/api';
 
 function EditRideWindow({ onClose, onRideEdited, ride }) {
-  const user = fetchUser();
-
   const startDate = ride.start_time
     ? new Date(ride.start_time).toISOString().slice(0, 10)  // "YYYY-MM-DD"
     : '';
@@ -19,20 +16,15 @@ function EditRideWindow({ onClose, onRideEdited, ride }) {
       destination: ride.destination,
       start_date: startDate,
       start_time: startTime,
-      driver: user ? user._id : null,
-      other_riders: ride.other_riders,
+      driver: ride.driver._id,
+      // extract just the IDs from the other_riders array (contains both IDs and names)
+      other_riders: (ride.other_riders ?? []).map((rider) => rider._id),
       cost: ride.cost,
       car: ride.car,
       seats: ride.seats,
       deviation: ride.deviation,
       description: ride.description,
   })
-
-  useEffect(() => {
-    if (user === null) {
-      console.error('User is not signed in');
-    }
-  }, [user]);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -61,11 +53,6 @@ function EditRideWindow({ onClose, onRideEdited, ride }) {
 
   async function submitForm(event) {
     event.preventDefault();
-
-    if (!user) {
-      console.error('No user found. Cannot create ride without a driver.');
-      return;
-    }
 
     const { start_date, start_time: start_time_str, ...rest } = rideData;
     const payload = {
