@@ -7,7 +7,9 @@ function CreateRideWindow({ onClose, onRideCreated }) {
   const [user, setUser] = useState(undefined);
 
   useEffect(() => {
-    fetchUser().then(setUser).catch(() => setUser(null));
+    fetchUser()
+      .then(setUser)
+      .catch(() => setUser(null));
   }, []);
 
   useEffect(() => {
@@ -49,6 +51,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify(rideData),
     });
     return promise;
@@ -89,12 +92,12 @@ function CreateRideWindow({ onClose, onRideCreated }) {
         fetch(`${API_URL}/api/users/${user._id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ rides_as_driver: createdRide._id })
+          body: JSON.stringify({ rides_as_driver: createdRide._id }),
+          credentials: 'include',
         })
-        .then(res => res.json())
-        .then(data => console.log('User updated with new ride:', data))
-        .catch(err => console.error('Error updating user:', err));
-
+          .then((res) => res.json())
+          .then((data) => console.log('User updated with new ride:', data))
+          .catch((err) => console.error('Error updating user:', err));
       } else {
         // TODO: Show error message
         console.log('Server response error:', response.status);
