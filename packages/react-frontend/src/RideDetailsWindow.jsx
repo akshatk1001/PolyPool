@@ -1,35 +1,61 @@
+import { useEffect, useState } from 'react';
 import './RideDetailsWindow.css';
 import fetchUser from './utils/fetchUser.jsx';
 import { API_URL } from './constants/api';
 import { CalendarIcon, ClockIcon, SeatIcon, PersonIcon, CarIcon, WavyIcon } from './imagesAndIcons/RideIcons';
 
 function RideDetailsWindow({ ride, onClose }) {
-  const user = fetchUser();
+  const [user, setUser] = useState(undefined);
+
+  useEffect(() => {
+    fetchUser().then(setUser).catch(() => setUser(null));
+  }, []);
 
   // Call updateUserAPI to add this user to the drivers requested rides
-  function createRequest() {
-    if (ride.seats !== 0) {
+  async function createRequest() {
+    if (remainingSeats === 0) {
+      return;
+    }
+
+    if (!user?._id) {
+      console.error('No user found.');
+      return;
+    }
+
+    try {
+      // update ride to list this user as passenger
       console.log('Requesting ride with ID:', ride._id);
-      onClose();
-      fetch(`${API_URL}/api/rides/${ride._id}`, {
+      const rideResponse = await fetch(`${API_URL}/api/rides/${ride._id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ other_rider: user._id }),
         credentials: 'include',
-      })
-      .then(res => res.json())
-      .catch(err => console.error(err)).then(() => {
-        fetch(`${API_URL}/api/users/${user._id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ rides_as_passenger: ride._id }),
-          credentials: 'include',
-        })
-        .then(res => res.json())
-        .catch(err => console.error(err));
       });
+
+      if (!rideResponse.ok) {
+        console.error('Failed to add passenger to ride:', rideResponse.status);
+        return;
+      }
+
+      // update user list to add this ride as a ride the user is a passenger in
+      console.log("Updating user to be as a passenger in their profile")
+      const userResponse = await fetch(`${API_URL}/api/users/${user._id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rides_as_passenger: ride._id }),
+        credentials: 'include',
+      });
+
+      if (!userResponse.ok) {
+        console.error('Failed to add ride to user:', userResponse.status);
+        return;
+      }
+
+      onClose();
+    } catch (err) {
+      console.error('Error requesting ride:', err);
     }
-  }  
+  }
 
 
   const driverName =
@@ -127,7 +153,11 @@ function RideDetailsWindow({ ride, onClose }) {
           )}
 
           <div className="rd-action-row">
-            <button className="rd-request-btn" onClick={() => createRequest()}>
+            <button
+              className="rd-request-btn"
+              disabled={!user || remainingSeats === 0}
+              onClick={() => createRequest()}
+            >
               Request Ride
             </button>
           </div>
