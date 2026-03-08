@@ -157,6 +157,18 @@ app.patch('/api/rides/:id', async (req, res) => {
   }
 });
 
+app.delete('/api/rides/:id', async (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
+  try {
+    await rideService.deleteRide(req.params.id);
+    res.status(204).send();
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // redirect user to Microsoft login
 app.get(
   '/auth/microsoft',

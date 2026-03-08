@@ -1,41 +1,94 @@
+import { useEffect, useState } from 'react';
 import './RideDetailsWindow.css';
-import fetchUser from './utils/fetchUser';
+import fetchUser from './utils/fetchUser.jsx';
 import { API_URL } from './constants/api';
-import { CalendarIcon, ClockIcon, SeatIcon, PersonIcon, CarIcon, WavyIcon } from './imagesAndIcons/RideIcons';
+import {
+  CalendarIcon,
+  ClockIcon,
+  SeatIcon,
+  PersonIcon,
+  CarIcon,
+  WavyIcon,
+} from './imagesAndIcons/RideIcons';
 
-function RideDetailsWindow({ ride, onClose }) {
-  const user = fetchUser();
+function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
+  const [user, setUser] = useState(undefined);
+  const [isRequesting, setIsRequesting] = useState(false); // if the user has clicked to request ride
+  const [requestSuccess, setRequestSuccess] = useState(false);
+
+  useEffect(() => {
+    fetchUser()
+      .then(setUser)
+      .catch(() => setUser(null));
+  }, []);
+
+  const passengerNames = Array.isArray(ride.other_riders)
+    ? ride.other_riders
+        .map((otherRider) => otherRider.name || '')
+    : [];
+
+  const totalSeats = ride.seats;
+  const takenSeats = passengerNames.length;
+  const remainingSeats = Math.max(totalSeats - takenSeats, 0);
+  // Check if the current user is already a passenger in this ride
+  const isCurrentUserPassenger = Array.isArray(ride.other_riders)
+    ? ride.other_riders.some((rider) => rider._id === user?._id)
+    : false;
 
   // Call updateUserAPI to add this user to the drivers requested rides
-  function createRequest() {
-    if (ride.seats !== 0) {
+  async function createRequest() {
+    // don't allow req if its full or user is alr in requesting state or user is already a passenger
+    if (remainingSeats === 0 || isRequesting || isCurrentUserPassenger) {
+      return;
+    }
+
+    if (!user?._id) {
+      console.error('No user found.');
+      return;
+    }
+
+    try {
+      setIsRequesting(true);
+      setRequestSuccess(false);
+
+      // update ride to list this user as passenger
       console.log('Requesting ride with ID:', ride._id);
-      onClose();
-      fetch(`${API_URL}/api/rides/${ride._id}`, {
+      const rideResponse = await fetch(`${API_URL}/api/rides/${ride._id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ other_rider: user._id })
-      })
-      .then(res => res.json())
-      .catch(err => console.error(err)).then(() => {
-        fetch(`${API_URL}/api/users/${user._id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ rides_as_passenger: ride._id })
-        })
-        .then(res => res.json())
-        .catch(err => console.error(err));
+        body: JSON.stringify({ other_rider: user._id }),
+        credentials: 'include',
       });
+
+      if (!rideResponse.ok) {
+        console.error('Failed to add passenger to ride:', rideResponse.status);
+        return;
+      }
+
+      // update user list to add this ride as a ride the user is a passenger in
+      console.log('Updating user to be as a passenger in their profile');
+      const userResponse = await fetch(`${API_URL}/api/users/${user._id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rides_as_passenger: ride._id }),
+        credentials: 'include',
+      });
+
+      if (!userResponse.ok) {
+        console.error('Failed to add ride to user:', userResponse.status);
+        return;
+      }
+
+      setRequestSuccess(true);
+      onRideUpdated();
+    } catch (err) {
+      console.error('Error requesting ride:', err);
+    } finally {
+      setIsRequesting(false);
     }
-  }  
+  }
 
-
-  const driverName =
-    typeof ride.driver === 'object' && ride.driver !== null
-      ? ride.driver.name || 'Unknown'
-      : typeof ride.driver === 'string' && !/^[a-f\d]{24}$/i.test(ride.driver)
-        ? ride.driver
-        : 'Unknown';
+  const driverName = ride.driver?.name || 'Unknown';
 
   const startDate = ride.start_time
     ? new Date(ride.start_time).toLocaleDateString('en-US', {
@@ -52,32 +105,19 @@ function RideDetailsWindow({ ride, onClose }) {
       })
     : 'N/A';
 
-  const passengerNames = Array.isArray(ride.other_riders)
-    ? ride.other_riders
-        .map((r) => {
-          if (typeof r === 'object' && r !== null) return r.name || '';
-          return typeof r === 'string' && !/^[a-f\d]{24}$/i.test(r) ? r : '';
-        })
-        .filter(Boolean)
-    : [];
-
-  const totalSeats = ride.seats ?? 0;
-  const takenSeats = passengerNames.length;
-  const remainingSeats = Math.max(totalSeats - takenSeats, 0);
-
   return (
     <div className="ride-details-window" onClick={onClose}>
       <div className="ride-details-card" onClick={(e) => e.stopPropagation()}>
-
         <div className="rd-header">
           <h2 className="rd-title">
             {driverName}&rsquo;s Ride to {ride.destination || 'N/A'}
           </h2>
-          <span className="rd-close" onClick={onClose}>&#x2715;</span>
+          <span className="rd-close" onClick={onClose}>
+            &#x2715;
+          </span>
         </div>
 
         <div className="rd-body">
-
           <div className="rd-subtitle-row">
             <h3 className="rd-subtitle">Ride Details</h3>
             <span className="rd-price">${ride.cost ?? 0}</span>
@@ -95,11 +135,16 @@ function RideDetailsWindow({ ride, onClose }) {
 
             <div className="rd-info-item">
               <SeatIcon />
-              <span>Remaining available Seats: {remainingSeats}/{totalSeats}</span>
+              <span>
+                Remaining available Seats: {remainingSeats}/{totalSeats}
+              </span>
             </div>
             <div className="rd-info-item">
               <PersonIcon />
-              <span>Passengers: {passengerNames.length > 0 ? passengerNames.join(', ') : 'None'}</span>
+              <span>
+                Passengers:{' '}
+                {passengerNames.length > 0 ? passengerNames.join(', ') : 'None'}
+              </span>
             </div>
 
             {ride.car && (
@@ -125,8 +170,16 @@ function RideDetailsWindow({ ride, onClose }) {
           )}
 
           <div className="rd-action-row">
-            <button className="rd-request-btn" onClick={() => createRequest()}>
-              Request Ride
+            <button
+              className="rd-request-btn"
+              disabled={!user || remainingSeats === 0 || isRequesting || isCurrentUserPassenger}
+              onClick={() => createRequest()}
+            >
+              {isCurrentUserPassenger || requestSuccess
+                ? 'Ride Requested'
+                : isRequesting
+                  ? 'Requesting...'
+                  : 'Request Ride'}
             </button>
           </div>
         </div>
