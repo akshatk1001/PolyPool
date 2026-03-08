@@ -1,19 +1,20 @@
 import './MyRidesDetails.css';
 import { useState, useEffect } from 'react';
 import fetchUser from './utils/fetchUser';
+import EditRideWindow from './EditRideWindow.jsx';
+import { API_URL } from './constants/api';
+import { CalendarIcon, ClockIcon, SeatIcon, PersonIcon, CarIcon, WavyIcon } from './imagesAndIcons/RideIcons.jsx';
 
 function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
   const user = fetchUser();
+  const [showEditRide, setShowEditRide] = useState(false);
 
-  const handleEdit = () => {
-    // TODO: Implement edit functionality, perhaps open an edit window
-    console.log('Edit ride:', ride._id);
-  };
-
+  
   const handleDelete = () => {
     if (window.confirm('Are you sure you want to delete this ride?')) {
-      fetch(`http://localhost:8000/api/rides/${ride._id}`, {
+      fetch(`${API_URL}/api/rides/${ride._id}`, {
         method: 'DELETE',
+        credentials: 'include'
       })
       .then(res => {
         if (res.ok) {
@@ -29,21 +30,22 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
   const handleCancel = () => {
     if (window.confirm('Are you sure you want to cancel this ride?')) {
       // Remove user from ride's other_riders
-      const updatedOtherRiders = ride.other_riders.filter(rider => 
-        (typeof rider === 'string' ? rider : rider._id) !== user._id
-      );
-      fetch(`http://localhost:8000/api/rides/${ride._id}`, {
+      const updatedOtherRiders = (ride.other_riders ?? []).filter(rider => 
+        (typeof rider === 'string' ? rider : rider._id) !== user._id);
+      fetch(`${API_URL}/api/rides/${ride._id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ other_riders: updatedOtherRiders })
       })
       .then(res => res.json())
       .then(() => {
         // Remove ride from user's rides_as_passenger
-        const updatedPassengerRides = user.rides_as_passenger.filter(rideId => rideId !== ride._id);
-        fetch(`http://localhost:8000/api/users/${user._id}`, {
+        const updatedPassengerRides = (user.rides_as_passenger ?? []).filter(rideId => rideId !== ride._id);
+        fetch(`${API_URL}/api/users/${user._id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ rides_as_passenger: updatedPassengerRides })
         })
         .then(res => res.json())
@@ -90,52 +92,6 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
   const totalSeats = ride.seats ?? 0;
   const takenSeats = passengerNames.length;
   const remainingSeats = Math.max(totalSeats - takenSeats, 0);
-
-  const CalendarIcon = () => (
-    <svg className="rd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <rect x="3" y="4" width="18" height="18" rx="2" />
-      <line x1="16" y1="2" x2="16" y2="6" />
-      <line x1="8" y1="2" x2="8" y2="6" />
-      <line x1="3" y1="10" x2="21" y2="10" />
-    </svg>
-  );
-
-  const ClockIcon = () => (
-    <svg className="rd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <circle cx="12" cy="12" r="10" />
-      <polyline points="12 6 12 12 16 14" />
-    </svg>
-  );
-
-  const SeatIcon = () => (
-    <svg className="rd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M5 11a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v6H5v-6z" />
-      <path d="M5 17v2" />
-      <path d="M19 17v2" />
-      <path d="M7 9V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2" />
-    </svg>
-  );
-
-  const PersonIcon = () => (
-    <svg className="rd-icon" viewBox="0 0 24 24" fill="currentColor">
-      <circle cx="12" cy="8" r="4" />
-      <path d="M4 20c0-4 4-7 8-7s8 3 8 7" />
-    </svg>
-  );
-
-  const CarIcon = () => (
-    <svg className="rd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M5 17h14v-5l-2-5H7l-2 5v5z" />
-      <circle cx="7.5" cy="17.5" r="1.5" />
-      <circle cx="16.5" cy="17.5" r="1.5" />
-    </svg>
-  );
-
-  const WavyIcon = () => (
-    <svg className="rd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M2 12q3-4 6-4t6 4 6 4q3 0 6-4" />
-    </svg>
-  );
 
   return (
     <div className="ride-details-card">
@@ -194,9 +150,33 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
             )}
 
             <div className="rd-action-row">
-            <button className="rd-request-btn" onClick={() => createRequest()}>
-                Request Ride
-            </button>
+
+            {isDriver ? (  
+              <button className="edit-ride-button" onClick={() => setShowEditRide(true)}>
+                Edit
+              </button>
+            ) : null}
+
+            {showEditRide && (
+                <EditRideWindow
+                ride={ride}
+                onClose={() => setShowEditRide(false)}
+                onRideEdited={onRideUpdated}
+                />
+            )}
+
+            {isDriver ? (
+                <button className="delete-ride-button" onClick={handleDelete}>
+                Delete Ride
+                </button>
+            ) : null}
+
+            {!isDriver && (
+                <button className="cancel-ride-button" onClick={handleCancel}>
+                Cancel Ride
+                </button>
+            )}
+
             </div>
         </div>
     </div>

@@ -110,17 +110,61 @@
   padding-top: 6px;
 }
 
-.rd-request-btn {
-  background: var(--color-brand-gold-alt);
-  color: var(--color-brand-green);
-  border: none;
-  padding: 12px 32px;
-  font-size: 17px;
-  font-weight: 700;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background 0.15s;
+/* ---- Action buttons row ---- */
+.rd-action-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+  flex-wrap: wrap;
 }
-.rd-request-btn:hover {
-  background: var(--color-brand-gold-alt-hover);
+
+.edit-ride-button,
+.delete-ride-button,
+.cancel-ride-button {
+  border: none;
+  border-radius: 25px;
+  padding: 9px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.edit-ride-button {
+  background: var(--color-brand-gold);
+  color: var(--color-brand-green);
+}
+
+.edit-ride-button:hover {
+  background: var(--color-brand-gold-hover);
+}
+
+.edit-ride-button:active {
+  transform: scale(0.96);
+}
+
+.delete-ride-button {
+  background: #c0392b;
+  color: #fff;
+}
+
+.delete-ride-button:hover {
+  background: #a93226;
+}
+
+.delete-ride-button:active {
+  transform: scale(0.96);
+}
+
+.cancel-ride-button {
+  background: #c0392b;
+  color: #fff;
+}
+
+.cancel-ride-button:hover {
+  background: #a93226;
+}
+
+.cancel-ride-button:active {
+  transform: scale(0.96);
 }

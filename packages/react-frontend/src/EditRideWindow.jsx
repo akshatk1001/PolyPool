@@ -1,0 +1,234 @@
+import { useState, useEffect } from 'react';
+import './CreateRideWindow.css';
+import fetchUser from './utils/fetchUser';
+import { API_URL } from './constants/api';
+
+function EditRideWindow({ onClose, onRideEdited, ride }) {
+  const user = fetchUser();
+
+  const startDate = ride.start_time
+    ? new Date(ride.start_time).toISOString().slice(0, 10)  // "YYYY-MM-DD"
+    : '';
+
+  const startTime = ride.start_time
+    ? new Date(ride.start_time).toTimeString().slice(0, 5)  // "HH:MM"
+    : '';
+
+  const [rideData, setRideData] = useState({
+      starting_point: ride.starting_point,
+      destination: ride.destination,
+      start_date: startDate,
+      start_time: startTime,
+      driver: user ? user._id : null,
+      other_riders: ride.other_riders,
+      cost: ride.cost,
+      car: ride.car,
+      seats: ride.seats,
+      deviation: ride.deviation,
+      description: ride.description,
+  })
+
+  useEffect(() => {
+    if (user === null) {
+      console.error('User is not signed in');
+    }
+  }, [user]);
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+    setRideData({
+      ...rideData,
+      [name]: value,
+    });
+  }
+
+  // Prevent scroll from changing number inputs
+  function handleWheel(event) {
+    event.target.blur();
+  }
+
+  function editRide(payload) {
+    const promise = fetch(`${API_URL}/api/rides/${ride._id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(payload),
+    });
+    return promise;
+  }
+
+  async function submitForm(event) {
+    event.preventDefault();
+
+    if (!user) {
+      console.error('No user found. Cannot create ride without a driver.');
+      return;
+    }
+
+    const { start_date, start_time: start_time_str, ...rest } = rideData;
+    const payload = {
+      ...rest,
+      start_time: new Date(`${start_date}T${start_time_str}`),
+    };
+
+    try {
+      const response = await editRide(payload);
+      if (response.status === 200) {
+        // Parse the response to get the updated ride with its ID
+        const updatedRide = await response.json();
+        console.log('Ride updated successfully', response.status, updatedRide);
+        onClose();
+        onRideEdited(updatedRide);
+
+      } else {
+        // TODO: Show error message
+        console.log('Server response error:', response.status);
+      }
+    } catch (error) {
+      console.log('Request completely failed:', error);
+    }
+  }
+
+  return (
+    <div className="create-ride-window">
+      <div className="create-ride-card">
+        <div className="create-ride-header">
+          <h2>Edit Ride</h2>
+          <span className="modal-close-btn" onClick={onClose}>
+            ×
+          </span>
+        </div>
+
+        <form className="create-ride-form">
+          <div className="form-row">
+            <div className="form-field">
+              <label htmlFor="starting_point">Start Location</label>
+              <input
+                type="text"
+                placeholder="Cal Poly"
+                name="starting_point"
+                id="starting_point"
+                value={rideData.starting_point}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="destination">Destination</label>
+              <input
+                type="text"
+                placeholder="San Francisco"
+                name="destination"
+                id="destination"
+                value={rideData.destination}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-field">
+              <label htmlFor="start_date">Start Date</label>
+              <input
+                type="date"
+                name="start_date"
+                id="start_date"
+                value={rideData.start_date}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="start_time">Start Time</label>
+              <input
+                type="time"
+                name="start_time"
+                id="start_time"
+                value={rideData.start_time}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="form-field full-width">
+            <label htmlFor="cost">Cost per Seat</label>
+            <div className="input-with-prefix">
+              <span className="input-prefix">$</span>
+              <input
+                className="full-width"
+                type="number"
+                placeholder="0"
+                name="cost"
+                id="cost"
+                value={rideData.cost}
+                onChange={handleChange}
+                onWheel={handleWheel}
+              />
+            </div>
+          </div>
+
+          <div className="form-field full-width">
+            <label htmlFor="seats">Number of Seats</label>
+            <input
+              className="full-width"
+              type="number"
+              placeholder="Number of seats"
+              name="seats"
+              id="seats"
+              value={rideData.seats}
+              onChange={handleChange}
+              onWheel={handleWheel}
+            />
+          </div>
+
+          <div className="form-field full-width">
+            <label htmlFor="deviation">Max Deviation Time (minutes)</label>
+            <input
+              className="full-width"
+              type="number"
+              placeholder="Max Deviation Time (minutes)"
+              name="deviation"
+              id="deviation"
+              value={rideData.deviation}
+              onChange={handleChange}
+              onWheel={handleWheel}
+            />
+          </div>
+
+          <div className="form-field full-width">
+            <label htmlFor="car">Car Model</label>
+            <input
+              className="full-width"
+              type="text"
+              placeholder="Car Model"
+              name="car"
+              id="car"
+              value={rideData.car}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-field full-width">
+            <label htmlFor="description">Ride Description</label>
+            <textarea
+              className="full-width"
+              placeholder="Ride Description"
+              rows="4"
+              name="description"
+              id="description"
+              value={rideData.description}
+              onChange={handleChange}
+            />
+          </div>
+
+          <button className="create-button" onClick={submitForm}>
+            Save Changes
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+export default EditRideWindow;

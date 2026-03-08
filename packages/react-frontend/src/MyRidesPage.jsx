@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import './MyRidesPage.css';
 import AppNavbar from './AppNavbar';
 import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
@@ -45,7 +46,7 @@ function MyRidesPage() {
         <h2>As Driver</h2>
         {driverRides.length > 0 ? (
           driverRides.map((ride) => 
-          <MyRidesDetails key={ride._id} ride={ride} isDriver={true} onRideUpdated={fetchRides} />)
+          <MyRidesDetails key={ride._id} ride={ride} isDriver={true} onRideUpdated={loadRides} />)
            ) : (
              <p>No rides found matching your search.</p>
            )}
@@ -54,7 +55,7 @@ function MyRidesPage() {
         <h2>As Passenger</h2>
         {passengerRides.length > 0 ? (
           passengerRides.map((ride) => 
-          <MyRidesDetails key={ride._id} ride={ride} isDriver={false} onRideUpdated={fetchRides} />)
+          <MyRidesDetails key={ride._id} ride={ride} isDriver={false} onRideUpdated={loadRides} />)
            ) : (
              <p>No rides found matching your search.</p>
            )}
