@@ -1,5 +1,5 @@
 import './RideDetailsWindow.css';
-import fetchUser from './utils/fetchUser';
+import fetchUser from './utils/fetchUser.jsx';
 import { API_URL } from './constants/api';
 import { CalendarIcon, ClockIcon, SeatIcon, PersonIcon, CarIcon, WavyIcon } from './imagesAndIcons/RideIcons';
 
@@ -14,14 +14,16 @@ function RideDetailsWindow({ ride, onClose }) {
       fetch(`${API_URL}/api/rides/${ride._id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ other_rider: user._id })
+        body: JSON.stringify({ other_rider: user._id }),
+        credentials: 'include',
       })
       .then(res => res.json())
       .catch(err => console.error(err)).then(() => {
         fetch(`${API_URL}/api/users/${user._id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ rides_as_passenger: ride._id })
+          body: JSON.stringify({ rides_as_passenger: ride._id }),
+          credentials: 'include',
         })
         .then(res => res.json())
         .catch(err => console.error(err));
