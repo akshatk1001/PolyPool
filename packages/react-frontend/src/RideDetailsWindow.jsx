@@ -13,6 +13,8 @@ import {
 
 function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
   const [user, setUser] = useState(undefined);
+  const [isRequesting, setIsRequesting] = useState(false); // if the user has clicked to request ride
+  const [requestSuccess, setRequestSuccess] = useState(false);
 
   useEffect(() => {
     fetchUser()
@@ -28,10 +30,15 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
   const totalSeats = ride.seats;
   const takenSeats = passengerNames.length;
   const remainingSeats = Math.max(totalSeats - takenSeats, 0);
+  // Check if the current user is already a passenger in this ride
+  const isCurrentUserPassenger = Array.isArray(ride.other_riders)
+    ? ride.other_riders.some((rider) => rider._id === user?._id)
+    : false;
 
   // Call updateUserAPI to add this user to the drivers requested rides
   async function createRequest() {
-    if (remainingSeats === 0) {
+    // don't allow req if its full or user is alr in requesting state or user is already a passenger
+    if (remainingSeats === 0 || isRequesting || isCurrentUserPassenger) {
       return;
     }
 
@@ -41,6 +48,9 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
     }
 
     try {
+      setIsRequesting(true);
+      setRequestSuccess(false);
+
       // update ride to list this user as passenger
       console.log('Requesting ride with ID:', ride._id);
       const rideResponse = await fetch(`${API_URL}/api/rides/${ride._id}`, {
@@ -69,10 +79,12 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
         return;
       }
 
+      setRequestSuccess(true);
       onRideUpdated();
-      onClose();
     } catch (err) {
       console.error('Error requesting ride:', err);
+    } finally {
+      setIsRequesting(false);
     }
   }
 
@@ -160,10 +172,14 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
           <div className="rd-action-row">
             <button
               className="rd-request-btn"
-              disabled={!user || remainingSeats === 0}
+              disabled={!user || remainingSeats === 0 || isRequesting || isCurrentUserPassenger}
               onClick={() => createRequest()}
             >
-              Request Ride
+              {isCurrentUserPassenger || requestSuccess
+                ? 'Ride Requested'
+                : isRequesting
+                  ? 'Requesting...'
+                  : 'Request Ride'}
             </button>
           </div>
         </div>
