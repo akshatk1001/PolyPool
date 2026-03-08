@@ -3,58 +3,72 @@ import { useState, useEffect } from 'react';
 import fetchUser from './utils/fetchUser';
 import EditRideWindow from './EditRideWindow.jsx';
 import { API_URL } from './constants/api';
-import { CalendarIcon, ClockIcon, SeatIcon, PersonIcon, CarIcon, WavyIcon } from './imagesAndIcons/RideIcons.jsx';
+import {
+  CalendarIcon,
+  ClockIcon,
+  SeatIcon,
+  PersonIcon,
+  CarIcon,
+} from './imagesAndIcons/RideIcons.jsx';
 
 function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
-  const user = fetchUser();
+  const [user, setUser] = useState(undefined);
   const [showEditRide, setShowEditRide] = useState(false);
 
-  
+  useEffect(() => {
+    fetchUser()
+      .then(setUser)
+      .catch(() => setUser(null));
+  }, []);
+
   const handleDelete = () => {
     if (window.confirm('Are you sure you want to delete this ride?')) {
       fetch(`${API_URL}/api/rides/${ride._id}`, {
         method: 'DELETE',
-        credentials: 'include'
+        credentials: 'include',
       })
-      .then(res => {
-        if (res.ok) {
-          onRideUpdated();
-        } else {
-          console.error('Failed to delete ride');
-        }
-      })
-      .catch(err => console.error(err));
+        .then((res) => {
+          if (res.ok) {
+            onRideUpdated();
+          } else {
+            console.error('Failed to delete ride');
+          }
+        })
+        .catch((err) => console.error(err));
     }
   };
 
   const handleCancel = () => {
     if (window.confirm('Are you sure you want to cancel this ride?')) {
       // Remove user from ride's other_riders
-      const updatedOtherRiders = (ride.other_riders ?? []).filter(rider => 
-        (typeof rider === 'string' ? rider : rider._id) !== user._id);
+      const updatedOtherRiders = (ride.other_riders ?? []).filter(
+        (rider) => (typeof rider === 'string' ? rider : rider._id) !== user._id,
+      );
       fetch(`${API_URL}/api/rides/${ride._id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ other_riders: updatedOtherRiders })
+        body: JSON.stringify({ other_riders: updatedOtherRiders }),
       })
-      .then(res => res.json())
-      .then(() => {
-        // Remove ride from user's rides_as_passenger
-        const updatedPassengerRides = (user.rides_as_passenger ?? []).filter(rideId => rideId !== ride._id);
-        fetch(`${API_URL}/api/users/${user._id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ rides_as_passenger: updatedPassengerRides })
-        })
-        .then(res => res.json())
+        .then((res) => res.json())
         .then(() => {
-          onRideUpdated();
+          // Remove ride from user's rides_as_passenger
+          const updatedPassengerRides = (user.rides_as_passenger ?? []).filter(
+            (rideId) => rideId !== ride._id,
+          );
+          fetch(`${API_URL}/api/users/${user._id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ rides_as_passenger: updatedPassengerRides }),
+          })
+            .then((res) => res.json())
+            .then(() => {
+              onRideUpdated();
+            })
+            .catch((err) => console.error(err));
         })
-        .catch(err => console.error(err));
-      })
-      .catch(err => console.error(err));
+        .catch((err) => console.error(err));
     }
   };
 
@@ -95,90 +109,92 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
 
   return (
     <div className="ride-details-card">
+      <div className="rd-header">
+        <h2 className="rd-title">
+          {driverName}&rsquo;s Ride to {ride.destination || 'N/A'}
+        </h2>
+      </div>
 
-        <div className="rd-header">
-            <h2 className="rd-title">
-            {driverName}&rsquo;s Ride to {ride.destination || 'N/A'}
-            </h2>
+      <div className="rd-body">
+        <div className="rd-subtitle-row">
+          <h3 className="rd-subtitle">Ride Details</h3>
+          <span className="rd-price">${ride.cost ?? 0}</span>
         </div>
 
-        <div className="rd-body">
+        <div className="rd-info-grid">
+          <div className="rd-info-item">
+            <CalendarIcon />
+            <span>Date: {startDate}</span>
+          </div>
 
-            <div className="rd-subtitle-row">
-            <h3 className="rd-subtitle">Ride Details</h3>
-            <span className="rd-price">${ride.cost ?? 0}</span>
-            </div>
+          <div className="rd-info-item">
+            <ClockIcon />
+            <span>Time: {startTime}</span>
+          </div>
 
-            <div className="rd-info-grid">
+          <div className="rd-info-item">
+            <SeatIcon />
+            <span>
+              Remaining available Seats: {remainingSeats}/{totalSeats}
+            </span>
+          </div>
 
-                <div className="rd-info-item">
-                    <CalendarIcon />
-                    <span>Date: {startDate}</span>
-                </div>
-
-                <div className="rd-info-item">
-                    <ClockIcon />
-                    <span>Time: {startTime}</span>
-                </div>
-
-                <div className="rd-info-item">
-                    <SeatIcon />
-                    <span>Remaining available Seats: {remainingSeats}/{totalSeats}</span>
-                </div>
-
-                <div className="rd-info-item">
-                    <CarIcon />
-                    <span>{ride.car}</span>
-                </div>
-
-            </div>
-
-            <div className="rd-subtitle-row">
-                <h4 className="rd-subtitle">Passengers:</h4>
-            </div>
-
-            <div className="rd-info-item">
-                <PersonIcon />
-                <span>Passengers: {passengerNames.length > 0 ? passengerNames.join(', ') : 'None'}</span>
-            </div>
-
-            {ride.description && (
-            <div className="rd-description">
-                <span className="rd-desc-label">Description:&nbsp;</span>
-                {ride.description}
-            </div>
-            )}
-
-            <div className="rd-action-row">
-
-            {isDriver ? (  
-              <button className="edit-ride-button" onClick={() => setShowEditRide(true)}>
-                Edit
-              </button>
-            ) : null}
-
-            {showEditRide && (
-                <EditRideWindow
-                ride={ride}
-                onClose={() => setShowEditRide(false)}
-                onRideEdited={onRideUpdated}
-                />
-            )}
-
-            {isDriver ? (
-                <button className="delete-ride-button" onClick={handleDelete}>
-                Delete Ride
-                </button>
-            ) : null}
-
-            {!isDriver && (
-                <button className="cancel-ride-button" onClick={handleCancel}>
-                Cancel Ride
-                </button>
-            )}
-
-            </div>
+          <div className="rd-info-item">
+            <CarIcon />
+            <span>{ride.car}</span>
+          </div>
         </div>
+
+        <div className="rd-subtitle-row">
+          <h4 className="rd-subtitle">Passengers:</h4>
+        </div>
+
+        <div className="rd-info-item">
+          <PersonIcon />
+          <span>
+            Passengers:{' '}
+            {passengerNames.length > 0 ? passengerNames.join(', ') : 'None'}
+          </span>
+        </div>
+
+        {ride.description && (
+          <div className="rd-description">
+            <span className="rd-desc-label">Description:&nbsp;</span>
+            {ride.description}
+          </div>
+        )}
+
+        <div className="rd-action-row">
+          {isDriver ? (
+            <button
+              className="edit-ride-button"
+              onClick={() => setShowEditRide(true)}
+            >
+              Edit
+            </button>
+          ) : null}
+
+          {showEditRide && (
+            <EditRideWindow
+              ride={ride}
+              onClose={() => setShowEditRide(false)}
+              onRideEdited={onRideUpdated}
+            />
+          )}
+
+          {isDriver ? (
+            <button className="delete-ride-button" onClick={handleDelete}>
+              Delete Ride
+            </button>
+          ) : null}
+
+          {!isDriver && (
+            <button className="cancel-ride-button" onClick={handleCancel}>
+              Cancel Ride
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
