@@ -35,7 +35,7 @@ function HomePage() {
           />
         )}
       </AppNavbar>
-      <AppMainContent rides={rides} />
+      <AppMainContent rides={rides} onRideUpdated={loadRides} />
     </div>
   );
 }

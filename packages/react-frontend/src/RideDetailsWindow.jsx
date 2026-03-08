@@ -11,7 +11,7 @@ import {
   WavyIcon,
 } from './imagesAndIcons/RideIcons';
 
-function RideDetailsWindow({ ride, onClose }) {
+function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
   const [user, setUser] = useState(undefined);
 
   useEffect(() => {
@@ -69,6 +69,7 @@ function RideDetailsWindow({ ride, onClose }) {
         return;
       }
 
+      onRideUpdated();
       onClose();
     } catch (err) {
       console.error('Error requesting ride:', err);

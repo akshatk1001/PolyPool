@@ -4,7 +4,7 @@ import Star from './imagesAndIcons/star.png';
 import { useState } from 'react';
 import RideDetailsWindow from './RideDetailsWindow';
 
-function RidePreviewCard({ ride }) {
+function RidePreviewCard({ ride, onRideUpdated }) {
   const [showRideDetails, setShowRideDetails] = useState(false);
 
   // get average rating for driver
@@ -55,7 +55,11 @@ function RidePreviewCard({ ride }) {
       </button>
 
       {showRideDetails && (
-        <RideDetailsWindow ride={ride} onClose={() => setShowRideDetails(false)} />
+        <RideDetailsWindow
+          ride={ride}
+          onClose={() => setShowRideDetails(false)}
+          onRideUpdated={onRideUpdated}
+        />
       )}
     </>
   );
