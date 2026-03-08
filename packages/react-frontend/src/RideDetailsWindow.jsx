@@ -2,14 +2,35 @@ import { useEffect, useState } from 'react';
 import './RideDetailsWindow.css';
 import fetchUser from './utils/fetchUser.jsx';
 import { API_URL } from './constants/api';
-import { CalendarIcon, ClockIcon, SeatIcon, PersonIcon, CarIcon, WavyIcon } from './imagesAndIcons/RideIcons';
+import {
+  CalendarIcon,
+  ClockIcon,
+  SeatIcon,
+  PersonIcon,
+  CarIcon,
+  WavyIcon,
+} from './imagesAndIcons/RideIcons';
 
 function RideDetailsWindow({ ride, onClose }) {
   const [user, setUser] = useState(undefined);
 
   useEffect(() => {
-    fetchUser().then(setUser).catch(() => setUser(null));
+    fetchUser()
+      .then(setUser)
+      .catch(() => setUser(null));
   }, []);
+
+  const passengerNames = Array.isArray(ride.other_riders)
+    ? ride.other_riders
+        .map((other_rider) => {
+          if (typeof other_rider === 'object' && other_rider !== null)
+            return other_rider.name || '';
+        })
+    : [];
+
+  const totalSeats = ride.seats;
+  const takenSeats = passengerNames.length;
+  const remainingSeats = Math.max(totalSeats - takenSeats, 0);
 
   // Call updateUserAPI to add this user to the drivers requested rides
   async function createRequest() {
@@ -38,7 +59,7 @@ function RideDetailsWindow({ ride, onClose }) {
       }
 
       // update user list to add this ride as a ride the user is a passenger in
-      console.log("Updating user to be as a passenger in their profile")
+      console.log('Updating user to be as a passenger in their profile');
       const userResponse = await fetch(`${API_URL}/api/users/${user._id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -56,7 +77,6 @@ function RideDetailsWindow({ ride, onClose }) {
       console.error('Error requesting ride:', err);
     }
   }
-
 
   const driverName =
     typeof ride.driver === 'object' && ride.driver !== null
@@ -80,32 +100,19 @@ function RideDetailsWindow({ ride, onClose }) {
       })
     : 'N/A';
 
-  const passengerNames = Array.isArray(ride.other_riders)
-    ? ride.other_riders
-        .map((r) => {
-          if (typeof r === 'object' && r !== null) return r.name || '';
-          return typeof r === 'string' && !/^[a-f\d]{24}$/i.test(r) ? r : '';
-        })
-        .filter(Boolean)
-    : [];
-
-  const totalSeats = ride.seats ?? 0;
-  const takenSeats = passengerNames.length;
-  const remainingSeats = Math.max(totalSeats - takenSeats, 0);
-
   return (
     <div className="ride-details-window" onClick={onClose}>
       <div className="ride-details-card" onClick={(e) => e.stopPropagation()}>
-
         <div className="rd-header">
           <h2 className="rd-title">
             {driverName}&rsquo;s Ride to {ride.destination || 'N/A'}
           </h2>
-          <span className="rd-close" onClick={onClose}>&#x2715;</span>
+          <span className="rd-close" onClick={onClose}>
+            &#x2715;
+          </span>
         </div>
 
         <div className="rd-body">
-
           <div className="rd-subtitle-row">
             <h3 className="rd-subtitle">Ride Details</h3>
             <span className="rd-price">${ride.cost ?? 0}</span>
@@ -123,11 +130,16 @@ function RideDetailsWindow({ ride, onClose }) {
 
             <div className="rd-info-item">
               <SeatIcon />
-              <span>Remaining available Seats: {remainingSeats}/{totalSeats}</span>
+              <span>
+                Remaining available Seats: {remainingSeats}/{totalSeats}
+              </span>
             </div>
             <div className="rd-info-item">
               <PersonIcon />
-              <span>Passengers: {passengerNames.length > 0 ? passengerNames.join(', ') : 'None'}</span>
+              <span>
+                Passengers:{' '}
+                {passengerNames.length > 0 ? passengerNames.join(', ') : 'None'}
+              </span>
             </div>
 
             {ride.car && (
