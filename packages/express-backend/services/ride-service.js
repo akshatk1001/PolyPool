@@ -5,7 +5,7 @@ mongoose.set('debug', true);
 
 function populateRideUsers(query) {
   return query
-    .populate('driver', 'name')
+    .populate('driver', 'name profile_pic ratings')
     .populate('other_riders', 'name');
 }
 
