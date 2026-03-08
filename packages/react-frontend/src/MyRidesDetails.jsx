@@ -42,13 +42,16 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
     if (window.confirm('Are you sure you want to cancel this ride?')) {
       // Remove user from ride's other_riders
       const updatedOtherRiders = (ride.other_riders ?? []).filter(
-        (rider) => (typeof rider === 'string' ? rider : rider._id) !== user._id,
+        (rider) => rider._id !== user._id,
       );
       fetch(`${API_URL}/api/rides/${ride._id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ other_riders: updatedOtherRiders }),
+        // extract only the rider IDs since updatedForRiders contains both IDs and names
+        body: JSON.stringify({
+          other_riders: updatedOtherRiders.map((rider) => rider._id),
+        }),
       })
         .then((res) => res.json())
         .then(() => {
@@ -72,12 +75,7 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
     }
   };
 
-  const driverName =
-    typeof ride.driver === 'object' && ride.driver !== null
-      ? ride.driver.name || 'Unknown'
-      : typeof ride.driver === 'string' && !/^[a-f\d]{24}$/i.test(ride.driver)
-        ? ride.driver
-        : 'Unknown';
+  const driverName = ride.driver?.name || 'Unknown';
 
   const startDate = ride.start_time
     ? new Date(ride.start_time).toLocaleDateString('en-US', {
@@ -96,11 +94,8 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
 
   const passengerNames = Array.isArray(ride.other_riders)
     ? ride.other_riders
-        .map((r) => {
-          if (typeof r === 'object' && r !== null) return r.name || '';
-          return typeof r === 'string' && !/^[a-f\d]{24}$/i.test(r) ? r : '';
-        })
-        .filter(Boolean)
+        .map((rider) => rider.name || '')
+        .filter(Boolean) // remove deleted passengers ('')
     : [];
 
   const totalSeats = ride.seats ?? 0;
