@@ -85,19 +85,24 @@ function CreateRideWindow({ onClose, onRideCreated }) {
         // Parse the response to get the created ride with its ID
         const createdRide = await response.json();
         console.log('Ride created successfully', response.status, createdRide);
-        onClose();
-        onRideCreated();
 
         // Add this ride to the user's rides_as_driver list using the created ride's ID
-        fetch(`${API_URL}/api/users/${user._id}`, {
+        const userResponse = await fetch(`${API_URL}/api/users/${user._id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ rides_as_driver: createdRide._id }),
           credentials: 'include',
-        })
-          .then((res) => res.json())
-          .then((data) => console.log('User updated with new ride:', data))
-          .catch((err) => console.error('Error updating user:', err));
+        });
+
+        if (!userResponse.ok) {
+          console.error('Error updating user with new ride:', userResponse.status);
+        } else {
+          const updatedUser = await userResponse.json();
+          console.log('User updated with new ride:', updatedUser);
+        }
+
+        onClose();
+        onRideCreated();
       } else {
         // TODO: Show error message
         console.log('Server response error:', response.status);
