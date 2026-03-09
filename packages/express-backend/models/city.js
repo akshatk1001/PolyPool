@@ -3,13 +3,13 @@ import mongoose from 'mongoose';
 const CitySchema = new mongoose.Schema(
   {
     name: {
-        type: String,
-        required: true,
-        trim: true
+      type: String,
+      required: true,
+      trim: true,
     },
     lat: {
-        type: Number,
-        required: true,
+      type: Number,
+      required: true,
     },
     lng: {
       type: Number,
@@ -18,7 +18,16 @@ const CitySchema = new mongoose.Schema(
     population: {
       type: Number,
       required: true,
-    }
+    },
+    nearbyCities: {
+      type: [
+        {
+          name: { type: String, required: true },
+          distance: { type: Number, required: true },
+        },
+      ],
+      default: [],
+    },
   },
 
   { collection: 'cities_list' },

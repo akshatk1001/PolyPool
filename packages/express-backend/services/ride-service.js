@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import rideModel from '../models/ride.js';
+import cityModel from '../models/city.js';
 
 mongoose.set('debug', true);
 
@@ -9,9 +10,22 @@ function populateRideUsers(query) {
     .populate('other_riders', 'name');
 }
 
+// Build a list of city names to match: the searched city + any within 15 miles
+function getDestinations(dest) {
+  return cityModel
+    .findOne({ name: { $regex: `^${dest}$`, $options: 'i' } })
+    .select('name nearbyCities')
+    .then((city) => {
+      if (!city) return [dest];
+      const names = city.nearbyCities.map((c) => c.name);
+      names.push(city.name);
+      return names;
+    });
+}
+
 function searchRide(dest, date, price) {
   let promise;
-  if ((dest === undefined) && date === undefined && price === undefined) {
+  if (dest === undefined && date === undefined && price === undefined) {
     promise = populateRideUsers(rideModel.find());
   } else if (date === undefined && price === undefined) {
     promise = getRides(dest);
@@ -25,34 +39,48 @@ function searchRide(dest, date, price) {
 
 function getRidesByDP(dest, date, price) {
   const search_Date = new Date(date);
-  const promise = populateRideUsers(
-    rideModel.find({ destination: dest, start_time: { $gte: search_Date}, cost: { $lte: Number(price) } }),
-  )
+  return getDestinations(dest)
+    .then((destinations) =>
+      populateRideUsers(
+        rideModel.find({
+          destination: { $in: destinations },
+          start_time: { $gte: search_Date },
+          cost: { $lte: Number(price) },
+        }),
+      ),
+    )
     .catch((err) => console.log(err));
-  return promise;
 }
 
 //function to get rides going to that destination regardless of date
 function getRides(dest) {
-  const promise = populateRideUsers(
-    rideModel.find({ destination: { $regex: dest, $options: 'i' } })
-  ).catch((err) => console.log(err));
-  return promise;
+  return getDestinations(dest)
+    .then((destinations) =>
+      populateRideUsers(rideModel.find({ destination: { $in: destinations } })),
+    )
+    .catch((err) => console.log(err));
 }
 
 //function to get rides going to that destination on that date
 function getRidesByDate(dest, date) {
   const search_Date = new Date(date);
-  const promise = populateRideUsers(
-    rideModel.find({ destination: { $regex: dest, $options: 'i' }, start_time: { $gte: search_Date} }),
-  )
+  return getDestinations(dest)
+    .then((destinations) =>
+      populateRideUsers(
+        rideModel.find({
+          destination: { $in: destinations },
+          start_time: { $gte: search_Date },
+        }),
+      ),
+    )
     .catch((err) => console.log(err));
-  return promise;
 }
 
 //function to get a ride by its id
 function getRideById(rideId) {
-  const promise = populateRideUsers(rideModel.findById(rideId)).catch((err) => console.log(err));
+  const promise = populateRideUsers(rideModel.findById(rideId)).catch((err) =>
+    console.log(err),
+  );
   return promise;
 }
 
@@ -60,14 +88,17 @@ function getRideById(rideId) {
 function updateRide(rideId, updates) {
   if (updates.other_rider) {
     const promise = rideModel
-    .findByIdAndUpdate(rideId,
-      {$addToSet: { other_riders: updates.other_rider}},
-      { new: true }
-    )
-    .catch((err) => console.log(err));
-  return promise;
+      .findByIdAndUpdate(
+        rideId,
+        { $addToSet: { other_riders: updates.other_rider } },
+        { new: true },
+      )
+      .catch((err) => console.log(err));
+    return promise;
   }
-  return rideModel.findByIdAndUpdate(rideId, updates, { new: true }).catch((err) => console.log(err));
+  return rideModel
+    .findByIdAndUpdate(rideId, updates, { new: true })
+    .catch((err) => console.log(err));
 }
 
 //function to delete a ride by its id
@@ -90,5 +121,5 @@ export default {
   getRideById,
   deleteRide,
   createRide,
-  updateRide
+  updateRide,
 };
