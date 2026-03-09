@@ -118,12 +118,18 @@ app.listen(port, () => {
   console.log(`App listening at ${port}`);
 });
 
+// ----Auth Middleware (TE5 comment)----
+function requireAuth(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  return res.status(401).json({ error: 'Not authenticated' }); // 401 = not authenticated (google)
+}
+
 // ----API Endpoints----
 // Create a new ride
-app.post('/api/rides', async (req, res) => {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({ error: 'Not authenticated' });
-  }
+// first requireAuth runs, if returns next then run the async function
+app.post('/api/rides', requireAuth, async (req, res) => {
   try {
     const ride = await rideService.createRide(req.body);
     res.status(201).json(ride);
@@ -145,10 +151,7 @@ app.get('/api/rides', async (req, res) => {
   }
 });
 
-app.patch('/api/rides/:id', async (req, res) => {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({ error: 'Not authenticated' });
-  }
+app.patch('/api/rides/:id', requireAuth, async (req, res) => {
   try {
     const result = await rideService.updateRide(req.params.id, req.body);
     res.json(result);
@@ -157,10 +160,7 @@ app.patch('/api/rides/:id', async (req, res) => {
   }
 });
 
-app.delete('/api/rides/:id', async (req, res) => {
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({ error: 'Not authenticated' });
-  }
+app.delete('/api/rides/:id', requireAuth, async (req, res) => {
   try {
     await rideService.deleteRide(req.params.id);
     res.status(204).send();
@@ -231,12 +231,8 @@ app.get('/auth/microsoft/callback', (req, res, next) => {
 // });
 
 // return currently logged-in user
-app.get('/api/auth/me', (req, res) => {
-  if (req.isAuthenticated()) {
-    res.json(req.user);
-  } else {
-    res.status(401).json({ error: 'Not authenticated' });
-  }
+app.get('/api/auth/me', requireAuth, (req, res) => {
+  return res.json(req.user);
 });
 
 // log out
@@ -312,12 +308,8 @@ function getNormalizedUserUpdates(body) {
   return updates;
 }
 
-app.get('/api/users/:id', async (req, res) => {
+app.get('/api/users/:id', requireAuth, async (req, res) => {
   const { id } = req.params;
-
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({ error: 'Not authenticated' });
-  }
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: 'Invalid user id' });
@@ -336,12 +328,8 @@ app.get('/api/users/:id', async (req, res) => {
   }
 });
 
-app.patch('/api/users/:id', async (req, res) => {
+app.patch('/api/users/:id', requireAuth, async (req, res) => {
   const { id } = req.params;
-
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({ error: 'Not authenticated' });
-  }
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: 'Invalid user id' });
