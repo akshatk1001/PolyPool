@@ -23,8 +23,7 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
   }, []);
 
   const passengerNames = Array.isArray(ride.other_riders)
-    ? ride.other_riders
-        .map((otherRider) => otherRider.name || '')
+    ? ride.other_riders.map((otherRider) => otherRider.name || '')
     : [];
 
   const totalSeats = ride.seats;
@@ -172,7 +171,12 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
           <div className="rd-action-row">
             <button
               className="rd-request-btn"
-              disabled={!user || remainingSeats === 0 || isRequesting || isCurrentUserPassenger}
+              disabled={
+                !user ||
+                remainingSeats === 0 ||
+                isRequesting ||
+                isCurrentUserPassenger
+              }
               onClick={() => createRequest()}
             >
               {isCurrentUserPassenger || requestSuccess

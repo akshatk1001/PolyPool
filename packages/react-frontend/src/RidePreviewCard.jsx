@@ -8,12 +8,13 @@ function RidePreviewCard({ ride, onRideUpdated }) {
   const [showRideDetails, setShowRideDetails] = useState(false);
 
   // get average rating for driver
-  const driverRating = Array.isArray(ride.driver?.ratings) && ride.driver.ratings.length > 0
-    ? (
-        ride.driver.ratings.reduce((sum, rating) => sum + rating, 0) /
-        ride.driver.ratings.length
-      ).toFixed(1)
-    : 'No Ratings';
+  const driverRating =
+    Array.isArray(ride.driver?.ratings) && ride.driver.ratings.length > 0
+      ? (
+          ride.driver.ratings.reduce((sum, rating) => sum + rating, 0) /
+          ride.driver.ratings.length
+        ).toFixed(1)
+      : 'No Ratings';
 
   const formattedDate = new Date(ride.start_time).toLocaleString('en-US', {
     month: 'short',
@@ -24,12 +25,13 @@ function RidePreviewCard({ ride, onRideUpdated }) {
 
   return (
     <>
-      <button className="ride-preview" onClick={() => setShowRideDetails(true)}>      <img
-        src={ride.driver?.profile_pic || ProfilePic}
-        alt="driver"
-        className="profile-pic"
-      />
-
+      <button className="ride-preview" onClick={() => setShowRideDetails(true)}>
+        {' '}
+        <img
+          src={ride.driver?.profile_pic || ProfilePic}
+          alt="driver"
+          className="profile-pic"
+        />
         <div className="ride-info">
           <h2 className="destination">{ride.destination}</h2>
           <div className="driver-row">
@@ -48,7 +50,6 @@ function RidePreviewCard({ ride, onRideUpdated }) {
             </div>
           </div>
         </div>
-
         <div className="ride-meta">
           <div className="price">${ride.cost}</div>
         </div>

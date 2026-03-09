@@ -3,7 +3,7 @@ import Slider from '@mui/material/Slider';
 import './SearchBar.css';
 import { API_URL } from './constants/api';
 
-const SearchBar = ({onSearchResults}) => {
+const SearchBar = ({ onSearchResults }) => {
   const [value, setValue] = useState('');
   const [cityOptions, setCityOptions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -19,40 +19,42 @@ const SearchBar = ({onSearchResults}) => {
   useEffect(() => {
     const fetchCities = async () => {
       if (!value.trim()) {
-        setCityOptions([]); 
+        setCityOptions([]);
         setShowDropdown(false);
         return;
       }
 
-      try { 
-        const response = await fetch(`${API_URL}/api/cities/autofill?dest=${value}`);
+      try {
+        const response = await fetch(
+          `${API_URL}/api/cities/autofill?dest=${value}`,
+        );
         const data = await response.json();
-        
-        setCityOptions(data); 
-        setShowDropdown(true); 
+
+        setCityOptions(data);
+        setShowDropdown(true);
       } catch (error) {
-        console.log("Fetch error: ", error);
+        console.log('Fetch error: ', error);
       }
     };
 
-    const debounceTimer = setTimeout(fetchCities, 300); 
+    const debounceTimer = setTimeout(fetchCities, 300);
     return () => clearTimeout(debounceTimer);
   }, [value]);
 
   const executeSearch = async (searchTerm) => {
     const query = searchTerm || value;
     let dateParam;
-    if (dt_value){
+    if (dt_value) {
       dateParam = new Date(dt_value).toISOString();
-    }else{
+    } else {
       dateParam = new Date().toISOString();
     }
-    const priceParam = price_value ? `&price=${price_value}` :'';
+    const priceParam = price_value ? `&price=${price_value}` : '';
 
     try {
-      const url = query 
-      ? `${API_URL}/api/rides?dest=${query}&date=${dateParam}${priceParam}`
-      : `${API_URL}/api/rides`;
+      const url = query
+        ? `${API_URL}/api/rides?dest=${query}&date=${dateParam}${priceParam}`
+        : `${API_URL}/api/rides`;
 
       const response = await fetch(url);
       const data = await response.json();
@@ -76,7 +78,7 @@ const SearchBar = ({onSearchResults}) => {
   };
 
   return (
-    <div className="search-container" >
+    <div className="search-container">
       <div className="input-group">
         <input
           type="text"
@@ -92,10 +94,7 @@ const SearchBar = ({onSearchResults}) => {
         {showDropdown && cityOptions.length > 0 && (
           <ul className="suggestions-dropdown">
             {cityOptions.map((city, index) => (
-              <li
-                key={index}
-                onClick={() => handleOptionClick(city.name)}
-              >
+              <li key={index} onClick={() => handleOptionClick(city.name)}>
                 {city.name}
               </li>
             ))}
@@ -103,15 +102,15 @@ const SearchBar = ({onSearchResults}) => {
         )}
       </div>
       <div className="filter-row">
-        <div className="dateTime-container" >
+        <div className="dateTime-container">
           <label htmlFor="search_dt">Date/Time</label>
-            <input
-              type='datetime-local'
-              name="search_dt"
-              id="search_dt"
-              value={dt_value}
-              onChange={(e) => setDtValue(e.target.value)}
-              />
+          <input
+            type="datetime-local"
+            name="search_dt"
+            id="search_dt"
+            value={dt_value}
+            onChange={(e) => setDtValue(e.target.value)}
+          />
         </div>
 
         <div className="slider-container">
@@ -123,7 +122,7 @@ const SearchBar = ({onSearchResults}) => {
             getAriaValueText={valuetext}
             min={0}
             max={100}
-            color= "blue"
+            color="blue"
           />
         </div>
       </div>

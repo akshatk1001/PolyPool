@@ -192,7 +192,7 @@ app.get('/auth/microsoft/callback', (req, res, next) => {
     // have to actually log in user to session if they exist when the callback occurs
     req.logIn(user, (loginErr) => {
       if (loginErr) return next(loginErr);
-      
+
       // make sure the login is saved to the Azure API session before redirecting to frontend
       // this is so that when we call ../auth/me we have the session info to know who the user is
       req.session.save((saveErr) => {
@@ -243,6 +243,26 @@ app.post('/api/auth/logout', (req, res, next) => {
     }
     res.status(200).json({ message: 'Logged out' });
   });
+});
+
+// Get cities within 15 miles of a given city
+app.get('/api/cities/nearby', async (req, res) => {
+  const name = req.query.name;
+  if (!name) {
+    return res.status(400).json({ error: 'name query parameter is required' });
+  }
+  try {
+    const city = await cityService.getNearbyCities(name);
+    if (!city) {
+      return res.status(404).json({ error: 'City not found' });
+    }
+    res.status(200).json({
+      name: city.name,
+      nearbyCities: city.nearbyCities,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.get('/api/cities/autofill', async (req, res) => {

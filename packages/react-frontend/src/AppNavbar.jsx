@@ -5,7 +5,13 @@ import CarIcon from './imagesAndIcons/CarIcon.png';
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 
-function AppNavbar({ onCreateRideClick, onProfileClick, onSignOutClick, onMyRidesClick, children }) {
+function AppNavbar({
+  onCreateRideClick,
+  onProfileClick,
+  onSignOutClick,
+  onMyRidesClick,
+  children,
+}) {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -24,10 +30,20 @@ function AppNavbar({ onCreateRideClick, onProfileClick, onSignOutClick, onMyRide
 
   return (
     <nav className="navbar">
-      <button className="navbar-icon" onClick={goHome} type="button" aria-label="Go to home">
+      <button
+        className="navbar-icon"
+        onClick={goHome}
+        type="button"
+        aria-label="Go to home"
+      >
         <img src={PolyPoolIcon} alt="PolyPool Icon" />
       </button>
-      <button className="navbar-logo" onClick={goHome} type="button" aria-label="Go to home">
+      <button
+        className="navbar-logo"
+        onClick={goHome}
+        type="button"
+        aria-label="Go to home"
+      >
         <img src={PolyPoolLogo} alt="PolyPool Logo" />
       </button>
 
@@ -57,13 +73,19 @@ function AppNavbar({ onCreateRideClick, onProfileClick, onSignOutClick, onMyRide
           <div className="dropdown-menu">
             <button
               className="dropdown-item"
-              onClick={() => { setDropdownOpen(false); onProfileClick(); }}
+              onClick={() => {
+                setDropdownOpen(false);
+                onProfileClick();
+              }}
             >
               View Profile
             </button>
             <button
               className="dropdown-item"
-              onClick={() => { setDropdownOpen(false); onSignOutClick(); }}
+              onClick={() => {
+                setDropdownOpen(false);
+                onSignOutClick();
+              }}
             >
               Sign Out
             </button>
