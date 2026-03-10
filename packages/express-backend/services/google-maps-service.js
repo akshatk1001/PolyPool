@@ -1,14 +1,12 @@
-/*
+import dotenv from 'dotenv';
+dotenv.config();
+
+const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+
+
 //Google maps Api requests
-app.get('/api/maps/route', async (req, res ) =>{
-  const origin = req.query.origin;
-  const dest = req.query.dest;
 
-  if(!origin || !dest){
-    res.status(400).json({message: "Bad Request: origin or destination not provided"});
-    return;
-  }
-
+async function getRoute(origin, dest){
   let ComputeRoutesRequest = {
     "origin": {
       "location": {
@@ -25,23 +23,64 @@ app.get('/api/maps/route', async (req, res ) =>{
     "polylineQuality": "HIGH_QUALITY"
   };
 
-  try {
-    const route = fetch('https://routes.googleapis.com/directions/v2:computeRoutes', {
-      method : 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Goog-Api-Key': 'removed',
-        'X-Goog-FieldMask': 'routes.duration,routes.distanceMeters,routes.polyline,routes.viewport'
-      },
-      body: ComputeRoutesRequest,
-    })
+  const response = await fetch('https://routes.googleapis.com/directions/v2:computeRoutes', {
+    method : 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': GOOGLE_API_KEY, //needs to pull from .env
+      'X-Goog-FieldMask': 'routes.duration,routes.distanceMeters,routes.legs,routes.polyline.encodedPolyline,routes.viewport'
+    },
+    body: json.stringify(ComputeRoutesRequest),
+  });
 
-    //this needs to update the the database with the route object
-    //It also needs to save the cities passed in the database
-
-    res.status(200).json(route);
-  }catch (error){
-    res.status(500).json({error: error.message})
+  if (!response.ok) {
+    throw new Error(`Google Routes API failed: ${response.statusText}`);
   }
-});
-*/
+
+  const route = await response.json();
+  return route.routes[0];
+}
+
+//generates the cities along a given encoded polyline
+async function getCitiesOnRoute(polyline){
+
+  headers = {
+    'Content-Type': 'application/json',
+    'X-Goog-Api-Key': api_key,
+    'X-Goog-FieldMask': 'places.displayName,places.formattedAddress'
+  }
+
+  data = {
+    "textQuery": "city", 
+    "searchAlongRouteParameters": {
+      "polyline": {
+        "encodedPolyline": polyline
+      }
+    }
+  };
+  const cities = fetch('https://places.googleapis.com/v1/places:searchText', {
+    method : 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': GOOGLE_API_KEY,
+      'X-Goog-FieldMask': 'places.displayName,places.formattedAddress'
+    },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    throw new Error(`Google Places API failed: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  
+  if (data.places) {
+    return data.places.map(place => place.displayName.text);
+  }
+  
+  return [];
+}
+
+export default {
+  getCitiesOnRoute,
+  getRoute
+}

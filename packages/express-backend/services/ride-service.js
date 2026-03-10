@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import rideModel from '../models/ride.js';
+import googleMapsService from '/google-maps-service.js';
 
 mongoose.set('debug', true);
 
@@ -89,10 +90,19 @@ function deleteRide(rideId) {
 }
 
 // function to create a ride in the database
-function createRide(ride) {
-  const rideToAdd = new rideModel(ride);
-  const promise = rideToAdd.save().catch((err) => console.log(err));
-  return promise;
+async function createRide(ride) {
+  try {
+    const rideToAdd = new rideModel(ride);
+
+    rideToAdd.route = await googleMapsService.getRoute(rideToAdd.starting_point, rideToAdd.destination);
+    rideToAdd.cities_along_route = await googleMapsService.getCitiesOnRoute(rideToAdd.route.polyline.encodedPolyline);
+
+    const promise = rideToAdd.save().catch((err) => console.log(err));
+    return promise;
+  } catch (error) {
+    console.error("Failed to create ride:", error);
+    throw error; 
+  }
 }
 
 export default {
