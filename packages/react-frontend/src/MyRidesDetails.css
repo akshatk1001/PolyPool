@@ -1,5 +1,6 @@
 .ride-details-card {
   width: 760px;
+  max-width: 100%;
   max-height: 80vh;
   display: flex;
   flex-direction: column;
@@ -167,4 +168,14 @@
 
 .cancel-ride-button:active {
   transform: scale(0.96);
+}
+
+@media (max-width: 600px) {
+  .ride-details-card {
+    max-height: none;
+  }
+
+  .rd-body {
+    overflow-y: visible;
+  }
 }
