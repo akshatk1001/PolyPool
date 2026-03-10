@@ -1,18 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AppNavbar from './AppNavbar';
 import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
 import ProfileEditWindow from './ProfileEditWindow';
-import useFetchUser from './utils/fetchUser';
-import useRides from './hooks/useRides';
+import fetchUser from './utils/fetchUser';
+import fetchRides from './utils/useRides';
 import './ProfilePage.css';
 
 function ProfilePage() {
   const [showCreateRide, setShowCreateRide] = useState(false);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
-  const [profileRefreshKey, setProfileRefreshKey] = useState(0);
-  const user = useFetchUser(profileRefreshKey);
-  const { fetchRides } = useRides();
+  const [user, setUser] = useState(undefined);
+
+  function loadUser() {
+    fetchUser().then(setUser).catch(() => setUser(null));
+  }
+
+  useEffect(() => {
+    loadUser();
+  }, []);
   const signOut = useSignOut();
 
   if (!user) {
@@ -68,7 +74,7 @@ function ProfilePage() {
           <ProfileEditWindow
             currentUser={user}
             onClose={() => setShowProfileEdit(false)}
-            onSaved={() => setProfileRefreshKey((currentKey) => currentKey + 1)}
+            onSaved={loadUser}
           />
         )}
       </AppNavbar>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'; // Added useEffect
 import Slider from '@mui/material/Slider';
 import './SearchBar.css';
+import { API_URL } from './constants/api';
 
 const SearchBar = ({onSearchResults}) => {
   const [value, setValue] = useState('');
@@ -24,7 +25,7 @@ const SearchBar = ({onSearchResults}) => {
       }
 
       try { 
-        const response = await fetch(`http://localhost:8000/api/cities/autofill?dest=${value}`);
+        const response = await fetch(`${API_URL}/api/cities/autofill?dest=${value}`);
         const data = await response.json();
         
         setCityOptions(data); 
@@ -50,8 +51,8 @@ const SearchBar = ({onSearchResults}) => {
 
     try {
       const url = query 
-      ? `http://localhost:8000/api/rides?dest=${query}&date=${dateParam}${priceParam}`
-      : `http://localhost:8000/api/rides`;
+      ? `${API_URL}/api/rides?dest=${query}&date=${dateParam}${priceParam}`
+      : `${API_URL}/api/rides`;
 
       const response = await fetch(url);
       const data = await response.json();

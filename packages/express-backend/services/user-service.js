@@ -17,21 +17,26 @@ function getUserById(userId) {
 
 // Update ride details such as destination, date, or price.
 function updateUser(userId, updates) {
-  if (updates.rides_as_passenger) {
+  // if rides_as_passenger was changed then we need to modify that in the user array
+  if (updates.rides_as_passenger !== undefined) {
+    const userUpdate = Array.isArray(updates.rides_as_passenger)
+      // if it's an array, replace the whole list since that means they removed themselves from a ride
+      ? { rides_as_passenger: updates.rides_as_passenger } 
+      // if it's not an array, add this ride to the list because that means they requested to join a ride
+      : { $addToSet: { rides_as_passenger: updates.rides_as_passenger } };
     const promise = userModel
-    .findByIdAndUpdate(userId,
-      {$addToSet: { rides_as_passenger: updates.rides_as_passenger }},
-      { new: true }
-    )
+    .findByIdAndUpdate(userId, userUpdate, { new: true })
     .catch((err) => console.log(err));
   return promise;
   }
-  if(updates.rides_as_driver) {
+
+  // if rides_as_driver was changed then we need to modify that in the user array
+  if (updates.rides_as_driver !== undefined) {
+    const userUpdate = Array.isArray(updates.rides_as_driver)
+      ? { rides_as_driver: updates.rides_as_driver }
+      : { $addToSet: { rides_as_driver: updates.rides_as_driver } };
     const promise = userModel
-    .findByIdAndUpdate(userId,
-      {$addToSet: { rides_as_driver: updates.rides_as_driver }},
-      { new: true }
-    )
+    .findByIdAndUpdate(userId, userUpdate, { new: true })
     .catch((err) => console.log(err));
   return promise;
   }
@@ -101,10 +106,13 @@ async function findOrCreateMicrosoftUser(profile) {
     });
   if (userByMicrosoftId) return userByMicrosoftId;
 
-  // New user — always throw error to ask for phone number before account creation
-  const err = new Error('needs_phone_number');
-  err.pendingUser = { microsoftId, name: profile.displayName, email };
-  throw err;
+  // create new user account immediately 
+  const newUser = new userModel({
+    microsoftId,
+    name: profile.displayName,
+    email,
+  });
+  return newUser.save();
 }
 
 // Create a new Microsoft user after they have provided their phone number.

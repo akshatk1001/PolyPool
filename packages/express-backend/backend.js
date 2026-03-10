@@ -13,32 +13,44 @@ import cityService from './services/city-service.js';
 dotenv.config();
 
 const app = express();
-const port = 8000;
+const port = process.env.PORT || 8000; // azure automatically sets a PORT env var
 
 const {
   MONGO_CONNECTION_STRING,
   MICROSOFT_CLIENT_ID,
   MICROSOFT_CLIENT_SECRET,
   SESSION_SECRET,
+  FRONTEND_URL,
+  BACKEND_URL,
 } = process.env;
 const microsoftTenant = 'common';
+const isProduction = process.env.NODE_ENV === 'production';
 mongoose.set('debug', true);
 
 // ----Middleware----
 app.use(
   cors({
-    origin: 'http://localhost:5173', // where requests are allowed to come from
+    origin: FRONTEND_URL, // where requests are allowed to come from
     credentials: true, // send the session cookie (users login state) across the site
   }),
 );
 app.use(express.json());
+
+// trust 1 proxy hop when in production so that cookies are sent over HTTPS
+if (isProduction) {
+  app.set('trust proxy', 1);
+}
 
 app.use(
   session({
     secret: SESSION_SECRET || 'SESSION SECRET NOT FOUND',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false }, // SET TO SECURE IN PROD - DO NOT FORGET
+    proxy: isProduction, // required for secure cookies to work in proxy in prod
+    cookie: {
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+    },
   }),
 );
 
@@ -51,7 +63,7 @@ passport.use(
     {
       clientID: MICROSOFT_CLIENT_ID,
       clientSecret: MICROSOFT_CLIENT_SECRET,
-      callbackURL: 'http://localhost:8000/auth/microsoft/callback',
+      callbackURL: `${BACKEND_URL}/auth/microsoft/callback`,
       scope: ['openid', 'profile', 'email', 'User.Read'], // use openid connect protocol, and read profile info
       addUPNAsEmail: true, // include userPrincipalName when mail is blank
       tenant: microsoftTenant,
@@ -65,11 +77,11 @@ passport.use(
         if (err.message === 'non_calpoly_email') {
           return done(null, false); // signals auth failure
         }
-        if (err.message === 'needs_phone_number') {
-          // Save partial profile to session so the complete-signup endpoint can use it
-          req.session.pendingUser = err.pendingUser;
-          return done(null, false);
-        }
+        // if (err.message === 'needs_phone_number') {
+        //   // Save partial profile to session so the complete-signup endpoint can use it
+        //   req.session.pendingUser = err.pendingUser;
+        //   return done(null, false);
+        // }
         return done(err);
       }
     },
@@ -103,12 +115,21 @@ mongoose
   });
 
 app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
+  console.log(`App listening at ${port}`);
 });
+
+// ----Auth Middleware (TE5 comment)----
+function requireAuth(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  return res.status(401).json({ error: 'Not authenticated' }); // 401 = not authenticated (google)
+}
 
 // ----API Endpoints----
 // Create a new ride
-app.post('/api/rides', async (req, res) => {
+// first requireAuth runs, if returns next then run the async function
+app.post('/api/rides', requireAuth, async (req, res) => {
   try {
     const ride = await rideService.createRide(req.body);
     res.status(201).json(ride);
@@ -130,29 +151,19 @@ app.get('/api/rides', async (req, res) => {
   }
 });
 
-//update user info
-app.put('/api/users/:id', async (req, res) => {
-  try {
-    const result = await userService.updateUser(req.params.userId, req.body);
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.patch('/api/users/:id', async (req, res) => {
-  try {
-    const result = await userService.updateUser(req.params.id, req.body);
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.patch('/api/rides/:id', async (req, res) => {
+app.patch('/api/rides/:id', requireAuth, async (req, res) => {
   try {
     const result = await rideService.updateRide(req.params.id, req.body);
     res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/rides/:id', requireAuth, async (req, res) => {
+  try {
+    await rideService.deleteRide(req.params.id);
+    res.status(204).send();
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -172,54 +183,56 @@ app.get('/auth/microsoft/callback', (req, res, next) => {
     if (err) return next(err);
     if (!user) {
       // if they need phone number redirect to page with phone prompt
-      if (req.session.pendingUser) {
-        return res.redirect('http://localhost:5173?auth=needs_phone');
-      }
+      // if (req.session.pendingUser) {
+      //   return res.redirect(`${FRONTEND_URL}?auth=needs_phone`);
+      // }
       // otherwise just a normal auth failure
-      return res.redirect('http://localhost:5173?auth=failed');
+      return res.redirect(`${FRONTEND_URL}?auth=failed`);
     }
     // have to actually log in user to session if they exist when the callback occurs
     req.logIn(user, (loginErr) => {
       if (loginErr) return next(loginErr);
-      return res.redirect('http://localhost:5173?auth=success');
+      
+      // make sure the login is saved to the Azure API session before redirecting to frontend
+      // this is so that when we call ../auth/me we have the session info to know who the user is
+      req.session.save((saveErr) => {
+        if (saveErr) return next(saveErr);
+        return res.redirect(`${FRONTEND_URL}?auth=success`);
+      });
     });
   })(req, res, next); // have to call the auth function otherwise window just got stuck
 });
 
-// user provides their phone number
-app.post('/api/auth/complete-signup', async (req, res, next) => {
-  const pending = req.session.pendingUser;
-  const { phoneNum } = req.body;
-  if (!phoneNum) {
-    return res.status(400).json({ error: 'Phone number is required.' });
-  }
-  // create the user
-  try {
-    const user = await userService.createMicrosoftUser(
-      pending.microsoftId,
-      pending.name,
-      pending.email,
-      phoneNum,
-    );
-    // remove the pending user since now they are fully signed up
-    delete req.session.pendingUser;
-    // log in user 
-    req.logIn(user, (err) => {
-      if (err) return next(err);
-      return res.json({ success: true });
-    });
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-});
+// // user provides their phone number
+// app.post('/api/auth/complete-signup', async (req, res, next) => {
+//   const pending = req.session.pendingUser;
+//   const { phoneNum } = req.body;
+//   if (!phoneNum) {
+//     return res.status(400).json({ error: 'Phone number is required.' });
+//   }
+//   // create the user
+//   try {
+//     const user = await userService.createMicrosoftUser(
+//       pending.microsoftId,
+//       pending.name,
+//       pending.email,
+//       phoneNum,
+//     );
+//     // remove the pending user since now they are fully signed up
+//     delete req.session.pendingUser;
+//     // log in user
+//     req.logIn(user, (err) => {
+//       if (err) return next(err);
+//       return res.json({ success: true });
+//     });
+//   } catch (err) {
+//     return res.status(500).json({ error: err.message });
+//   }
+// });
 
 // return currently logged-in user
-app.get('/api/auth/me', (req, res) => {
-  if (req.isAuthenticated()) {
-    res.json(req.user);
-  } else {
-    res.status(401).json({ error: 'Not authenticated' });
-  }
+app.get('/api/auth/me', requireAuth, (req, res) => {
+  return res.json(req.user);
 });
 
 // log out
@@ -295,19 +308,11 @@ function getNormalizedUserUpdates(body) {
   return updates;
 }
 
-app.get('/api/users/:id', async (req, res) => {
+app.get('/api/users/:id', requireAuth, async (req, res) => {
   const { id } = req.params;
-
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({ error: 'Not authenticated' });
-  }
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: 'Invalid user id' });
-  }
-
-  if (req.user?._id?.toString() !== id) {
-    return res.status(403).json({ error: 'Forbidden' });
   }
 
   try {
@@ -323,19 +328,11 @@ app.get('/api/users/:id', async (req, res) => {
   }
 });
 
-app.patch('/api/users/:id', async (req, res) => {
+app.patch('/api/users/:id', requireAuth, async (req, res) => {
   const { id } = req.params;
-
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({ error: 'Not authenticated' });
-  }
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: 'Invalid user id' });
-  }
-
-  if (req.user?._id?.toString() !== id) {
-    return res.status(403).json({ error: 'Forbidden' });
   }
 
   const updates = getNormalizedUserUpdates(req.body);

@@ -20,7 +20,10 @@
   flex: 1;
   display: flex;
   justify-content: center;
-  pointer-events: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .navbar-logo img {
@@ -30,6 +33,15 @@
 }
 
 /* car logo */
+.navbar-icon {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
 .navbar-icon img {
   height: 40px;
   width: auto;
@@ -69,7 +81,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin-left: auto;
+  margin-left: 14px;
   background: var(--color-brand-gold);
   color: var(--color-brand-green);
   border: none;
@@ -120,6 +132,11 @@
   transform: scale(0.96);
 }
 
+.my-rides-button img {
+  height: 30px;
+  padding: 0%;
+}
+
 .my-rides-button:hover {
   background: var(--color-brand-gold-hover);
 }
@@ -157,7 +174,9 @@
 }
 /* Circular profile button with grey person icon */
 .profile-button {
-  background: none;
+  height: 50px;
+  width: 50px;
+  background: rgb(121, 118, 118);
   border: none;
   color: var(--color-nav-icon);
   cursor: pointer;
@@ -242,7 +261,18 @@ input::-webkit-inner-spin-button {
     white-space: nowrap;
   }
 
+  .my-rides-button {
+    font-size: 13px;
+    padding: 7px 10px;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+
   .createRide-button img {
+    height: 16px;
+  }
+
+  .my-rides-button img {
     height: 16px;
   }
 
@@ -269,4 +299,55 @@ input::-webkit-inner-spin-button {
     gap: 12px;
     margin-top: 12px;
   }
+}
+
+/* Profile dropdown styles */
+.profile-dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--color-surface-page);
+  border: 1px solid var(--color-border-muted);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 150px;
+  margin-top: 32px;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  background: var(--color-brand-gold);
+  color: var(--color-brand-green);
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-align: left;
+  border-radius: 0;
+}
+
+.dropdown-item:first-child {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.dropdown-item:last-child {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.dropdown-item:hover {
+  background: var(--color-brand-gold-hover);
+}
+
+.dropdown-item:active {
+  transform: scale(0.96);
 }

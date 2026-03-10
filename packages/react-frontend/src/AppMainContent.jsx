@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import SearchBar from './SearchBar.jsx';
 import RidePreviewCard from './RidePreviewCard.jsx';
 
-function AppMainContent({ rides }) {
+function AppMainContent({ rides, onRideUpdated }) {
   const [filteredRides, setFilteredRides] = useState(rides);
 
   useEffect(() => {
@@ -17,7 +17,13 @@ function AppMainContent({ rides }) {
 
       <div className="ride-grid">
         {filteredRides.length > 0 ? (
-             filteredRides.map((ride) => <RidePreviewCard key={ride._id} ride={ride} />)
+             filteredRides.map((ride) => (
+               <RidePreviewCard
+                 key={ride._id}
+                 ride={ride}
+                 onRideUpdated={onRideUpdated}
+               />
+             ))
            ) : (
              <p>No rides found matching your search.</p>
            )}

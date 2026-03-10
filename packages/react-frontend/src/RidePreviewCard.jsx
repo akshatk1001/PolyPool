@@ -1,11 +1,19 @@
 import './RidePreviewCard.css';
 import ProfilePic from './imagesAndIcons/ProfilePic.png';
-import Star from './imagesAndIcons/Star.png';
+import Star from './imagesAndIcons/star.png';
 import { useState } from 'react';
 import RideDetailsWindow from './RideDetailsWindow';
 
-function RidePreviewCard({ ride }) {
+function RidePreviewCard({ ride, onRideUpdated }) {
   const [showRideDetails, setShowRideDetails] = useState(false);
+
+  // get average rating for driver
+  const driverRating = Array.isArray(ride.driver?.ratings) && ride.driver.ratings.length > 0
+    ? (
+        ride.driver.ratings.reduce((sum, rating) => sum + rating, 0) /
+        ride.driver.ratings.length
+      ).toFixed(1)
+    : 'No Ratings';
 
   const formattedDate = new Date(ride.start_time).toLocaleString('en-US', {
     month: 'short',
@@ -27,7 +35,7 @@ function RidePreviewCard({ ride }) {
           <div className="driver-row">
             <span className="driver-name">{ride.driver?.name || 'Driver'}</span>
             <span className="rating">
-              Rating: {ride.driver?.rating || 0}{' '}
+              Rating: {driverRating}{' '}
               <img className="star-icon" src={Star} alt="star" />
             </span>
           </div>
@@ -47,7 +55,11 @@ function RidePreviewCard({ ride }) {
       </button>
 
       {showRideDetails && (
-        <RideDetailsWindow ride={ride} onClose={() => setShowRideDetails(false)} />
+        <RideDetailsWindow
+          ride={ride}
+          onClose={() => setShowRideDetails(false)}
+          onRideUpdated={onRideUpdated}
+        />
       )}
     </>
   );

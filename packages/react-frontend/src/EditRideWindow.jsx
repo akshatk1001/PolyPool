@@ -1,41 +1,35 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './CreateRideWindow.css';
-import fetchUser from './utils/fetchUser';
 import { API_URL } from './constants/api';
 
-function CreateRideWindow({ onClose, onRideCreated }) {
-  const [user, setUser] = useState(undefined);
+function EditRideWindow({ onClose, onRideEdited, ride }) {
+  const startDate = ride.start_time
+    ? new Date(ride.start_time).toISOString().slice(0, 10)  // "YYYY-MM-DD"
+    : '';
 
-  useEffect(() => {
-    fetchUser()
-      .then(setUser)
-      .catch(() => setUser(null));
-  }, []);
+  const startTime = ride.start_time
+    ? new Date(ride.start_time).toTimeString().slice(0, 5)  // "HH:MM"
+    : '';
 
-  useEffect(() => {
-    if (user === null) {
-      console.error('User is not signed in');
-    }
-  }, [user]);
-
-  const [ride, setRide] = useState({
-    starting_point: '',
-    destination: '',
-    start_date: '',
-    start_time: '',
-    driver: user?._id,
-    other_riders: [],
-    cost: 0,
-    car: '',
-    seats: 0,
-    deviation: 0,
-    description: '',
-  });
+  const [rideData, setRideData] = useState({
+      starting_point: ride.starting_point,
+      destination: ride.destination,
+      start_date: startDate,
+      start_time: startTime,
+      driver: ride.driver._id,
+      // extract just the IDs from the other_riders array (contains both IDs and names)
+      other_riders: (ride.other_riders ?? []).map((rider) => rider._id),
+      cost: ride.cost,
+      car: ride.car,
+      seats: ride.seats,
+      deviation: ride.deviation,
+      description: ride.description,
+  })
 
   function handleChange(event) {
     const { name, value } = event.target;
-    setRide({
-      ...ride,
+    setRideData({
+      ...rideData,
       [name]: value,
     });
   }
@@ -45,64 +39,36 @@ function CreateRideWindow({ onClose, onRideCreated }) {
     event.target.blur();
   }
 
-  function postRide(rideData) {
-    const promise = fetch(`${API_URL}/api/rides`, {
-      method: 'POST',
+  function editRide(payload) {
+    const promise = fetch(`${API_URL}/api/rides/${ride._id}`, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body: JSON.stringify(rideData),
+      body: JSON.stringify(payload),
     });
     return promise;
   }
 
   async function submitForm(event) {
     event.preventDefault();
-    const datetime = new Date(`${ride.start_date}T${ride.start_time}`);
 
-    if (!user) {
-      console.error('No user found. Cannot create ride without a driver.');
-      return;
-    }
-
-    const rideData = {
-      starting_point: ride.starting_point,
-      destination: ride.destination,
-      start_time: datetime,
-      driver: user._id,
-      other_riders: ride.other_riders,
-      cost: ride.cost,
-      car: ride.car,
-      seats: ride.seats,
-      deviation: ride.deviation,
-      description: ride.description,
+    const { start_date, start_time: start_time_str, ...rest } = rideData;
+    const payload = {
+      ...rest,
+      start_time: new Date(`${start_date}T${start_time_str}`),
     };
 
     try {
-      const response = await postRide(rideData);
-      if (response.status === 201) {
-        // Parse the response to get the created ride with its ID
-        const createdRide = await response.json();
-        console.log('Ride created successfully', response.status, createdRide);
-
-        // Add this ride to the user's rides_as_driver list using the created ride's ID
-        const userResponse = await fetch(`${API_URL}/api/users/${user._id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ rides_as_driver: createdRide._id }),
-          credentials: 'include',
-        });
-
-        if (!userResponse.ok) {
-          console.error('Error updating user with new ride:', userResponse.status);
-        } else {
-          const updatedUser = await userResponse.json();
-          console.log('User updated with new ride:', updatedUser);
-        }
-
+      const response = await editRide(payload);
+      if (response.status === 200) {
+        // Parse the response to get the updated ride with its ID
+        const updatedRide = await response.json();
+        console.log('Ride updated successfully', response.status, updatedRide);
         onClose();
-        onRideCreated();
+        onRideEdited(updatedRide);
+
       } else {
         // TODO: Show error message
         console.log('Server response error:', response.status);
@@ -110,28 +76,13 @@ function CreateRideWindow({ onClose, onRideCreated }) {
     } catch (error) {
       console.log('Request completely failed:', error);
     }
-
-    // reset ride to default values
-    setRide({
-      starting_point: 'California Polytechnic University San Luis Obispo',
-      destination: '',
-      start_date: '',
-      start_time: '',
-      driver: user._id,
-      other_riders: [],
-      cost: 0,
-      car: '',
-      seats: 0,
-      deviation: 0,
-      description: '',
-    });
   }
 
   return (
     <div className="create-ride-window">
       <div className="create-ride-card">
         <div className="create-ride-header">
-          <h2>Create Ride</h2>
+          <h2>Edit Ride</h2>
           <span className="modal-close-btn" onClick={onClose}>
             ×
           </span>
@@ -146,7 +97,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
                 placeholder="Cal Poly"
                 name="starting_point"
                 id="starting_point"
-                value={ride.starting_point}
+                value={rideData.starting_point}
                 onChange={handleChange}
               />
             </div>
@@ -158,7 +109,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
                 placeholder="San Francisco"
                 name="destination"
                 id="destination"
-                value={ride.destination}
+                value={rideData.destination}
                 onChange={handleChange}
               />
             </div>
@@ -171,7 +122,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
                 type="date"
                 name="start_date"
                 id="start_date"
-                value={ride.start_date}
+                value={rideData.start_date}
                 onChange={handleChange}
               />
             </div>
@@ -182,7 +133,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
                 type="time"
                 name="start_time"
                 id="start_time"
-                value={ride.start_time}
+                value={rideData.start_time}
                 onChange={handleChange}
               />
             </div>
@@ -198,7 +149,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
                 placeholder="0"
                 name="cost"
                 id="cost"
-                value={ride.cost}
+                value={rideData.cost}
                 onChange={handleChange}
                 onWheel={handleWheel}
               />
@@ -213,7 +164,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
               placeholder="Number of seats"
               name="seats"
               id="seats"
-              value={ride.seats}
+              value={rideData.seats}
               onChange={handleChange}
               onWheel={handleWheel}
             />
@@ -227,7 +178,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
               placeholder="Max Deviation Time (minutes)"
               name="deviation"
               id="deviation"
-              value={ride.deviation}
+              value={rideData.deviation}
               onChange={handleChange}
               onWheel={handleWheel}
             />
@@ -241,7 +192,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
               placeholder="Car Model"
               name="car"
               id="car"
-              value={ride.car}
+              value={rideData.car}
               onChange={handleChange}
             />
           </div>
@@ -254,18 +205,17 @@ function CreateRideWindow({ onClose, onRideCreated }) {
               rows="4"
               name="description"
               id="description"
-              value={ride.description}
+              value={rideData.description}
               onChange={handleChange}
             />
           </div>
 
           <button className="create-button" onClick={submitForm}>
-            Create
+            Save Changes
           </button>
         </form>
       </div>
     </div>
   );
 }
-
-export default CreateRideWindow;
+export default EditRideWindow;

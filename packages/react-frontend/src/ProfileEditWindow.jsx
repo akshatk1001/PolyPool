@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import './ProfileEditWindow.css';
 import CAL_POLY_MAJORS from './constants/calPolyMajors';
+import { API_URL } from './constants/api';
 
 const YEAR_OPTIONS = [
   { label: 'Freshman', value: '1' },
@@ -64,7 +65,7 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
       return;
     }
 
-    fetch(`http://localhost:8000/api/users/${userId}`, { credentials: 'include' })
+    fetch(`${API_URL}/api/users/${userId}`, { credentials: 'include' })
       .then((res) => {
         if (!res.ok) {
           throw new Error(`Failed to load profile: ${res.status}`);
@@ -103,7 +104,7 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
     }
 
     try {
-      const res = await fetch(`http://localhost:8000/api/users/${userId}`, {
+      const res = await fetch(`${API_URL}/api/users/${userId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

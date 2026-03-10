@@ -1,15 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AppNavbar from './AppNavbar';
 import AppMainContent from './AppMainContent';
 import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
-import useRides from './utils/useRides';
+import fetchRides from './utils/useRides';
 import { useNavigate } from 'react-router-dom';
 
 function HomePage() {
   const navigate = useNavigate();
   const [showCreateRide, setShowCreateRide] = useState(false);
-  const { rides, fetchRides } = useRides();
+  const [rides, setRides] = useState([]);
+
+  function loadRides() {
+    fetchRides().then(setRides).catch(console.error);
+  }
+
+  useEffect(() => {
+    loadRides();
+  }, []);
   const signOut = useSignOut();
 
   return (
@@ -23,12 +31,11 @@ function HomePage() {
         {showCreateRide && (
           <CreateRideWindow
             onClose={() => setShowCreateRide(false)}
-            onRideCreated={fetchRides}
+            onRideCreated={loadRides}
           />
         )}
-        {showProfile && <ProfilePage onClose={() => setShowProfile(false)} />}
       </AppNavbar>
-      <AppMainContent rides={rides} />
+      <AppMainContent rides={rides} onRideUpdated={loadRides} />
     </div>
   );
 }
