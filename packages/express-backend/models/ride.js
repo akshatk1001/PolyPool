@@ -55,12 +55,16 @@ const RideSchema = new mongoose.Schema(
     },
     cities_along_route: {
       type: [String],
-      required: true,
+      required: false,
     },
     is_completed: {
       type: Boolean,
       default: false,
     },
+    route: {
+      type: Route,
+      required: false,
+    }
   },
 
   { collection: 'rides_list' },

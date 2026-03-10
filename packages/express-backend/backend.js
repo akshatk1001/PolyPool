@@ -126,11 +126,15 @@ function requireAuth(req, res, next) {
   return res.status(401).json({ error: 'Not authenticated' }); // 401 = not authenticated (google)
 }
 
+
+
+
 // ----API Endpoints----
 // Create a new ride
 // first requireAuth runs, if returns next then run the async function
 app.post('/api/rides', requireAuth, async (req, res) => {
   try {
+    const route = await mapService.getRoute()
     const ride = await rideService.createRide(req.body);
     res.status(201).json(ride);
   } catch (error) {
