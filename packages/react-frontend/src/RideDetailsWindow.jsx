@@ -181,7 +181,12 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
           <div className="rd-action-row">
             <button
               className="rd-request-btn"
-              disabled={!user || isRequesting || isCurrentUserPassenger || isCurrentUserWaitlisted}
+              disabled={
+                !user ||
+                remainingSeats === 0 ||
+                isRequesting ||
+                isCurrentUserPassenger
+              }
               onClick={() => createRequest()}
             >
               {isCurrentUserPassenger

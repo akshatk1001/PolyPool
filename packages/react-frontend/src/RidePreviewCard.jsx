@@ -56,6 +56,14 @@ function RidePreviewCard({ ride }) {
           <div className="price">${ride.cost}</div>
         </div>
       </button>
+      
+      {showRideDetails && (
+        <RideDetailsWindow
+          ride={ride}
+          onClose={() => setShowRideDetails(false)}
+          onRideUpdated={onRideUpdated}
+        />
+      )}
     </>
   );
 }
