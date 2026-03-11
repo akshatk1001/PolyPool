@@ -19,6 +19,14 @@ function App() {
         }
       />
       <Route
+        path="/home/:rideId"
+        element={
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/profile"
         element={
           <ProtectedRoute>
