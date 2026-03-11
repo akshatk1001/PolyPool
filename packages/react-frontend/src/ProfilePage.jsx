@@ -1,25 +1,45 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import AppNavbar from './AppNavbar';
 import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
 import ProfileEditWindow from './ProfileEditWindow';
 import fetchUser from './utils/fetchUser';
 import fetchRides from './utils/useRides';
+import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './ProfilePage.css';
 
 function ProfilePage() {
+  const navigate = useNavigate();
+  const signOut = useSignOut();
+
   const [showCreateRide, setShowCreateRide] = useState(false);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
   const [user, setUser] = useState(undefined);
+  const [isOwner, setIsOwner] = useState(false);
 
-  function loadUser() {
-    fetchUser().then(setUser).catch(() => setUser(null));
+  function loadUser(id) {
+    console.log(id);
+    const id2 = id || null;
+    console.log(id2);
+    fetchUser(id2)
+      .then(setUser)
+      .catch(() => setUser(null));
   }
 
+  let params = useParams();
+
   useEffect(() => {
-    loadUser();
+    if (params.id) {
+      console.log('has id');
+      const id = params.id;
+      loadUser(id);
+    } else {
+      console.log('no id');
+      loadUser();
+      setIsOwner(true);
+    }
   }, []);
-  const signOut = useSignOut();
 
   if (!user) {
     return null;
@@ -39,14 +59,15 @@ function ProfilePage() {
     ? Math.max(0, Math.min(5, numericRating))
     : null;
   const ratingText = ratingValue !== null ? ratingValue.toFixed(1) : 'N/A';
-  const ratingCount = Number(
-    user.rating_count
-    ?? user.ratings_count
-    ?? user.num_ratings
-    ?? user.review_count
-    ?? user.reviews_count
-    ?? 0,
-  ) || 0;
+  const ratingCount =
+    Number(
+      user.rating_count ??
+        user.ratings_count ??
+        user.num_ratings ??
+        user.review_count ??
+        user.reviews_count ??
+        0,
+    ) || 0;
   const filledStars = ratingValue !== null ? Math.round(ratingValue) : 0;
   const stars = `${'★'.repeat(filledStars)}${'☆'.repeat(5 - filledStars)}`;
 
@@ -63,6 +84,7 @@ function ProfilePage() {
         onCreateRideClick={() => setShowCreateRide(true)}
         onProfileClick={() => setShowProfileEdit(true)}
         onSignOutClick={signOut}
+        onMyRidesClick={() => navigate('/my-rides')}
       >
         {showCreateRide && (
           <CreateRideWindow
@@ -83,25 +105,36 @@ function ProfilePage() {
         <section className="profile-hero-card">
           <div className="profile-hero-left">
             {user.profile_pic ? (
-              <img src={user.profile_pic} alt="Profile" className="profile-pic-large" />
+              <img
+                src={user.profile_pic}
+                alt="Profile"
+                className="profile-pic-large"
+              />
             ) : (
               <div className="profile-pic-fallback">{initials}</div>
             )}
 
             <div className="profile-identity">
               <h1>{user.name || user.displayName || 'PolyPool Rider'}</h1>
-              <div className="profile-rating-summary" aria-label={`Rating ${ratingText} out of 5 from ${ratingCount} ratings`}>
+              <div
+                className="profile-rating-summary"
+                aria-label={`Rating ${ratingText} out of 5 from ${ratingCount} ratings`}
+              >
                 <span className="profile-rating-stars">{stars}</span>
-                <span className="profile-rating-text">{ratingText} ({ratingCount})</span>
+                <span className="profile-rating-text">
+                  {ratingText} ({ratingCount})
+                </span>
               </div>
               <p>{renderField(user.email)}</p>
-              <button
-                type="button"
-                className="profile-edit-button"
-                onClick={() => setShowProfileEdit(true)}
-              >
-                Edit Profile
-              </button>
+              {isOwner ? (
+                <button
+                  type="button"
+                  className="profile-edit-button"
+                  onClick={() => setShowProfileEdit(true)}
+                >
+                  Edit Profile
+                </button>
+              ) : null}
             </div>
           </div>
 

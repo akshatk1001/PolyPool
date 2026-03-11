@@ -93,9 +93,7 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
     : 'N/A';
 
   const passengerNames = Array.isArray(ride.other_riders)
-    ? ride.other_riders
-        .map((rider) => rider.name || '')
-        .filter(Boolean) // remove deleted passengers ('')
+    ? ride.other_riders.map((rider) => rider.name || '').filter(Boolean) // remove deleted passengers ('')
     : [];
 
   const totalSeats = ride.seats ?? 0;

@@ -11,7 +11,7 @@ function populateRideUsers(query) {
 
 function searchRide(dest, date, price) {
   let promise;
-  if ((dest === undefined) && date === undefined && price === undefined) {
+  if (dest === undefined && date === undefined && price === undefined) {
     promise = populateRideUsers(rideModel.find());
   } else if (date === undefined && price === undefined) {
     promise = getRides(dest);
@@ -26,16 +26,19 @@ function searchRide(dest, date, price) {
 function getRidesByDP(dest, date, price) {
   const search_Date = new Date(date);
   const promise = populateRideUsers(
-    rideModel.find({ destination: dest, start_time: { $gte: search_Date}, cost: { $lte: Number(price) } }),
-  )
-    .catch((err) => console.log(err));
+    rideModel.find({
+      destination: dest,
+      start_time: { $gte: search_Date },
+      cost: { $lte: Number(price) },
+    }),
+  ).catch((err) => console.log(err));
   return promise;
 }
 
 //function to get rides going to that destination regardless of date
 function getRides(dest) {
   const promise = populateRideUsers(
-    rideModel.find({ destination: { $regex: dest, $options: 'i' } })
+    rideModel.find({ destination: { $regex: dest, $options: 'i' } }),
   ).catch((err) => console.log(err));
   return promise;
 }
@@ -44,15 +47,19 @@ function getRides(dest) {
 function getRidesByDate(dest, date) {
   const search_Date = new Date(date);
   const promise = populateRideUsers(
-    rideModel.find({ destination: { $regex: dest, $options: 'i' }, start_time: { $gte: search_Date} }),
-  )
-    .catch((err) => console.log(err));
+    rideModel.find({
+      destination: { $regex: dest, $options: 'i' },
+      start_time: { $gte: search_Date },
+    }),
+  ).catch((err) => console.log(err));
   return promise;
 }
 
 //function to get a ride by its id
 function getRideById(rideId) {
-  const promise = populateRideUsers(rideModel.findById(rideId)).catch((err) => console.log(err));
+  const promise = populateRideUsers(rideModel.findById(rideId)).catch((err) =>
+    console.log(err),
+  );
   return promise;
 }
 
@@ -60,14 +67,17 @@ function getRideById(rideId) {
 function updateRide(rideId, updates) {
   if (updates.other_rider) {
     const promise = rideModel
-    .findByIdAndUpdate(rideId,
-      {$addToSet: { other_riders: updates.other_rider}},
-      { new: true }
-    )
-    .catch((err) => console.log(err));
-  return promise;
+      .findByIdAndUpdate(
+        rideId,
+        { $addToSet: { other_riders: updates.other_rider } },
+        { new: true },
+      )
+      .catch((err) => console.log(err));
+    return promise;
   }
-  return rideModel.findByIdAndUpdate(rideId, updates, { new: true }).catch((err) => console.log(err));
+  return rideModel
+    .findByIdAndUpdate(rideId, updates, { new: true })
+    .catch((err) => console.log(err));
 }
 
 //function to delete a ride by its id
@@ -90,5 +100,5 @@ export default {
   getRideById,
   deleteRide,
   createRide,
-  updateRide
+  updateRide,
 };

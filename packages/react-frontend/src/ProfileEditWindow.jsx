@@ -13,7 +13,9 @@ const YEAR_OPTIONS = [
 ];
 
 function formatPhoneNumber(value) {
-  const digits = String(value || '').replace(/\D/g, '').slice(0, 10);
+  const digits = String(value || '')
+    .replace(/\D/g, '')
+    .slice(0, 10);
   if (digits.length <= 3) {
     return digits;
   }
@@ -24,7 +26,9 @@ function formatPhoneNumber(value) {
 }
 
 function parsePhoneNumber(value) {
-  const digits = String(value || '').replace(/\D/g, '').slice(0, 10);
+  const digits = String(value || '')
+    .replace(/\D/g, '')
+    .slice(0, 10);
   if (digits.length !== 10) {
     return null;
   }
@@ -166,7 +170,6 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
         </div>
 
         <form className="profile-form" onSubmit={handleSave}>
-
           <div className="form-field full-width">
             <label htmlFor="name">Name</label>
             <input
@@ -260,7 +263,7 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
               type="text"
               name="car"
               id="car"
-                placeholder="Car details"
+              placeholder="Car details"
               value={profile.car || ''}
               onChange={handleChange}
             />

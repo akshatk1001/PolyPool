@@ -10,11 +10,14 @@ import {
   CarIcon,
   WavyIcon,
 } from './imagesAndIcons/RideIcons';
+import ProfilePic from './imagesAndIcons/ProfilePic.png';
+import { useNavigate } from 'react-router-dom';
 
 function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
   const [user, setUser] = useState(undefined);
   const [isRequesting, setIsRequesting] = useState(false); // if the user has clicked to request ride
   const [requestSuccess, setRequestSuccess] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchUser()
@@ -23,8 +26,7 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
   }, []);
 
   const passengerNames = Array.isArray(ride.other_riders)
-    ? ride.other_riders
-        .map((otherRider) => otherRider.name || '')
+    ? ride.other_riders.map((otherRider) => otherRider.name || '')
     : [];
 
   const totalSeats = ride.seats;
@@ -110,6 +112,17 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
       <div className="ride-details-card" onClick={(e) => e.stopPropagation()}>
         <div className="rd-header">
           <h2 className="rd-title">
+            <button
+              className="profile-pic-btn"
+              onClick={() => navigate(`/profile/${ride.driver._id}`)}
+            >
+              {' '}
+              <img
+                src={ride.driver?.profile_pic || ProfilePic}
+                alt="Driver Profile"
+                className="profile-pic-small"
+              />
+            </button>
             {driverName}&rsquo;s Ride to {ride.destination || 'N/A'}
           </h2>
           <span className="rd-close" onClick={onClose}>
@@ -172,7 +185,12 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
           <div className="rd-action-row">
             <button
               className="rd-request-btn"
-              disabled={!user || remainingSeats === 0 || isRequesting || isCurrentUserPassenger}
+              disabled={
+                !user ||
+                remainingSeats === 0 ||
+                isRequesting ||
+                isCurrentUserPassenger
+              }
               onClick={() => createRequest()}
             >
               {isCurrentUserPassenger || requestSuccess

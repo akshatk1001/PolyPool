@@ -95,7 +95,10 @@ function CreateRideWindow({ onClose, onRideCreated }) {
         });
 
         if (!userResponse.ok) {
-          console.error('Error updating user with new ride:', userResponse.status);
+          console.error(
+            'Error updating user with new ride:',
+            userResponse.status,
+          );
         } else {
           const updatedUser = await userResponse.json();
           console.log('User updated with new ride:', updatedUser);

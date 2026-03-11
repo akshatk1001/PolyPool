@@ -7,7 +7,9 @@ function ProtectedRoute({ children }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchUser().then(setUser).catch(() => setUser(null));
+    fetchUser()
+      .then(setUser)
+      .catch(() => setUser(null));
   }, []);
 
   if (user === undefined) return null; // still loading

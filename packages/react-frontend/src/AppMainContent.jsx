@@ -11,22 +11,22 @@ function AppMainContent({ rides, onRideUpdated }) {
 
   return (
     <main className="main-content">
-      <div className="search-bar-container" >
+      <div className="search-bar-container">
         <SearchBar onSearchResults={setFilteredRides} />
       </div>
 
       <div className="ride-grid">
         {filteredRides.length > 0 ? (
-             filteredRides.map((ride) => (
-               <RidePreviewCard
-                 key={ride._id}
-                 ride={ride}
-                 onRideUpdated={onRideUpdated}
-               />
-             ))
-           ) : (
-             <p>No rides found matching your search.</p>
-           )}
+          filteredRides.map((ride) => (
+            <RidePreviewCard
+              key={ride._id}
+              ride={ride}
+              onRideUpdated={onRideUpdated}
+            />
+          ))
+        ) : (
+          <p>No rides found matching your search.</p>
+        )}
       </div>
     </main>
   );
