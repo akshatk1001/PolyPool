@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import rideModel from '../models/ride.js';
-import googleMapsService from '/google-maps-service.js';
+import googleMapsService from './google-maps-service.js';
 
 mongoose.set('debug', true);
 

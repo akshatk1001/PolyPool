@@ -52,9 +52,28 @@ const RideSchema = new mongoose.Schema(
       required: false,
     },
     route: {
-      type: Route,
-      required: false,
-    }
+      distanceMeters: Number,
+      duration: String,
+      polyline: {
+        encodedPolyline: String
+      },
+      legs: [{
+        distanceMeters: Number,
+        duration: String,
+        startLocation: {
+          latLng: {
+            latitude: Number,
+            longitude: Number
+          }
+        },
+        endLocation: {
+          latLng: {
+            latitude: Number,
+            longitude: Number
+          }
+        }
+      }],
+    },
   },
 
   { collection: 'rides_list' },
