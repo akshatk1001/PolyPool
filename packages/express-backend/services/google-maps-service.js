@@ -28,7 +28,7 @@ async function getRoute(origin, dest){
     headers: {
       'Content-Type': 'application/json',
       'X-Goog-Api-Key': GOOGLE_API_KEY, //needs to pull from .env
-      'X-Goog-FieldMask': 'routes.duration,routes.distanceMeters,routes.legs,routes.polyline.encodedPolyline,routes.viewport'
+      'X-Goog-FieldMask': 'routes.duration,routes.distanceMeters,routes.legs,routes.polyline.encodedPolyline'
     },
     body: json.stringify(ComputeRoutesRequest),
   });
