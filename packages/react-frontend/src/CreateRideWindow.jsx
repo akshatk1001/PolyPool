@@ -116,7 +116,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
 
     // reset ride to default values
     setRide({
-      starting_point: 'California Polytechnic University San Luis Obispo',
+      starting_point: 'San Luis Obispo',
       destination: '',
       start_date: '',
       start_time: '',

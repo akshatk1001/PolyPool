@@ -9,6 +9,7 @@ import { Strategy as MicrosoftStrategy } from 'passport-microsoft';
 import userService from './services/user-service.js';
 import rideService from './services/ride-service.js';
 import cityService from './services/city-service.js';
+import mapService from './services/google-maps-service.js';
 
 dotenv.config();
 
@@ -134,7 +135,6 @@ function requireAuth(req, res, next) {
 // first requireAuth runs, if returns next then run the async function
 app.post('/api/rides', requireAuth, async (req, res) => {
   try {
-    const route = await mapService.getRoute()
     const ride = await rideService.createRide(req.body);
     res.status(201).json(ride);
   } catch (error) {
