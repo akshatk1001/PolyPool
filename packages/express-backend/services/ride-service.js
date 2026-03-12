@@ -108,10 +108,6 @@ function searchRide(dest, date, price) {
   let promise;
   if (dest === undefined && date === undefined && price === undefined) {
     promise = populateRideUsers(rideModel.find());
-  } else if (date === undefined && price === undefined) {
-    promise = getRides(dest);
-  } else if (price === undefined) {
-    promise = getRidesByDate(dest, date);
   } else {
     promise = getRidesByDP(dest, date, price);
   }
@@ -121,15 +117,20 @@ function searchRide(dest, date, price) {
 function getRidesByDP(dest, date, price) {
   const search_Date = new Date(date);
   const promise = populateRideUsers(
-    rideModel.find({
-      destination: dest,
-      start_time: { $gte: search_Date },
-      cost: { $lte: Number(price) },
-    }),
-  ).catch((err) => console.log(err));
+    rideModel.find({ 
+      $or: [
+        { destination: { $regex: dest, $options: 'i' } },
+        { cities_along_route: { $regex: dest, $options: 'i' } }
+      ],
+      start_time: { $gte: search_Date }, 
+      cost: { $lte: Number(price) } 
+    })
+  )
+    .catch((err) => console.log(err));
   return promise;
 }
-
+/*
+likely don't need 
 //function to get rides going to that destination regardless of date
 function getRides(dest) {
   const promise = populateRideUsers(
@@ -148,7 +149,7 @@ function getRidesByDate(dest, date) {
     }),
   ).catch((err) => console.log(err));
   return promise;
-}
+}*/ 
 
 //function to get a ride by its id
 function getRideById(rideId) {
