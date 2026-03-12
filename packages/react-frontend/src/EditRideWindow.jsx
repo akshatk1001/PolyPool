@@ -4,27 +4,27 @@ import { API_URL } from './constants/api';
 
 function EditRideWindow({ onClose, onRideEdited, ride }) {
   const startDate = ride.start_time
-    ? new Date(ride.start_time).toISOString().slice(0, 10)  // "YYYY-MM-DD"
+    ? new Date(ride.start_time).toISOString().slice(0, 10) // "YYYY-MM-DD"
     : '';
 
   const startTime = ride.start_time
-    ? new Date(ride.start_time).toTimeString().slice(0, 5)  // "HH:MM"
+    ? new Date(ride.start_time).toTimeString().slice(0, 5) // "HH:MM"
     : '';
 
   const [rideData, setRideData] = useState({
-      starting_point: ride.starting_point,
-      destination: ride.destination,
-      start_date: startDate,
-      start_time: startTime,
-      driver: ride.driver._id,
-      // extract just the IDs from the other_riders array (contains both IDs and names)
-      other_riders: (ride.other_riders ?? []).map((rider) => rider._id),
-      cost: ride.cost,
-      car: ride.car,
-      seats: ride.seats,
-      deviation: ride.deviation,
-      description: ride.description,
-  })
+    starting_point: ride.starting_point,
+    destination: ride.destination,
+    start_date: startDate,
+    start_time: startTime,
+    driver: ride.driver._id,
+    // extract just the IDs from the other_riders array (contains both IDs and names)
+    other_riders: (ride.other_riders ?? []).map((rider) => rider._id),
+    cost: ride.cost,
+    car: ride.car,
+    seats: ride.seats,
+    deviation: ride.deviation,
+    description: ride.description,
+  });
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -68,7 +68,6 @@ function EditRideWindow({ onClose, onRideEdited, ride }) {
         console.log('Ride updated successfully', response.status, updatedRide);
         onClose();
         onRideEdited(updatedRide);
-
       } else {
         // TODO: Show error message
         console.log('Server response error:', response.status);

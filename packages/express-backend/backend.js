@@ -192,7 +192,7 @@ app.get('/auth/microsoft/callback', (req, res, next) => {
     // have to actually log in user to session if they exist when the callback occurs
     req.logIn(user, (loginErr) => {
       if (loginErr) return next(loginErr);
-      
+
       // make sure the login is saved to the Azure API session before redirecting to frontend
       // this is so that when we call ../auth/me we have the session info to know who the user is
       req.session.save((saveErr) => {

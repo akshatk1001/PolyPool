@@ -4,12 +4,18 @@ import AppMainContent from './AppMainContent';
 import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
 import fetchRides from './utils/useRides';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import RideDetailsWindow from './RideDetailsWindow';
 
 function HomePage() {
   const navigate = useNavigate();
   const [showCreateRide, setShowCreateRide] = useState(false);
   const [rides, setRides] = useState([]);
+  const signOut = useSignOut();
+  let params = useParams();
+  const selectedRide = params.rideId
+    ? rides.find((r) => r._id === params.rideId)
+    : null;
 
   function loadRides() {
     fetchRides().then(setRides).catch(console.error);
@@ -18,7 +24,6 @@ function HomePage() {
   useEffect(() => {
     loadRides();
   }, []);
-  const signOut = useSignOut();
 
   return (
     <div className="app">
@@ -36,6 +41,14 @@ function HomePage() {
         )}
       </AppNavbar>
       <AppMainContent rides={rides} onRideUpdated={loadRides} />
+
+      {selectedRide && (
+        <RideDetailsWindow
+          ride={selectedRide}
+          onClose={() => navigate('/home')}
+          onRideUpdated={loadRides}
+        />
+      )}
     </div>
   );
 }
