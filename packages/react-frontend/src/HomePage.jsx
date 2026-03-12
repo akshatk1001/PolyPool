@@ -11,9 +11,11 @@ function HomePage() {
   const navigate = useNavigate();
   const [showCreateRide, setShowCreateRide] = useState(false);
   const [rides, setRides] = useState([]);
-  const [selectedRide, setSelectedRide] = useState(null);
   const signOut = useSignOut();
   let params = useParams();
+  const selectedRide = params.rideId
+    ? rides.find((r) => r._id === params.rideId)
+    : null;
 
   function loadRides() {
     fetchRides().then(setRides).catch(console.error);
@@ -22,15 +24,6 @@ function HomePage() {
   useEffect(() => {
     loadRides();
   }, []);
-
-  useEffect(() => {
-    if (params.rideId) {
-      const ride = rides.find(r => r._id === params.rideId);
-      setSelectedRide(ride);
-    } else {
-      setSelectedRide(null);
-    }
-  }, [rides, params.rideId]);
 
   return (
     <div className="app">

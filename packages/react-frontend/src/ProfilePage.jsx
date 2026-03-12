@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 import AppNavbar from './AppNavbar';
 import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
@@ -16,7 +16,6 @@ function ProfilePage() {
   const [showCreateRide, setShowCreateRide] = useState(false);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
   const [user, setUser] = useState(undefined);
-  const [isOwner, setIsOwner] = useState(false);
 
   function loadUser(id) {
     console.log(id);
@@ -27,7 +26,8 @@ function ProfilePage() {
       .catch(() => setUser(null));
   }
 
-  let params = useParams();
+  const params = useParams();
+  const isOwner = !params.id;
 
   useEffect(() => {
     if (params.id) {
@@ -37,9 +37,8 @@ function ProfilePage() {
     } else {
       console.log('no id');
       loadUser();
-      setIsOwner(true);
     }
-  }, []);
+  }, [params.id]);
 
   if (!user) {
     return null;

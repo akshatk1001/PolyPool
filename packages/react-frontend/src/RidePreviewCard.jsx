@@ -1,11 +1,9 @@
 import './RidePreviewCard.css';
 import ProfilePic from './imagesAndIcons/ProfilePic.png';
 import Star from './imagesAndIcons/star.png';
-import { useState } from 'react';
-import RideDetailsWindow from './RideDetailsWindow';
 import { useNavigate } from 'react-router-dom';
 
-function RidePreviewCard({ ride, onRideUpdated }) {
+function RidePreviewCard({ ride }) {
   const navigate = useNavigate();
 
   // get average rating for driver
