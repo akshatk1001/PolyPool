@@ -49,15 +49,21 @@ function MyRidesPage() {
           />
         )}
       </AppNavbar>
-        <div className="rides-list">
-          <h2 className="section-header">As Driver</h2>
-          {driverRides.length > 0 ? (
-            driverRides.map((ride) => 
-            <MyRidesDetails key={ride._id} ride={ride} isDriver={true} onRideUpdated={loadRides} />)
-            ) : (
-              <p>No rides found matching your search.</p>
-            )}
-        </div>
+      <div className="rides-list">
+        <h2 className="section-header">As Driver</h2>
+        {driverRides.length > 0 ? (
+          driverRides.map((ride) => (
+            <MyRidesDetails
+              key={ride._id}
+              ride={ride}
+              isDriver={true}
+              onRideUpdated={loadRides}
+            />
+          ))
+        ) : (
+          <p>No rides found matching your search.</p>
+        )}
+      </div>
       <div className="rides-list">
         <h2 className="section-header">As Passenger</h2>
         {passengerRides.length > 0 ? (

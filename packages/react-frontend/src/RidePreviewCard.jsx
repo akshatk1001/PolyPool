@@ -24,7 +24,10 @@ function RidePreviewCard({ ride }) {
 
   return (
     <>
-      <button className="ride-preview" onClick={() => navigate(`/home/${ride._id}`)}>
+      <button
+        className="ride-preview"
+        onClick={() => navigate(`/home/${ride._id}`)}
+      >
         {' '}
         <img
           src={ride.driver?.profile_pic || ProfilePic}

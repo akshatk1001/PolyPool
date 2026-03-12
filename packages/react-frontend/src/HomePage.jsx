@@ -44,8 +44,8 @@ function HomePage() {
 
       {selectedRide && (
         <RideDetailsWindow
-          ride = {selectedRide} 
-          onClose= {() => navigate('/home')}
+          ride={selectedRide}
+          onClose={() => navigate('/home')}
           onRideUpdated={loadRides}
         />
       )}
