@@ -76,25 +76,28 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
   };
 
   const handleComplete = () => {
-    if (window.confirm('Are you sure you want to mark this ride as completed?')) {
+    if (
+      window.confirm('Are you sure you want to mark this ride as completed?')
+    ) {
       // Add this ride to previous_rides for everyone on the ride.
-      const riderIds = [...new Set([ride.driver, ...(ride.other_riders ?? [])]
-        .map((rider) => (rider._id)))];
+      const riderIds = [
+        ...new Set(
+          [ride.driver, ...(ride.other_riders ?? [])].map((rider) => rider._id),
+        ),
+      ];
 
       riderIds.forEach((riderId) => {
         fetch(`${API_URL}/api/users/${riderId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ previous_rides: ride._id }),
-          })
-          .then(() => {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ previous_rides: ride._id }),
+        }).then(() => {
           onRideUpdated();
-          });
+        });
       });
     }
   };
-
 
   const driverName = ride.driver?.name || 'Unknown';
 
@@ -215,12 +218,10 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
               Cancel Ride
             </button>
           )}
-
         </div>
       </div>
     </div>
   );
 }
-
 
 export default MyRidesDetails;

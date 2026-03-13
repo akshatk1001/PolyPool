@@ -122,8 +122,7 @@
 .edit-ride-button,
 .delete-ride-button,
 .cancel-ride-button,
-.ride-completed-button
- {
+.ride-completed-button {
   border: none;
   border-radius: 25px;
   padding: 9px 22px;
