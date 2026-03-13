@@ -26,6 +26,12 @@ const RideSchema = new mongoose.Schema(
       ref: 'User',
       required: false,
     },
+    waitlist_riders: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'User',
+      required: false,
+      default: [],
+    },
     cost: {
       type: Number,
       required: true,

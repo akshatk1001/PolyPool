@@ -1,6 +1,5 @@
 import './MyRidesDetails.css';
-import { useState, useEffect } from 'react';
-import fetchUser from './utils/fetchUser';
+import { useState } from 'react';
 import EditRideWindow from './EditRideWindow.jsx';
 import { API_URL } from './constants/api';
 import {
@@ -12,14 +11,7 @@ import {
 } from './imagesAndIcons/RideIcons.jsx';
 
 function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
-  const [user, setUser] = useState(undefined);
   const [showEditRide, setShowEditRide] = useState(false);
-
-  useEffect(() => {
-    fetchUser()
-      .then(setUser)
-      .catch(() => setUser(null));
-  }, []);
 
   const handleDelete = () => {
     if (window.confirm('Are you sure you want to delete this ride?')) {
@@ -40,36 +32,18 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
 
   const handleCancel = () => {
     if (window.confirm('Are you sure you want to cancel this ride?')) {
-      // Remove user from ride's other_riders
-      const updatedOtherRiders = (ride.other_riders ?? []).filter(
-        (rider) => rider._id !== user._id,
-      );
-      fetch(`${API_URL}/api/rides/${ride._id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+      fetch(`${API_URL}/api/rides/${ride._id}/leave`, {
+        method: 'POST',
         credentials: 'include',
-        // extract only the rider IDs since updatedForRiders contains both IDs and names
-        body: JSON.stringify({
-          other_riders: updatedOtherRiders.map((rider) => rider._id),
-        }),
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`Failed to leave ride: ${res.status}`);
+          }
+          return res.json();
+        })
         .then(() => {
-          // Remove ride from user's rides_as_passenger
-          const updatedPassengerRides = (user.rides_as_passenger ?? []).filter(
-            (rideId) => rideId !== ride._id,
-          );
-          fetch(`${API_URL}/api/users/${user._id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ rides_as_passenger: updatedPassengerRides }),
-          })
-            .then((res) => res.json())
-            .then(() => {
-              onRideUpdated();
-            })
-            .catch((err) => console.error(err));
+          onRideUpdated();
         })
         .catch((err) => console.error(err));
     }
@@ -93,7 +67,15 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
     : 'N/A';
 
   const passengerNames = Array.isArray(ride.other_riders)
-    ? ride.other_riders.map((rider) => rider.name || '').filter(Boolean) // remove deleted passengers ('')
+    ? ride.other_riders
+        .map((rider) => rider.name || '')
+        .filter(Boolean)
+    : [];
+
+  const waitlistNames = Array.isArray(ride.waitlist_riders)
+    ? ride.waitlist_riders
+        .map((rider) => rider.name || '')
+        .filter(Boolean)
     : [];
 
   const totalSeats = ride.seats ?? 0;
@@ -147,6 +129,13 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
           <span>
             Passengers:{' '}
             {passengerNames.length > 0 ? passengerNames.join(', ') : 'None'}
+          </span>
+        </div>
+
+        <div className="rd-info-item">
+          <PersonIcon />
+          <span>
+            Waitlist: {waitlistNames.length > 0 ? waitlistNames.join(', ') : 'None'}
           </span>
         </div>
 

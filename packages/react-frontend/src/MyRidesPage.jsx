@@ -34,6 +34,11 @@ function MyRidesPage() {
       ? ride.other_riders.some((rider) => rider._id === user?._id)
       : false,
   );
+  const waitlistedRides = rides.filter((ride) =>
+    Array.isArray(ride.waitlist_riders)
+      ? ride.waitlist_riders.some((rider) => rider._id === user?._id)
+      : false,
+  );
 
   return (
     <div className="my-rides-page">
@@ -68,6 +73,21 @@ function MyRidesPage() {
         <h2 className="section-header">As Passenger</h2>
         {passengerRides.length > 0 ? (
           passengerRides.map((ride) => (
+            <MyRidesDetails
+              key={ride._id}
+              ride={ride}
+              isDriver={false}
+              onRideUpdated={loadRides}
+            />
+          ))
+        ) : (
+          <p>No rides found matching your search.</p>
+        )}
+      </div>
+      <div className="rides-list">
+        <h2 className="section-header">Waitlisted</h2>
+        {waitlistedRides.length > 0 ? (
+          waitlistedRides.map((ride) => (
             <MyRidesDetails
               key={ride._id}
               ride={ride}
