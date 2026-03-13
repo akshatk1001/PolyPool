@@ -321,6 +321,10 @@ function getNormalizedUserUpdates(body) {
     venmo_username: body.venmo_username?.trim(),
     paypal_id: body.paypal_id?.trim(),
     instagram: body.instagram?.trim(),
+    rides_as_driver: body.rides_as_driver,
+    rides_as_passenger: body.rides_as_passenger,
+    requested_rides: body.requested_rides,
+    previous_rides: body.previous_rides,
   };
 
   return updates;

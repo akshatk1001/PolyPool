@@ -49,6 +49,57 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
     }
   };
 
+  const handleComplete = () => {
+    if (window.confirm('Are you sure you want to mark this ride as completed?')) {
+      completeRide().catch((err) => console.error(err));
+    }
+  };
+
+  async function completeRide() {
+    const riderIds = [
+      ride.driver,
+      ...(ride.other_riders ?? []),
+    ]
+      .map((rider) => (typeof rider === 'string' ? rider : rider?._id))
+      .filter(Boolean);
+
+    const uniqueRiderIds = [...new Set(riderIds)];
+
+    if (uniqueRiderIds.length === 0) {
+      console.error('No valid rider IDs found when marking ride complete.');
+      return;
+    }
+
+    const results = await Promise.allSettled(
+      uniqueRiderIds.map(async (riderId) => {
+        const response = await fetch(`${API_URL}/api/users/${riderId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ previous_rides: ride._id }),
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `Failed to update previous rides for user ${riderId}: ${response.status}`,
+          );
+        }
+      }),
+    );
+
+    const failedUpdates = results.filter(
+      (result) => result.status === 'rejected',
+    );
+
+    if (failedUpdates.length > 0) {
+      failedUpdates.forEach((result) => console.error(result.reason));
+      return;
+    }
+
+    onRideUpdated();
+  }
+
+
   const driverName = ride.driver?.name || 'Unknown';
 
   const startDate = ride.start_time
@@ -170,15 +221,23 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
             </button>
           ) : null}
 
+          {isDriver && (
+            <button className="ride-completed-button" onClick={handleComplete}>
+              Mark as Completed
+            </button>
+          )}
+
           {!isDriver && (
             <button className="cancel-ride-button" onClick={handleCancel}>
               Cancel Ride
             </button>
           )}
+
         </div>
       </div>
     </div>
   );
 }
+
 
 export default MyRidesDetails;
