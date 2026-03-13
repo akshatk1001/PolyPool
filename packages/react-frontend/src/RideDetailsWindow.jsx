@@ -34,7 +34,7 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
   const remainingSeats = Math.max(totalSeats - takenSeats, 0);
   // Check if the current user is already a passenger in this ride
   const isCurrentUserPassenger = Array.isArray(ride.other_riders)
-    ? ride.other_riders.some((rider) => rider._id === user?._id)
+    ? ride.other_riders.some((rider) => rider._id === user?._id) || user?._id === ride.driver._id
     : false;
 
   // Call updateUserAPI to add this user to the drivers requested rides
@@ -194,7 +194,7 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
               onClick={() => createRequest()}
             >
               {isCurrentUserPassenger || requestSuccess
-                ? 'Ride Requested'
+                ? 'Already In Ride'
                 : isRequesting
                   ? 'Requesting...'
                   : 'Request Ride'}
