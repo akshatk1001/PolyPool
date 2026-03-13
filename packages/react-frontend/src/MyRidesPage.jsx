@@ -30,12 +30,16 @@ function MyRidesPage() {
   const signOut = useSignOut();
 
   // all rides where the users ID is listed as the driver and the ride is not completed
-  const driverRides = rides.filter((ride) => ride.driver?._id === user?._id && !ride.is_completed);
+  const driverRides = rides.filter(
+    (ride) => ride.driver?._id === user?._id && !ride.is_completed,
+  );
 
   // all rides where the users ID is lisetd as a passenger and the ride is not completed
   const passengerRides = rides.filter((ride) =>
     Array.isArray(ride.other_riders)
-      ? ride.other_riders.some((rider) => rider._id === user?._id && !ride.is_completed)
+      ? ride.other_riders.some(
+          (rider) => rider._id === user?._id && !ride.is_completed,
+        )
       : false,
   );
   const waitlistedRides = rides.filter((ride) =>

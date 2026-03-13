@@ -37,7 +37,8 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
   const takenSeats = passengerNames.length;
   const remainingSeats = Math.max(totalSeats - takenSeats, 0); //extra safety check for race conditions or bad data
   const isCurrentUserPassenger = Array.isArray(ride.other_riders)
-    ? ride.other_riders.some((rider) => rider._id === user?._id) || user?._id === ride.driver._id
+    ? ride.other_riders.some((rider) => rider._id === user?._id) ||
+      user?._id === ride.driver._id
     : false;
 
   // Call updateUserAPI to add this user to the drivers requested rides
