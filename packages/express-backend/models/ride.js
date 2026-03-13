@@ -51,6 +51,10 @@ const RideSchema = new mongoose.Schema(
       type: [String],
       required: true,
     },
+    is_completed: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   { collection: 'rides_list' },

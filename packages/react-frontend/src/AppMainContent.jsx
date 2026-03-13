@@ -5,8 +5,9 @@ import RidePreviewCard from './RidePreviewCard.jsx';
 function AppMainContent({ rides, onRideUpdated }) {
   const [filteredRides, setFilteredRides] = useState(rides);
 
+
   useEffect(() => {
-    setFilteredRides(rides);
+    setFilteredRides(rides.filter((ride) => !ride.is_completed));
   }, [rides]);
 
   return (

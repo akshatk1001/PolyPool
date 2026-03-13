@@ -85,7 +85,7 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
           [ride.driver, ...(ride.other_riders ?? [])].map((rider) => rider._id),
         ),
       ];
-
+      // Update each rider's previous_rides list with the completed ride
       riderIds.forEach((riderId) => {
         fetch(`${API_URL}/api/users/${riderId}`, {
           method: 'PATCH',
@@ -96,6 +96,13 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
           onRideUpdated();
         });
       });
+      // Mark the ride as completed
+      fetch(`${API_URL}/api/rides/${ride._id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ is_completed: true }),
+      }).catch((err) => console.error(err));
     }
   };
 
