@@ -13,7 +13,7 @@ async function getRoute(start, dest){
     },
     routingPreference: "TRAFFIC_AWARE",
     travelMode: "DRIVE",
-    polylineQuality: "HIGH_QUALITY",
+    polylineQuality: "OVERVIEW",
     computeAlternativeRoutes: false,
     routeModifiers: {
       avoidTolls: false,
@@ -46,7 +46,8 @@ async function getRoute(start, dest){
 async function getCitiesOnRoute(polyline){
 
   let RouteData = {
-    textQuery: "city hall", 
+    textQuery: "City Hall", 
+    includedType: "local_government_office", 
     searchAlongRouteParameters: {
       polyline: {
         encodedPolyline: polyline
@@ -58,7 +59,7 @@ async function getCitiesOnRoute(polyline){
     headers: {
       'Content-Type': 'application/json',
       'X-Goog-Api-Key': process.env.GOOGLE_API_KEY,
-      'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,routingSummaries'
+      'X-Goog-FieldMask': 'places.displayName,places.addressComponents,places.types'
     },
     body: JSON.stringify(RouteData),
   });
@@ -66,13 +67,28 @@ async function getCitiesOnRoute(polyline){
     throw new Error(`Google Places API failed: ${response.statusText}`);
   }
 
-  const city = await response.json();
+  const data = await response.json();
+  const cities = [];
   
-  if (city.places) {
-    return city.places.map(place => place.displayName.text);
+  if (data.places) {
+    data.places.forEach(place => {
+      if (place.addressComponents) {
+        const cityComponent = place.addressComponents.find(component => 
+          component.types.includes("locality")
+        );
+
+        if (cityComponent) {
+          const cityName = cityComponent.longText; 
+          
+          if (!cities.includes(cityName)) {
+            cities.push(cityName);
+          }
+        }
+      }
+    });
   }
   
-  return [];
+  return cities;
 }
 
 export default {
