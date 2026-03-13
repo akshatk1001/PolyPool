@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import rideModel from '../models/ride.js';
+import googleMapsService from './google-maps-service.js';
 
 mongoose.set('debug', true);
 
@@ -13,10 +14,6 @@ function searchRide(dest, date, price) {
   let promise;
   if (dest === undefined && date === undefined && price === undefined) {
     promise = populateRideUsers(rideModel.find());
-  } else if (date === undefined && price === undefined) {
-    promise = getRides(dest);
-  } else if (price === undefined) {
-    promise = getRidesByDate(dest, date);
   } else {
     promise = getRidesByDP(dest, date, price);
   }
@@ -26,15 +23,20 @@ function searchRide(dest, date, price) {
 function getRidesByDP(dest, date, price) {
   const search_Date = new Date(date);
   const promise = populateRideUsers(
-    rideModel.find({
-      destination: dest,
-      start_time: { $gte: search_Date },
-      cost: { $lte: Number(price) },
-    }),
-  ).catch((err) => console.log(err));
+    rideModel.find({ 
+      $or: [
+        { destination: { $regex: dest, $options: 'i' } },
+        { cities_along_route: { $regex: dest, $options: 'i' } }
+      ],
+      start_time: { $gte: search_Date }, 
+      cost: { $lte: Number(price) } 
+    })
+  )
+    .catch((err) => console.log(err));
   return promise;
 }
-
+/*
+likely don't need 
 //function to get rides going to that destination regardless of date
 function getRides(dest) {
   const promise = populateRideUsers(
@@ -53,7 +55,7 @@ function getRidesByDate(dest, date) {
     }),
   ).catch((err) => console.log(err));
   return promise;
-}
+}*/ 
 
 //function to get a ride by its id
 function getRideById(rideId) {
@@ -89,10 +91,19 @@ function deleteRide(rideId) {
 }
 
 // function to create a ride in the database
-function createRide(ride) {
-  const rideToAdd = new rideModel(ride);
-  const promise = rideToAdd.save().catch((err) => console.log(err));
-  return promise;
+async function createRide(ride) {
+  try {
+    const rideToAdd = new rideModel(ride);
+
+    rideToAdd.route = await googleMapsService.getRoute(rideToAdd.starting_point, rideToAdd.destination);
+    rideToAdd.cities_along_route = await googleMapsService.getCitiesOnRoute(rideToAdd.route.polyline.encodedPolyline, rideToAdd.starting_point, rideToAdd.destination);
+
+    const promise = rideToAdd.save().catch((err) => console.log(err));
+    return promise;
+  } catch (error) {
+    console.error("Failed to create ride:", error);
+    throw error; 
+  }
 }
 
 export default {

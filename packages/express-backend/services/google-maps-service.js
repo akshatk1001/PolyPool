@@ -1,47 +1,97 @@
-/*
+import dotenv from 'dotenv';
+dotenv.config();
+
 //Google maps Api requests
-app.get('/api/maps/route', async (req, res ) =>{
-  const origin = req.query.origin;
-  const dest = req.query.dest;
 
-  if(!origin || !dest){
-    res.status(400).json({message: "Bad Request: origin or destination not provided"});
-    return;
-  }
-
+async function getRoute(start, dest){
   let ComputeRoutesRequest = {
-    "origin": {
-      "location": {
-        "address": `${origin}, CA`
-      },
+    origin: {
+      address: `${start}, CA, USA`
     },
-    "destination": {
-      "location": {
-        "address": `${dest}, CA`
-      },
+    destination: {
+      address: `${dest}, CA, USA`
     },
-    "routing_preference": "TRAFFIC_AWARE",
-    "travel_mode": "DRIVE",
-    "polylineQuality": "HIGH_QUALITY"
+    routingPreference: "TRAFFIC_AWARE",
+    travelMode: "DRIVE",
+    polylineQuality: "OVERVIEW",
+    computeAlternativeRoutes: false,
+    routeModifiers: {
+      avoidTolls: false,
+      avoidHighways: false,
+      avoidFerries: false
+    },
+    languageCode: "en-US",
+    units: "METRIC"
   };
 
-  try {
-    const route = fetch('https://routes.googleapis.com/directions/v2:computeRoutes', {
-      method : 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Goog-Api-Key': 'removed',
-        'X-Goog-FieldMask': 'routes.duration,routes.distanceMeters,routes.polyline,routes.viewport'
-      },
-      body: ComputeRoutesRequest,
-    })
+  const response = await fetch('https://routes.googleapis.com/directions/v2:computeRoutes', {
+    method : 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': process.env.GOOGLE_API_KEY, 
+      'X-Goog-FieldMask': 'routes.duration,routes.distanceMeters,routes.legs,routes.polyline.encodedPolyline'
+    },
+    body: JSON.stringify(ComputeRoutesRequest),
+  });
 
-    //this needs to update the the database with the route object
-    //It also needs to save the cities passed in the database
-
-    res.status(200).json(route);
-  }catch (error){
-    res.status(500).json({error: error.message})
+  if (!response.ok) {
+    throw new Error(`Google Routes API failed: ${response.statusText}`);
   }
-});
-*/
+
+  const route = await response.json();
+  return route.routes[0];
+}
+
+//generates the cities along a given encoded polyline
+async function getCitiesOnRoute(polyline, start, dest){
+
+  let RouteData = {
+    textQuery: "City Hall", 
+    includedType: "local_government_office", 
+    searchAlongRouteParameters: {
+      polyline: {
+        encodedPolyline: polyline
+      }
+    }
+  };
+  const response = await fetch('https://places.googleapis.com/v1/places:searchText', {
+    method : 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': process.env.GOOGLE_API_KEY,
+      'X-Goog-FieldMask': 'places.displayName,places.addressComponents,places.types'
+    },
+    body: JSON.stringify(RouteData),
+  });
+  if (!response.ok) {
+    throw new Error(`Google Places API failed: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  const cities = [];
+  
+  if (data.places) {
+    data.places.forEach(place => {
+      if (place.addressComponents) {
+        const cityComponent = place.addressComponents.find(component => 
+          component.types.includes("locality")
+        );
+
+        if (cityComponent) {
+          const cityName = cityComponent.longText; 
+          
+          if (!cities.includes(cityName) && (cityName != start || cityName != dest)) {
+            cities.push(cityName);
+          }
+        }
+      }
+    });
+  }
+  
+  return cities;
+}
+
+export default {
+  getCitiesOnRoute,
+  getRoute
+}

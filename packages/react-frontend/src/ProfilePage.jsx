@@ -81,7 +81,7 @@ function ProfilePage() {
     <div className="app">
       <AppNavbar
         onCreateRideClick={() => setShowCreateRide(true)}
-        onProfileClick={() => setShowProfileEdit(true)}
+        onProfileClick={() => navigate('/profile')}
         onSignOutClick={signOut}
         onMyRidesClick={() => navigate('/my-rides')}
       >
