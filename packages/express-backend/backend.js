@@ -127,9 +127,6 @@ function requireAuth(req, res, next) {
   return res.status(401).json({ error: 'Not authenticated' }); // 401 = not authenticated (google)
 }
 
-
-
-
 // ----API Endpoints----
 // Create a new ride
 // first requireAuth runs, if returns next then run the async function
