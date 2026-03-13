@@ -25,10 +25,10 @@ function CreateRideWindow({ onClose, onRideCreated }) {
     start_time: '',
     driver: user?._id,
     other_riders: [],
-    cost: 0,
+    cost: null,
     car: '',
-    seats: 0,
-    deviation: 0,
+    seats: null,
+    deviation: null,
     description: '',
   });
 
@@ -122,10 +122,10 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       start_time: '',
       driver: user._id,
       other_riders: [],
-      cost: 0,
+      cost: null,
       car: '',
-      seats: 0,
-      deviation: 0,
+      seats: null,
+      deviation: null,
       description: '',
     });
   }
@@ -146,7 +146,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
               <label htmlFor="starting_point">Start Location</label>
               <input
                 type="text"
-                placeholder="Cal Poly"
+                placeholder="San Luis Obispo"
                 name="starting_point"
                 id="starting_point"
                 value={ride.starting_point}
