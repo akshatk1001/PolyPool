@@ -103,6 +103,8 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
   const takenSeats = passengerNames.length;
   const remainingSeats = Math.max(totalSeats - takenSeats, 0);
 
+  const previousRides = user?.previous_rides?.includes(ride._id) ? [ride] : [];
+
   return (
     <div className="ride-details-card">
       <div className="rd-header">
@@ -197,7 +199,7 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
             </button>
           )}
 
-          {!isDriver && (
+          {!isDriver && !previousRides.includes(ride) && (
             <button className="cancel-ride-button" onClick={handleCancel}>
               Cancel Ride
             </button>

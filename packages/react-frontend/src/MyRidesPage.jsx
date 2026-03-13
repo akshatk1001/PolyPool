@@ -16,6 +16,7 @@ function MyRidesPage() {
 
   function loadRides() {
     fetchRides().then(setRides).catch(console.error);
+    fetchUser().then(setUser).catch(() => setUser(null));
   }
 
   useEffect(() => {
