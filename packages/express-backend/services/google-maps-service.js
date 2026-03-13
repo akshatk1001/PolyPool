@@ -43,7 +43,7 @@ async function getRoute(start, dest){
 }
 
 //generates the cities along a given encoded polyline
-async function getCitiesOnRoute(polyline){
+async function getCitiesOnRoute(polyline, start, dest){
 
   let RouteData = {
     textQuery: "City Hall", 
@@ -80,7 +80,7 @@ async function getCitiesOnRoute(polyline){
         if (cityComponent) {
           const cityName = cityComponent.longText; 
           
-          if (!cities.includes(cityName)) {
+          if (!cities.includes(cityName) && (cityName != start || cityName != dest)) {
             cities.push(cityName);
           }
         }
