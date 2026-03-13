@@ -34,6 +34,12 @@ function MyRidesPage() {
       ? ride.other_riders.some((rider) => rider._id === user?._id)
       : false,
   );
+  // all rides where the users ID is listed as a previous ride
+  const previousRides = rides.filter((ride) =>
+    Array.isArray(user?.previous_rides)
+      ? user.previous_rides.some((prevRideId) => prevRideId === ride._id)
+      : false,
+  );
 
   return (
     <div className="my-rides-page">
@@ -77,6 +83,22 @@ function MyRidesPage() {
           ))
         ) : (
           <p>No rides found matching your search.</p>
+        )}
+      </div>
+
+      <div className="rides-list">
+        <h2 className="section-header">Previous Rides</h2>
+        {previousRides.length > 0 ? (
+          previousRides.map((ride) => (
+            <MyRidesDetails
+              key={ride._id}
+              ride={ride}
+              isDriver={false}
+              onRideUpdated={loadRides}
+            />
+          ))
+        ) : (
+          <p>No Previous Rides.</p>
         )}
       </div>
     </div>

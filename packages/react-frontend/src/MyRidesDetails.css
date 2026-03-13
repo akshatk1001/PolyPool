@@ -121,7 +121,9 @@
 
 .edit-ride-button,
 .delete-ride-button,
-.cancel-ride-button {
+.cancel-ride-button,
+.ride-completed-button
+ {
   border: none;
   border-radius: 25px;
   padding: 9px 22px;
@@ -167,6 +169,19 @@
 }
 
 .cancel-ride-button:active {
+  transform: scale(0.96);
+}
+
+.ride-completed-button {
+  background: #27ae60;
+  color: #fff;
+}
+
+.ride-completed-button:hover {
+  background: #219653;
+}
+
+.ride-completed-button:active {
   transform: scale(0.96);
 }
 
