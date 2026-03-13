@@ -16,6 +16,9 @@ function MyRidesPage() {
 
   function loadRides() {
     fetchRides().then(setRides).catch(console.error);
+    fetchUser()
+      .then(setUser)
+      .catch(() => setUser(null));
   }
 
   useEffect(() => {
@@ -26,12 +29,23 @@ function MyRidesPage() {
   }, []);
   const signOut = useSignOut();
 
-  // all rides where the users ID is listed as the driver
-  const driverRides = rides.filter((ride) => ride.driver?._id === user?._id);
-  // all rides where the users ID is lisetd as a passenger
+  // all rides where the users ID is listed as the driver and the ride is not completed
+  const driverRides = rides.filter(
+    (ride) => ride.driver?._id === user?._id && !ride.is_completed,
+  );
+
+  // all rides where the users ID is lisetd as a passenger and the ride is not completed
   const passengerRides = rides.filter((ride) =>
     Array.isArray(ride.other_riders)
-      ? ride.other_riders.some((rider) => rider._id === user?._id)
+      ? ride.other_riders.some(
+          (rider) => rider._id === user?._id && !ride.is_completed,
+        )
+      : false,
+  );
+  // all rides where the users ID is listed as a previous ride
+  const previousRides = rides.filter((ride) =>
+    Array.isArray(user?.previous_rides)
+      ? user.previous_rides.some((prevRideId) => prevRideId === ride._id)
       : false,
   );
 
@@ -77,6 +91,22 @@ function MyRidesPage() {
           ))
         ) : (
           <p>No rides found matching your search.</p>
+        )}
+      </div>
+
+      <div className="rides-list">
+        <h2 className="section-header">Previous Rides</h2>
+        {previousRides.length > 0 ? (
+          previousRides.map((ride) => (
+            <MyRidesDetails
+              key={ride._id}
+              ride={ride}
+              isDriver={false}
+              onRideUpdated={loadRides}
+            />
+          ))
+        ) : (
+          <p>No Previous Rides.</p>
         )}
       </div>
     </div>

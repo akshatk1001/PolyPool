@@ -1,23 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import SearchBar from './SearchBar.jsx';
 import RidePreviewCard from './RidePreviewCard.jsx';
 
 function AppMainContent({ rides, onRideUpdated }) {
-  const [filteredRides, setFilteredRides] = useState(rides);
+  const [searchResults, setSearchResults] = useState(null);
 
-  useEffect(() => {
-    setFilteredRides(rides);
-  }, [rides]);
+  const visibleRides = (searchResults ?? rides).filter(
+    (ride) => !ride.is_completed,
+  );
 
   return (
     <main className="main-content">
       <div className="search-bar-container">
-        <SearchBar onSearchResults={setFilteredRides} />
+        <SearchBar onSearchResults={setSearchResults} />
       </div>
 
       <div className="ride-grid">
-        {filteredRides.length > 0 ? (
-          filteredRides.map((ride) => (
+        {visibleRides.length > 0 ? (
+          visibleRides.map((ride) => (
             <RidePreviewCard
               key={ride._id}
               ride={ride}

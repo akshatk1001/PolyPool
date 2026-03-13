@@ -39,6 +39,18 @@ function updateUser(userId, updates) {
       .catch((err) => console.log(err));
     return promise;
   }
+
+  // if previous_rides was changed then we need to modify that in the user array
+  if (updates.previous_rides !== undefined) {
+    const userUpdate = Array.isArray(updates.previous_rides)
+      ? { previous_rides: updates.previous_rides }
+      : { $addToSet: { previous_rides: updates.previous_rides } };
+    const promise = userModel
+      .findByIdAndUpdate(userId, userUpdate, { new: true })
+      .catch((err) => console.log(err));
+    return promise;
+  }
+
   return userModel
     .findByIdAndUpdate(userId, updates, { new: true })
     .catch((err) => console.log(err));

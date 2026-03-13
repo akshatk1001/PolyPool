@@ -127,9 +127,6 @@ function requireAuth(req, res, next) {
   return res.status(401).json({ error: 'Not authenticated' }); // 401 = not authenticated (google)
 }
 
-
-
-
 // ----API Endpoints----
 // Create a new ride
 // first requireAuth runs, if returns next then run the async function
@@ -307,6 +304,10 @@ function getNormalizedUserUpdates(body) {
     venmo_username: body.venmo_username?.trim(),
     paypal_id: body.paypal_id?.trim(),
     instagram: body.instagram?.trim(),
+    rides_as_driver: body.rides_as_driver,
+    rides_as_passenger: body.rides_as_passenger,
+    requested_rides: body.requested_rides,
+    previous_rides: body.previous_rides,
   };
 
   return updates;

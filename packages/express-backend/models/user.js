@@ -80,6 +80,11 @@ const UserSchema = new mongoose.Schema(
       ref: 'Ride',
       required: false,
     },
+    previous_rides: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'Ride',
+      required: false,
+    },
   },
 
   { collection: 'users_list' },
