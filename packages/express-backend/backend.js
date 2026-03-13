@@ -9,6 +9,7 @@ import { Strategy as MicrosoftStrategy } from 'passport-microsoft';
 import userService from './services/user-service.js';
 import rideService from './services/ride-service.js';
 import cityService from './services/city-service.js';
+import mapService from './services/google-maps-service.js';
 
 dotenv.config();
 
@@ -125,6 +126,9 @@ function requireAuth(req, res, next) {
   }
   return res.status(401).json({ error: 'Not authenticated' }); // 401 = not authenticated (google)
 }
+
+
+
 
 // ----API Endpoints----
 // Create a new ride
