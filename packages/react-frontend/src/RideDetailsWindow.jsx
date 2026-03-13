@@ -124,6 +124,17 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
 
           <div className="rd-info-grid">
             <div className="rd-info-item">
+              <span className="rd-desc-label">From:&nbsp;</span>
+              {ride.starting_point || 'N/A'}
+            </div>
+            <div className="rd-info-item">
+              <span className="rd-desc-label">To:&nbsp;</span>
+              {ride.destination || 'N/A'}
+            </div>
+          </div>
+
+          <div className="rd-info-grid">
+            <div className="rd-info-item">
               <CalendarIcon />
               <span>Date: {startDate}</span>
             </div>
