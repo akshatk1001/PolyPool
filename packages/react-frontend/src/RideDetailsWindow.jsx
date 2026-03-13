@@ -35,8 +35,7 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
 
   const totalSeats = ride.seats;
   const takenSeats = passengerNames.length;
-  const remainingSeats = Math.max(totalSeats - takenSeats, 0);
-  // Check if the current user is already a passenger in this ride
+  const remainingSeats = Math.max(totalSeats - takenSeats, 0); //extra safety check for race conditions or bad data
   const isCurrentUserPassenger = Array.isArray(ride.other_riders)
     ? ride.other_riders.some((rider) => rider._id === user?._id)
     : false;
