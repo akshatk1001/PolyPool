@@ -191,7 +191,7 @@ async function createRide(ride) {
     const rideToAdd = new rideModel(ride);
 
     rideToAdd.route = await googleMapsService.getRoute(rideToAdd.starting_point, rideToAdd.destination);
-    rideToAdd.cities_along_route = await googleMapsService.getCitiesOnRoute(rideToAdd.route.polyline.encodedPolyline);
+    rideToAdd.cities_along_route = await googleMapsService.getCitiesOnRoute(rideToAdd.route.polyline.encodedPolyline, rideToAdd.starting_point, rideToAdd.destination);
 
     const promise = rideToAdd.save().catch((err) => console.log(err));
     return promise;
