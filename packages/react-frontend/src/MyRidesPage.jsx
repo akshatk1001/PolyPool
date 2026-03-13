@@ -98,6 +98,7 @@ function MyRidesPage() {
           <p>No rides found matching your search.</p>
         )}
       </div>
+
       <div className="rides-list">
         <h2 className="section-header">Waitlisted</h2>
         {waitlistedRides.length > 0 ? (
