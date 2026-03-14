@@ -1,12 +1,15 @@
-import { useState, useEffect } from 'react'; // Added useEffect
+import { useState, useEffect } from 'react';
 import Slider from '@mui/material/Slider';
 import './SearchBar.css';
 import { API_URL } from './constants/api';
+import fetchCities from './utils/fetchCities';
+import filterCities from './utils/filterCities';
 
 const SearchBar = ({ onSearchResults }) => {
   const [value, setValue] = useState('');
   const [cityOptions, setCityOptions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [allCities, setAllCities] = useState([]);
   const [dt_value, setDtValue] = useState('');
   const [price_value, setPriceSearch] = useState(100);
 
@@ -16,30 +19,32 @@ const SearchBar = ({ onSearchResults }) => {
     setPriceSearch(newValue);
   };
 
+  // load in all of the cities to list for parsing
   useEffect(() => {
-    const fetchCities = async () => {
-      if (!value.trim()) {
-        setCityOptions([]);
-        setShowDropdown(false);
-        return;
-      }
-
+    async function fetchAllCities() {
       try {
-        const response = await fetch(
-          `${API_URL}/api/cities/autofill?dest=${value}`,
-        );
-        const data = await response.json();
-
-        setCityOptions(data);
-        setShowDropdown(true);
+        const data = await fetchCities();
+        setAllCities(data);
       } catch (error) {
         console.log('Fetch error: ', error);
       }
-    };
+    }
 
-    const debounceTimer = setTimeout(fetchCities, 300);
-    return () => clearTimeout(debounceTimer);
-  }, [value]);
+    fetchAllCities();
+  }, []);
+
+  useEffect(() => {
+    // if the input is empty don't show the dropdown
+    if (!value.trim()) {
+      setCityOptions([]);
+      setShowDropdown(false);
+      return;
+    }
+
+    const matches = filterCities(allCities, value);
+    setCityOptions(matches);
+    setShowDropdown(matches.length > 0);
+  }, [value, allCities]);
 
   const executeSearch = async (searchTerm) => {
     const query = searchTerm || value;
