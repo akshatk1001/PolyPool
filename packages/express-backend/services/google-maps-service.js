@@ -89,7 +89,8 @@ async function getCitiesOnRoute(polyline, start, dest) {
 
           if (
             !cities.includes(cityName) &&
-            (cityName != start || cityName != dest)
+            cityName !== start &&
+            cityName !== dest
           ) {
             cities.push(cityName);
           }
