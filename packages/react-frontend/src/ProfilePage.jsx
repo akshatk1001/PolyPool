@@ -68,13 +68,14 @@ function ProfilePage() {
 
   //get the average rating from the ratings array. If there are no ratings, then the rating is null.
   let ratingValue = 0;
-  user.ratings.map((rating) => ratingValue += rating)
+  user.ratings.map((rating) => (ratingValue += rating));
   if (user.ratings.length === 0) {
     ratingValue = null;
   } else {
     ratingValue = ratingValue / user.ratings.length;
   }
-  const ratingText = ratingValue !== null ? ratingValue.toFixed(1) : 'No Reviews';
+  const ratingText =
+    ratingValue !== null ? ratingValue.toFixed(1) : 'No Reviews';
   const ratingCount = user.ratings.length || 0;
   const filledStars = ratingValue !== null ? Math.round(ratingValue) : 0;
   const stars = `${'★'.repeat(filledStars)}${'☆'.repeat(5 - filledStars)}`;

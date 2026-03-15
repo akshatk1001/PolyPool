@@ -65,27 +65,26 @@ function ReviewDriver({ onClose, ride }) {
         </div>
 
         <form className="create-ride-form">
+          <div className="star-rating">
+            {[1, 2, 3, 4, 5].map((value) => (
+              <FaStar
+                key={value}
+                size={50}
+                onClick={() => handleRatingClick(value)}
+                onMouseOver={() => handleMouseEnter(value)}
+                onMouseLeave={handleMouseLeave}
+                color={(hover || rating) >= value ? colors.orange : colors.grey}
+                style={{ cursor: 'pointer' }}
+              />
+            ))}
+            <p>
+              Rate {driverName}: {rating} stars
+            </p>
+          </div>
 
-            <div className="star-rating">
-                {[1, 2, 3, 4, 5].map((value) => (
-                <FaStar
-                    key={value}
-                    size={50}
-                    onClick={() => handleRatingClick(value)}
-                    onMouseOver={() => handleMouseEnter(value)}
-                    onMouseLeave={handleMouseLeave}
-                    color={(hover || rating) >= value ? colors.orange : colors.grey}
-                    style={{ cursor: 'pointer' }}
-                />
-                ))}
-                <p>
-                Rate {driverName}: {rating} stars
-                </p>
-            </div>
-
-            <button className="create-button" onClick={submitForm}>
-                Submit
-            </button>
+          <button className="create-button" onClick={submitForm}>
+            Submit
+          </button>
         </form>
       </div>
     </div>

@@ -55,35 +55,29 @@ const destinationRides = [
   },
 ];
 
-test(
-  'return rides that pass through a city a passenger is trying to go to after the time on that specific date',
-  () => {
-    const results = filterRides(routeCityRides, {
-      query: 'San Jose',
-      date: '2026-03-20',
-      time: '10:30',
-      maxPrice: 25,
-    });
+test('return rides that pass through a city a passenger is trying to go to after the time on that specific date', () => {
+  const results = filterRides(routeCityRides, {
+    query: 'San Jose',
+    date: '2026-03-20',
+    time: '10:30',
+    maxPrice: 25,
+  });
 
-    expect(results).toHaveLength(1);
-    expect(results[0]._id).toBe('ride-1');
-  },
-);
+  expect(results).toHaveLength(1);
+  expect(results[0]._id).toBe('ride-1');
+});
 
-test(
-  'return rides that directly match the searched destination on that day at or after the searched time, but not rides on other days',
-  () => {
-    const results = filterRides(destinationRides, {
-      query: 'San Jose',
-      date: '2026-03-20',
-      time: '10:30',
-      maxPrice: 25,
-    });
+test('return rides that directly match the searched destination on that day at or after the searched time, but not rides on other days', () => {
+  const results = filterRides(destinationRides, {
+    query: 'San Jose',
+    date: '2026-03-20',
+    time: '10:30',
+    maxPrice: 25,
+  });
 
-    expect(results).toHaveLength(2);
-    expect(results.map((ride) => ride._id)).toEqual(['ride-1', 'ride-2']);
-  },
-);
+  expect(results).toHaveLength(2);
+  expect(results.map((ride) => ride._id)).toEqual(['ride-1', 'ride-2']);
+});
 
 test('return all rides when no filters are applied', () => {
   const results = filterRides(destinationRides, {});
