@@ -67,6 +67,17 @@ function updateUser(userId, updates) {
     .catch((err) => console.log(err));
 }
 
+function addReviewedRide(userId, rideId) {
+  const promise = userModel
+    .findByIdAndUpdate(
+      userId,
+      { $addToSet: { reviewed_rides: rideId } },
+      { new: true },
+    )
+    .catch((err) => console.log(err));
+  return promise;
+}
+
 // Delete a user entirely.
 function deleteUser(userId) {
   const promise = userModel
@@ -104,6 +115,13 @@ function addRating(userId, rating) {
 // Get all users with a minimum average rating (useful for filtering safe drivers).
 function getUsersByMinRating(minRating) {
   const promise = userModel.find({}).catch((err) => console.log(err));
+  return promise;
+}
+
+function updateReviews(userId, review) {
+  const promise = userModel
+    .findByIdAndUpdate(userId, { $push: { ratings: review } }, { new: true })
+    .catch((err) => console.log(err));
   return promise;
 }
 
@@ -149,4 +167,6 @@ export default {
   addRating,
   findOrCreateMicrosoftUser,
   getUsersByMinRating,
+  updateReviews,
+  addReviewedRide,
 };
