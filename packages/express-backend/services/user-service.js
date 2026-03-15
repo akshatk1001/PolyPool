@@ -51,6 +51,17 @@ function updateUser(userId, updates) {
     return promise;
   }
 
+  // if ratings was changed then append or replace ratings list
+  if (updates.ratings !== undefined) {
+    const userUpdate = Array.isArray(updates.ratings)
+      ? { ratings: updates.ratings }
+      : { $push: { ratings: updates.ratings } };
+    const promise = userModel
+      .findByIdAndUpdate(userId, userUpdate, { new: true })
+      .catch((err) => console.log(err));
+    return promise;
+  }
+
   return userModel
     .findByIdAndUpdate(userId, updates, { new: true })
     .catch((err) => console.log(err));
