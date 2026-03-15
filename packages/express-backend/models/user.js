@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    home_address: {
+    hometown: {
       type: String,
       required: false,
       trim: true,

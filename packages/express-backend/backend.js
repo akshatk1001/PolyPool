@@ -280,7 +280,7 @@ function getNormalizedUserUpdates(body) {
     phone_num: normalizePhoneNumber(body.phone_num),
     grade: body.grade ? Number(body.grade) : null,
     major: body.major?.trim(),
-    home_address: body.home_address?.trim(),
+    hometown: body.hometown?.trim(),
     car: normalizeCar(body.car),
     email: body.email?.trim(),
     venmo_username: body.venmo_username?.trim(),

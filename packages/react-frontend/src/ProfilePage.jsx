@@ -182,8 +182,8 @@ function ProfilePage() {
               <strong>{renderField(user.phone_num)}</strong>
             </div>
             <div className="profile-detail-row">
-              <span>Home Address</span>
-              <strong>{renderField(user.home_address)}</strong>
+              <span>Hometown</span>
+              <strong>{renderField(user.hometown)}</strong>
             </div>
             <div className="profile-detail-row">
               <span>Instagram</span>
