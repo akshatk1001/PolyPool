@@ -337,3 +337,36 @@ app.patch('/api/users/:id', requireAuth, async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 });
+
+app.patch('/api/users/:id/reviewed_rides', requireAuth, async (req, res) => {
+  const { id } = req.params;
+  const { rideId, driverId, ratings } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: 'Invalid user id' });
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(rideId)) {
+    return res.status(400).json({ error: 'Invalid ride id' });
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(driverId)) {
+    return res.status(400).json({ error: 'Invalid driver id' });
+  }
+
+  console.log(
+    'sending all this info now to backend: ',
+    id,
+    rideId,
+    driverId,
+    ratings,
+  );
+
+  try {
+    const updatedDriver = await userService.updateReviews(driverId, ratings);
+    const user = await userService.addReviewedRide(id, rideId);
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});

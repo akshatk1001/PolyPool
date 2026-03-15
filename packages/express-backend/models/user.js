@@ -85,6 +85,11 @@ const UserSchema = new mongoose.Schema(
       ref: 'Ride',
       required: false,
     },
+    reviewed_rides: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'Ride',
+      required: false,
+    },
   },
 
   { collection: 'users_list' },
