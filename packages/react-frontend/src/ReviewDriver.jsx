@@ -3,7 +3,7 @@ import './CreateRideWindow.css';
 import { API_URL } from './constants/api';
 import { FaStar } from 'react-icons/fa';
 
-function ReviewDriver({ onClose, ride }) {
+function ReviewDriver({ onClose, ride, user, onReviewed }) {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
 
@@ -25,13 +25,17 @@ function ReviewDriver({ onClose, ride }) {
   };
 
   function review(selectedRating) {
-    const promise = fetch(`${API_URL}/api/users/${ride.driver._id}`, {
+    const promise = fetch(`${API_URL}/api/users/${user._id}/reviewed_rides`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body: JSON.stringify({ ratings: selectedRating }),
+      body: JSON.stringify({
+        ratings: selectedRating,
+        rideId: ride._id,
+        driverId: ride.driver._id,
+      }),
     });
     return promise;
   }
@@ -45,6 +49,7 @@ function ReviewDriver({ onClose, ride }) {
         const review = await response.json();
         console.log('Review Posted Successfully', response.status, review);
         onClose();
+        onReviewed();
       } else {
         console.log('Server response error:', response.status);
       }

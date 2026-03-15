@@ -22,6 +22,13 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
       .catch(() => setUser(null));
   }, []);
 
+  const handleReviewed = () => {
+    setUser((prev) => ({
+      ...prev,
+      reviewed_rides: [...(prev.reviewed_rides ?? []), ride._id],
+    }));
+  };
+
   const handleDelete = () => {
     if (window.confirm('Are you sure you want to delete this ride?')) {
       fetch(`${API_URL}/api/rides/${ride._id}`, {
@@ -123,6 +130,7 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
   const remainingSeats = Math.max(totalSeats - takenSeats, 0);
 
   const previousRides = user?.previous_rides?.includes(ride._id) ? [ride] : [];
+  const isReviewed = user?.reviewed_rides?.includes(ride._id);
 
   return (
     <div className="ride-details-card">
@@ -224,7 +232,7 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
             </button>
           )}
 
-          {!isDriver && previousRides.includes(ride) && (
+          {!isDriver && previousRides.includes(ride) && !isReviewed && (
             <button
               className="review-driver-button"
               onClick={() => setShowReviewDriver(true)}
@@ -237,7 +245,8 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
             <ReviewDriver
               ride={ride}
               onClose={() => setShowReviewDriver(false)}
-              onRideEdited={onRideUpdated}
+              onReviewed={handleReviewed}
+              user={user}
             />
           )}
         </div>
