@@ -127,9 +127,8 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
       });
       if (res.ok) {
         console.log('Profile saved');
-        const updatedUser = await res.json();
         if (onSaved) {
-          onSaved(updatedUser);
+          onSaved();
         }
         onClose();
       } else {

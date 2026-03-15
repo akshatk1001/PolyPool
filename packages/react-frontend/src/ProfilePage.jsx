@@ -97,7 +97,10 @@ function ProfilePage() {
           <ProfileEditWindow
             currentUser={user}
             onClose={() => setShowProfileEdit(false)}
-            onSaved={loadUser}
+            onSaved={() => {
+              loadUser();
+              setShowProfileEdit(false);
+            }}
           />
         )}
       </AppNavbar>
