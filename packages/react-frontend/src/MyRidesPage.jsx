@@ -3,7 +3,7 @@ import './MyRidesPage.css';
 import AppNavbar from './AppNavbar';
 import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
-import fetchRides from './utils/useRides';
+import fetchRides from './utils/fetchRides';
 import fetchUser from './utils/fetchUser';
 import { useNavigate } from 'react-router-dom';
 import MyRidesDetails from './MyRidesDetails';
@@ -118,7 +118,7 @@ function MyRidesPage() {
             <MyRidesDetails
               key={ride._id}
               ride={ride}
-              isDriver={false}
+              isDriver={ride.driver?._id === user?._id}
               onRideUpdated={loadRides}
             />
           ))
