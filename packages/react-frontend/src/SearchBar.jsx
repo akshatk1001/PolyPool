@@ -38,8 +38,12 @@ const SearchBar = ({ onSearch }) => {
   }, []);
 
   useEffect(() => {
-    setCityOptions(citySearched.trim() ? filterCities(allCities, citySearched) : []);
-    setShowDropdown(cityOptions.length > 0);
+    setCityOptions(
+      citySearched.trim()
+        ? filterCities(allCities, citySearched)
+        : []
+    );
+    setShowDropdown((prev) => (prev ? cityOptions.length > 0 : false));
 
     const filters = {
       query: citySearched,
@@ -52,14 +56,12 @@ const SearchBar = ({ onSearch }) => {
   }, [citySearched, allCities]);
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      executeSearch();
-    }
+    setShowDropdown(false)
   };
 
   const handleOptionClick = (city) => {
     setCitySearched(city);
-    executeSearch(city);
+    setShowDropdown(false);
   };
 
   return (
