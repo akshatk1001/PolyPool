@@ -22,6 +22,14 @@ function RidePreviewCard({ ride }) {
     minute: '2-digit',
   });
 
+  const passengerNames = Array.isArray(ride.other_riders)
+    ? ride.other_riders.map((otherRider) => otherRider.name || '')
+    : [];
+    
+  const totalSeats = ride.seats;
+  const takenSeats = passengerNames.length;
+  const remainingSeats = Math.max(totalSeats - takenSeats, 0);
+
   return (
     <>
       <button
@@ -48,7 +56,7 @@ function RidePreviewCard({ ride }) {
               <strong>Date/Time:</strong> {formattedDate}
             </div>
             <div className="seats">
-              <strong>Seats:</strong> {ride.seats}
+              <strong>Seats Remaining: </strong>{remainingSeats}/{totalSeats}
             </div>
           </div>
         </div>
