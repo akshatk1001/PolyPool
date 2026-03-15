@@ -11,11 +11,7 @@ function getSearchDate(date) {
 
   const [year, month, day] = date.split('-').map(Number);
 
-  if (
-    Number.isNaN(year) ||
-    Number.isNaN(month) ||
-    Number.isNaN(day)
-  ) {
+  if (Number.isNaN(year) || Number.isNaN(month) || Number.isNaN(day)) {
     return null;
   }
 
@@ -44,10 +40,7 @@ function getSearchTime(time) {
 }
 
 function hasPriceFilter(maxPrice) {
-  return (
-    !Number.isNaN(maxPrice) &&
-    maxPrice <= DEFAULT_MAX_PRICE
-  );
+  return !Number.isNaN(maxPrice) && maxPrice <= DEFAULT_MAX_PRICE;
 }
 
 function matchesQuery(ride, normalizedQuery) {
@@ -95,7 +88,7 @@ function matchesTime(ride, searchTime) {
   const searchMinutes = searchTime.hours * 60 + searchTime.minutes;
 
   // show all rides on that date after the search time
-  return rideMinutes >= searchMinutes;  
+  return rideMinutes >= searchMinutes;
 }
 
 function matchesPrice(ride, maxPrice, usePriceFilter) {
@@ -114,14 +107,13 @@ export function filtersApplied(filters) {
 
   return Boolean(
     normalizedQuery ||
-      searchDate ||
-      searchTime ||
-      hasPriceFilter(filters.maxPrice),
+    searchDate ||
+    searchTime ||
+    hasPriceFilter(filters.maxPrice),
   );
 }
 
 export default function filterRides(rides, filters) {
-
   if (!filtersApplied(filters)) {
     return rides;
   }

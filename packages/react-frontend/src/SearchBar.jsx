@@ -3,10 +3,7 @@ import Slider from '@mui/material/Slider';
 import './SearchBar.css';
 import fetchCities from './utils/fetchCities';
 import filterCities from './utils/filterCities';
-import {
-  DEFAULT_MAX_PRICE,
-  filtersApplied,
-} from './utils/filterRides';
+import { DEFAULT_MAX_PRICE, filtersApplied } from './utils/filterRides';
 
 const SearchBar = ({ onSearch }) => {
   const [citySearched, setCitySearched] = useState('');
@@ -39,9 +36,7 @@ const SearchBar = ({ onSearch }) => {
 
   useEffect(() => {
     setCityOptions(
-      citySearched.trim()
-        ? filterCities(allCities, citySearched)
-        : []
+      citySearched.trim() ? filterCities(allCities, citySearched) : [],
     );
     setShowDropdown((prev) => (prev ? cityOptions.length > 0 : false));
 
@@ -50,13 +45,13 @@ const SearchBar = ({ onSearch }) => {
       date: dateValue,
       time: timeValue,
       maxPrice: price_value,
-    }
+    };
 
     onSearch(filters);
   }, [citySearched, allCities]);
 
   const handleKeyDown = (e) => {
-    setShowDropdown(false)
+    setShowDropdown(false);
   };
 
   const handleOptionClick = (city) => {
