@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import rideModel from '../models/ride.js';
 import googleMapsService from './google-maps-service.js';
+import distanceBetween from './city-service.js';
 
 mongoose.set('debug', true);
 
@@ -95,7 +96,14 @@ async function createRide(ride) {
   try {
     const rideToAdd = new rideModel(ride);
 
-    rideToAdd.route = await googleMapsService.getRoute(rideToAdd.starting_point, rideToAdd.destination);
+    let quality;
+    if (distanceBetween(rideToAdd.starting_point, rideToAdd.destination) <= 50){
+      quality = 'HIGH_QUALITY';
+    }else {
+      quality = 'OVERVIEW';
+    }
+    console.log(`quality of the line: ${quality}`);
+    rideToAdd.route = await googleMapsService.getRoute(rideToAdd.starting_point, rideToAdd.destination, quality);
     rideToAdd.cities_along_route = await googleMapsService.getCitiesOnRoute(rideToAdd.route.polyline.encodedPolyline, rideToAdd.starting_point, rideToAdd.destination);
 
     const promise = rideToAdd.save().catch((err) => console.log(err));

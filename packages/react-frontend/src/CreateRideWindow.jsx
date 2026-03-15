@@ -28,7 +28,6 @@ function CreateRideWindow({ onClose, onRideCreated }) {
     cost: null,
     car: '',
     seats: null,
-    deviation: null,
     description: '',
   });
 
@@ -78,7 +77,6 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       cost: ride.cost,
       car: ride.car,
       seats: ride.seats,
-      deviation: ride.deviation,
       description: ride.description,
     };
 
@@ -127,10 +125,25 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       cost: null,
       car: '',
       seats: null,
-      deviation: null,
       description: '',
     });
   }
+
+  /*Removed deviation time section
+  <div className="form-field full-width">
+    <label htmlFor="deviation">Max Deviation Time (minutes)</label>
+    <input
+      className="full-width"
+      type="number"
+      placeholder="Max Deviation Time (minutes)"
+      name="deviation"
+      id="deviation"
+      value={ride.deviation}
+      onChange={handleChange}
+      onWheel={handleWheel}
+    />
+  </div>
+  */
 
   return (
     <div className="create-ride-window">
@@ -219,20 +232,6 @@ function CreateRideWindow({ onClose, onRideCreated }) {
               name="seats"
               id="seats"
               value={ride.seats}
-              onChange={handleChange}
-              onWheel={handleWheel}
-            />
-          </div>
-
-          <div className="form-field full-width">
-            <label htmlFor="deviation">Max Deviation Time (minutes)</label>
-            <input
-              className="full-width"
-              type="number"
-              placeholder="Max Deviation Time (minutes)"
-              name="deviation"
-              id="deviation"
-              value={ride.deviation}
               onChange={handleChange}
               onWheel={handleWheel}
             />

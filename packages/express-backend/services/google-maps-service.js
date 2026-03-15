@@ -1,9 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-//Google maps Api requests
 
-async function getRoute(start, dest){
+async function getRoute(start, dest, quality){
   let ComputeRoutesRequest = {
     origin: {
       address: `${start}, CA, USA`
@@ -13,7 +12,7 @@ async function getRoute(start, dest){
     },
     routingPreference: "TRAFFIC_AWARE",
     travelMode: "DRIVE",
-    polylineQuality: "OVERVIEW",
+    polylineQuality: quality,
     computeAlternativeRoutes: false,
     routeModifiers: {
       avoidTolls: false,
@@ -74,13 +73,13 @@ async function getCitiesOnRoute(polyline, start, dest){
     data.places.forEach(place => {
       if (place.addressComponents) {
         const cityComponent = place.addressComponents.find(component => 
-          component.types.includes("locality")
+          component?.types?.includes("locality")
         );
 
         if (cityComponent) {
           const cityName = cityComponent.longText; 
           
-          if (!cities.includes(cityName) && (cityName != start || cityName != dest)) {
+          if (!cities.includes(cityName) && (cityName != start && cityName != dest)) {
             cities.push(cityName);
           }
         }

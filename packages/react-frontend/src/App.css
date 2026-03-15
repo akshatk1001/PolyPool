@@ -19,7 +19,6 @@
 .navbar-logo {
   flex: 1;
   display: flex;
-  justify-content: center;
   background: transparent;
   border: none;
   padding: 0;
@@ -32,7 +31,7 @@
   display: block;
 }
 
-/* car logo */
+/* car logo 
 .navbar-icon {
   background: transparent;
   border: none;
@@ -47,6 +46,7 @@
   width: auto;
   display: block;
 }
+  */
 
 /* Gray page background fills remaining space */
 .main-content {

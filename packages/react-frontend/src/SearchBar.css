@@ -38,7 +38,7 @@
   margin: 0;
   z-index: 1000;
   box-shadow: var(--shadow-card);
-  border-radius: 0 0 20px 20px; /* Optional: rounds bottom to match search bar */
+  border-radius: 0 0 20px 20px; 
 }
 
 .suggestions-dropdown li {
@@ -51,43 +51,47 @@
 .suggestions-dropdown li:last-child {
   border-bottom: none;
 }
-
 .filter-row {
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: flex-end; 
   gap: 20px;
   margin-top: 20px;
-  width: 80%; /* Matched to search-bar width for perfect alignment */
+  width: 80%; 
   z-index: 1;
 }
 
-.dateTime-container {
+.dateTime-container,
+.slider-container {
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
+}
+
+.dateTime-container {
   flex: 0 0 auto;
+}
+
+.slider-container {
+  flex: 1;
 }
 
 .dateTime-container label,
 .slider-container label {
   font-size: 0.85rem;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 8px; 
   color: #555;
 }
 
 .date-input {
   display: flex;
-  margin: 2% auto 0; /* Combined margin-top and margin: auto */
-  height: 50px;
+  height: 30px;
   border-radius: 70px;
   border: none;
   background: var(--color-input-bg);
   font-size: 15px;
   text-indent: 3%;
-}
-
-.slider-container {
-  flex: 1;
-  padding-bottom: 5px;
+  padding-right: 10px;
+  box-sizing: border-box; 
 }

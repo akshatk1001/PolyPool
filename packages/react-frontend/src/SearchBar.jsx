@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'; // Added useEffect
+import { useState, useEffect, useRef } from 'react'; // Added useEffect
 import Slider from '@mui/material/Slider';
 import './SearchBar.css';
 import { API_URL } from './constants/api';
@@ -11,6 +11,7 @@ const SearchBar = ({ onSearchResults }) => {
   const [price_value, setPriceSearch] = useState(100);
 
   const valuetext = (value) => `$${value}`;
+  const searchContainerRef = useRef(null);
 
   const handleSlider = (event, newValue) => {
     setPriceSearch(newValue);
@@ -31,7 +32,6 @@ const SearchBar = ({ onSearchResults }) => {
         const data = await response.json();
 
         setCityOptions(data);
-        setShowDropdown(true);
       } catch (error) {
         console.log('Fetch error: ', error);
       }
@@ -40,6 +40,20 @@ const SearchBar = ({ onSearchResults }) => {
     const debounceTimer = setTimeout(fetchCities, 300);
     return () => clearTimeout(debounceTimer);
   }, [value]);
+
+   useEffect(() =>{
+    const handleClickOutside = (event) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        setShowDropdown(false); // ...close the dropdown!
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []); 
 
   const executeSearch = async (searchTerm) => {
     const query = searchTerm || value;
@@ -74,12 +88,13 @@ const SearchBar = ({ onSearchResults }) => {
 
   const handleOptionClick = (city) => {
     setValue(city);
+    setShowDropdown(false);
     executeSearch(city);
   };
 
   return (
     <div className="search-container">
-      <div className="input-group">
+      <div className="input-group" ref={searchContainerRef}>
         <input
           type="text"
           className="search-bar"
@@ -87,6 +102,7 @@ const SearchBar = ({ onSearchResults }) => {
           value={value}
           onChange={(e) => {
             setValue(e.target.value);
+            setShowDropdown(true);
           }}
           onKeyDown={handleKeyDown}
         />

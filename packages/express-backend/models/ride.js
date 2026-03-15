@@ -39,10 +39,10 @@ const RideSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    deviation: {
-      type: Number,
-      required: true,
-    },
+    //deviation: {
+      //type: Number,
+      //required: true,
+    //},
     description: {
       type: String,
       required: false,
