@@ -2,17 +2,18 @@ name: CI Testing
 
 on:
   push:
-    branches: ['**']
+  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
       - run: npm ci
+      - run: npm test -- --coverage
       - run: npm run -w express-backend lint
       - run: npm run -w react-frontend lint
       - run: npm run -w react-frontend build
