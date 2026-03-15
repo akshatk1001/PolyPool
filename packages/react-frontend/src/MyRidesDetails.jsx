@@ -1,6 +1,7 @@
 import './MyRidesDetails.css';
 import { useState, useEffect } from 'react';
 import fetchUser from './utils/fetchUser';
+import ReviewDriver from './ReviewDriver.jsx';
 import EditRideWindow from './EditRideWindow.jsx';
 import { API_URL } from './constants/api';
 import {
@@ -14,6 +15,7 @@ import {
 function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
   const [user, setUser] = useState(undefined);
   const [showEditRide, setShowEditRide] = useState(false);
+  const [showReviewDriver, setShowReviewDriver] = useState(false);
 
   useEffect(() => {
     fetchUser()
@@ -191,14 +193,14 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
         )}
 
         <div className="rd-action-row">
-          {isDriver ? (
+          {isDriver && !previousRides.includes(ride) && (
             <button
               className="edit-ride-button"
               onClick={() => setShowEditRide(true)}
             >
               Edit
             </button>
-          ) : null}
+          )}
 
           {showEditRide && (
             <EditRideWindow
@@ -208,13 +210,13 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
             />
           )}
 
-          {isDriver ? (
+          {isDriver && !previousRides.includes(ride) && (
             <button className="delete-ride-button" onClick={handleDelete}>
               Delete Ride
             </button>
-          ) : null}
+          )}
 
-          {isDriver && (
+          {isDriver && !previousRides.includes(ride) && (
             <button className="ride-completed-button" onClick={handleComplete}>
               Mark as Completed
             </button>
@@ -224,6 +226,23 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
             <button className="cancel-ride-button" onClick={handleCancel}>
               Cancel Ride
             </button>
+          )}
+
+          {!isDriver && previousRides.includes(ride) && (
+            <button
+              className="review-driver-button"
+              onClick={() => setShowReviewDriver(true)}
+            >
+              Review Driver
+            </button>
+          )}
+
+          {showReviewDriver && (
+            <ReviewDriver
+              ride={ride}
+              onClose={() => setShowReviewDriver(false)}
+              onRideEdited={onRideUpdated}
+            />
           )}
         </div>
       </div>

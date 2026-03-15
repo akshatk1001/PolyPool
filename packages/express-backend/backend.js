@@ -68,7 +68,6 @@ passport.use(
       scope: ['openid', 'profile', 'email', 'User.Read'], // use openid connect protocol, and read profile info
       addUPNAsEmail: true, // include userPrincipalName when mail is blank
       tenant: microsoftTenant,
-      passReqToCallback: true, // temporarily store user profile while asking for phone number
     },
     async (req, _accessToken, _refreshToken, profile, done) => {
       try {
@@ -78,11 +77,6 @@ passport.use(
         if (err.message === 'non_calpoly_email') {
           return done(null, false); // signals auth failure
         }
-        // if (err.message === 'needs_phone_number') {
-        //   // Save partial profile to session so the complete-signup endpoint can use it
-        //   req.session.pendingUser = err.pendingUser;
-        //   return done(null, false);
-        // }
         return done(err);
       }
     },
@@ -152,6 +146,26 @@ app.get('/api/rides', async (req, res) => {
   }
 });
 
+app.get('/api/rides/:id', async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: 'Invalid ride id' });
+  }
+
+  try {
+    const ride = await rideService.getRideById(id);
+
+    if (!ride) {
+      return res.status(404).json({ error: 'Ride not found' });
+    }
+
+    return res.status(200).json(ride);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 app.patch('/api/rides/:id', requireAuth, async (req, res) => {
   try {
     const result = await rideService.updateRide(req.params.id, req.body);
@@ -183,11 +197,6 @@ app.get('/auth/microsoft/callback', (req, res, next) => {
   passport.authenticate('microsoft', (err, user) => {
     if (err) return next(err);
     if (!user) {
-      // if they need phone number redirect to page with phone prompt
-      // if (req.session.pendingUser) {
-      //   return res.redirect(`${FRONTEND_URL}?auth=needs_phone`);
-      // }
-      // otherwise just a normal auth failure
       return res.redirect(`${FRONTEND_URL}?auth=failed`);
     }
     // have to actually log in user to session if they exist when the callback occurs
@@ -203,33 +212,6 @@ app.get('/auth/microsoft/callback', (req, res, next) => {
     });
   })(req, res, next); // have to call the auth function otherwise window just got stuck
 });
-
-// // user provides their phone number
-// app.post('/api/auth/complete-signup', async (req, res, next) => {
-//   const pending = req.session.pendingUser;
-//   const { phoneNum } = req.body;
-//   if (!phoneNum) {
-//     return res.status(400).json({ error: 'Phone number is required.' });
-//   }
-//   // create the user
-//   try {
-//     const user = await userService.createMicrosoftUser(
-//       pending.microsoftId,
-//       pending.name,
-//       pending.email,
-//       phoneNum,
-//     );
-//     // remove the pending user since now they are fully signed up
-//     delete req.session.pendingUser;
-//     // log in user
-//     req.logIn(user, (err) => {
-//       if (err) return next(err);
-//       return res.json({ success: true });
-//     });
-//   } catch (err) {
-//     return res.status(500).json({ error: err.message });
-//   }
-// });
 
 // return currently logged-in user
 app.get('/api/auth/me', requireAuth, (req, res) => {
@@ -308,6 +290,7 @@ function getNormalizedUserUpdates(body) {
     rides_as_passenger: body.rides_as_passenger,
     requested_rides: body.requested_rides,
     previous_rides: body.previous_rides,
+    ratings: body.ratings,
   };
 
   return updates;

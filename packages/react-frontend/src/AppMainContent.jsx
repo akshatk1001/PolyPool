@@ -17,7 +17,9 @@ function AppMainContent({ rides, isLoadingRides, onRideUpdated }) {
       </div>
 
       <div className="ride-grid">
-        {isLoadingRides ? "Loading In Rides" : visibleRides.length > 0 ? (
+        {isLoadingRides ? (
+          'Loading In Rides'
+        ) : visibleRides.length > 0 ? (
           visibleRides.map((ride) => (
             <RidePreviewCard
               key={ride._id}

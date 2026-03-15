@@ -3,7 +3,7 @@ import AppNavbar from './AppNavbar';
 import AppMainContent from './AppMainContent';
 import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
-import fetchRides from './utils/useRides';
+import fetchRides from './utils/fetchRides';
 import { useNavigate, useParams } from 'react-router-dom';
 import RideDetailsWindow from './RideDetailsWindow';
 

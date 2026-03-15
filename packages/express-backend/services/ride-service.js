@@ -6,8 +6,8 @@ mongoose.set('debug', true);
 
 function populateRideUsers(query) {
   return query
-    .populate('driver', 'name profile_pic ratings')
-    .populate('other_riders', 'name');
+    .populate('driver', '_id name profile_pic ratings')
+    .populate('other_riders', '_id name');
 }
 
 function searchRide(dest, date, price) {

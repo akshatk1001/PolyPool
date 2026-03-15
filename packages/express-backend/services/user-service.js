@@ -51,6 +51,17 @@ function updateUser(userId, updates) {
     return promise;
   }
 
+  // if ratings was changed then append or replace ratings list
+  if (updates.ratings !== undefined) {
+    const userUpdate = Array.isArray(updates.ratings)
+      ? { ratings: updates.ratings }
+      : { $push: { ratings: updates.ratings } };
+    const promise = userModel
+      .findByIdAndUpdate(userId, userUpdate, { new: true })
+      .catch((err) => console.log(err));
+    return promise;
+  }
+
   return userModel
     .findByIdAndUpdate(userId, updates, { new: true })
     .catch((err) => console.log(err));
@@ -128,17 +139,6 @@ async function findOrCreateMicrosoftUser(profile) {
   return newUser.save();
 }
 
-// Create a new Microsoft user after they have provided their phone number.
-async function createMicrosoftUser(microsoftId, name, email, phoneNum) {
-  const newUser = new userModel({
-    microsoftId: microsoftId,
-    name: name,
-    email: email,
-    phone_num: phoneNum,
-  });
-  return newUser.save().catch((err) => console.log(err));
-}
-
 export default {
   getUsers,
   getUserById,
@@ -148,6 +148,5 @@ export default {
   getPaypal,
   addRating,
   findOrCreateMicrosoftUser,
-  createMicrosoftUser,
   getUsersByMinRating,
 };
