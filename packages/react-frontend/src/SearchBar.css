@@ -68,6 +68,17 @@
   flex: 0 0 auto;
 }
 
+.dateTime-inputs {
+  display: flex;
+  gap: 12px;
+}
+
+.dateTime-inputs input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 .dateTime-container label,
 .slider-container label {
   font-size: 0.85rem;
