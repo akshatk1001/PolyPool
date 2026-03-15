@@ -117,7 +117,7 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
           phone_num: parsePhoneNumber(profile.phone_num),
           grade: profile.grade,
           major: profile.major,
-          home_address: profile.home_address,
+          hometown: profile.hometown,
           car: profile.car,
           email: profile.email,
           venmo_username: profile.venmo_username,
@@ -245,13 +245,13 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
           </div>
 
           <div className="form-field full-width">
-            <label htmlFor="home_address">Home Address</label>
+            <label htmlFor="hometown">Hometown</label>
             <input
               type="text"
-              name="home_address"
-              id="home_address"
-              placeholder="Home Address"
-              value={profile.home_address || ''}
+              name="hometown"
+              id="hometown"
+              placeholder="Hometown or home city"
+              value={profile.hometown || ''}
               onChange={handleChange}
             />
           </div>
