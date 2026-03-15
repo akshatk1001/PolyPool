@@ -119,7 +119,6 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
           major: profile.major,
           hometown: profile.hometown,
           car: profile.car,
-          email: profile.email,
           venmo_username: profile.venmo_username,
           paypal_id: profile.paypal_id,
           instagram: profile.instagram,
@@ -181,30 +180,16 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
             />
           </div>
 
-          <div className="form-row">
-            <div className="form-field">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="Email"
-                value={profile.email || ''}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="form-field">
-              <label htmlFor="phone_num">Phone Number</label>
-              <input
-                type="tel"
-                name="phone_num"
-                id="phone_num"
-                placeholder="xxx - xxx - xxxx"
-                value={profile.phone_num || ''}
-                onChange={handleChange}
-              />
-            </div>
+          <div className="form-field full-width">
+            <label htmlFor="phone_num">Phone Number</label>
+            <input
+              type="tel"
+              name="phone_num"
+              id="phone_num"
+              placeholder="xxx - xxx - xxxx"
+              value={profile.phone_num || ''}
+              onChange={handleChange}
+            />
           </div>
 
           <div className="form-row">
