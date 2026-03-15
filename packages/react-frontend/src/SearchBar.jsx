@@ -105,6 +105,7 @@ const SearchBar = ({ onSearchResults }) => {
         <div className="dateTime-container">
           <label htmlFor="search_dt">Date/Time</label>
           <input
+            className="date-input"
             type="datetime-local"
             name="search_dt"
             id="search_dt"
