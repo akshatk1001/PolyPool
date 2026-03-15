@@ -1,18 +1,19 @@
 import { useState } from 'react';
 import SearchBar from './SearchBar.jsx';
 import RidePreviewCard from './RidePreviewCard.jsx';
+import filterRides from './utils/filterRides';
 
 function AppMainContent({ rides, onRideUpdated }) {
-  const [searchResults, setSearchResults] = useState(null);
+  const [searchFilters, setSearchFilters] = useState({});
 
-  const visibleRides = (searchResults ?? rides).filter(
+  const visibleRides = filterRides(rides, searchFilters).filter(
     (ride) => !ride.is_completed,
   );
 
   return (
     <main className="main-content">
       <div className="search-bar-container">
-        <SearchBar onSearchResults={setSearchResults} />
+        <SearchBar onSearch={setSearchFilters} />
       </div>
 
       <div className="ride-grid">

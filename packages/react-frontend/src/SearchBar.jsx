@@ -1,14 +1,20 @@
-import { useState, useEffect } from 'react'; // Added useEffect
+import { useState, useEffect } from 'react';
 import Slider from '@mui/material/Slider';
 import './SearchBar.css';
-import { API_URL } from './constants/api';
+import fetchCities from './utils/fetchCities';
+import filterCities from './utils/filterCities';
+import { DEFAULT_MAX_PRICE } from './utils/filterRides';
 
-const SearchBar = ({ onSearchResults }) => {
-  const [value, setValue] = useState('');
-  const [cityOptions, setCityOptions] = useState([]);
+const SearchBar = ({ onSearch }) => {
+  const [citySearched, setCitySearched] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
-  const [dt_value, setDtValue] = useState('');
-  const [price_value, setPriceSearch] = useState(100);
+  const [allCities, setAllCities] = useState([]);
+  const [dateValue, setDateValue] = useState('');
+  const [timeValue, setTimeValue] = useState('');
+  const [price_value, setPriceSearch] = useState(DEFAULT_MAX_PRICE);
+  const cityOptions = citySearched.trim()
+    ? filterCities(allCities, citySearched)
+    : [];
 
   const valuetext = (value) => `$${value}`;
 
@@ -16,65 +22,34 @@ const SearchBar = ({ onSearchResults }) => {
     setPriceSearch(newValue);
   };
 
+  // load in all of the cities to list for parsing
   useEffect(() => {
-    const fetchCities = async () => {
-      if (!value.trim()) {
-        setCityOptions([]);
-        setShowDropdown(false);
-        return;
-      }
-
+    async function fetchAllCities() {
       try {
-        const response = await fetch(
-          `${API_URL}/api/cities/autofill?dest=${value}`,
-        );
-        const data = await response.json();
-
-        setCityOptions(data);
-        setShowDropdown(true);
+        const data = await fetchCities();
+        setAllCities(data);
       } catch (error) {
         console.log('Fetch error: ', error);
       }
+    }
+
+    fetchAllCities();
+  }, []);
+
+  useEffect(() => {
+    const filters = {
+      query: citySearched,
+      date: dateValue,
+      time: timeValue,
+      maxPrice: price_value,
     };
 
-    const debounceTimer = setTimeout(fetchCities, 300);
-    return () => clearTimeout(debounceTimer);
-  }, [value]);
-
-  const executeSearch = async (searchTerm) => {
-    const query = searchTerm || value;
-    let dateParam;
-    if (dt_value) {
-      dateParam = new Date(dt_value).toISOString();
-    } else {
-      dateParam = new Date().toISOString();
-    }
-    const priceParam = price_value ? `&price=${price_value}` : '';
-
-    try {
-      const url = query
-        ? `${API_URL}/api/rides?dest=${query}&date=${dateParam}${priceParam}`
-        : `${API_URL}/api/rides`;
-
-      const response = await fetch(url);
-      const data = await response.json();
-
-      onSearchResults(data);
-      setShowDropdown(false);
-    } catch (error) {
-      console.log('Fetch error:', error);
-    }
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      executeSearch();
-    }
-  };
+    onSearch(filters);
+  }, [citySearched, dateValue, timeValue, onSearch, price_value]);
 
   const handleOptionClick = (city) => {
-    setValue(city);
-    executeSearch(city);
+    setCitySearched(city);
+    setShowDropdown(false);
   };
 
   return (
@@ -84,11 +59,13 @@ const SearchBar = ({ onSearchResults }) => {
           type="text"
           className="search-bar"
           placeholder="Find Your Journey"
-          value={value}
+          value={citySearched}
           onChange={(e) => {
-            setValue(e.target.value);
+            setCitySearched(e.target.value);
+            setShowDropdown(true);
           }}
-          onKeyDown={handleKeyDown}
+          onFocus={() => setShowDropdown(true)}
+          onKeyDown={() => setShowDropdown(false)}
         />
 
         {showDropdown && cityOptions.length > 0 && (
@@ -103,14 +80,31 @@ const SearchBar = ({ onSearchResults }) => {
       </div>
       <div className="filter-row">
         <div className="dateTime-container">
-          <label htmlFor="search_dt">Date/Time</label>
-          <input
-            type="datetime-local"
-            name="search_dt"
-            id="search_dt"
-            value={dt_value}
-            onChange={(e) => setDtValue(e.target.value)}
-          />
+          <label htmlFor="search_date">Date / Time</label>
+          <div className="dateTime-inputs">
+            <input
+              type="date"
+              name="search_date"
+              id="search_date"
+              value={dateValue}
+              onChange={(e) => {
+                const nextDate = e.target.value;
+                setDateValue(nextDate);
+
+                if (!nextDate) {
+                  setTimeValue('');
+                }
+              }}
+            />
+            <input
+              type="time"
+              name="search_time"
+              id="search_time"
+              value={timeValue}
+              disabled={!dateValue}
+              onChange={(e) => setTimeValue(e.target.value)}
+            />
+          </div>
         </div>
 
         <div className="slider-container">
@@ -121,7 +115,7 @@ const SearchBar = ({ onSearchResults }) => {
             valueLabelDisplay="auto"
             getAriaValueText={valuetext}
             min={0}
-            max={100}
+            max={DEFAULT_MAX_PRICE}
             color="blue"
           />
         </div>
