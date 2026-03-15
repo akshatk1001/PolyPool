@@ -146,6 +146,26 @@ app.get('/api/rides', async (req, res) => {
   }
 });
 
+app.get('/api/rides/:id', async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: 'Invalid ride id' });
+  }
+
+  try {
+    const ride = await rideService.getRideById(id);
+
+    if (!ride) {
+      return res.status(404).json({ error: 'Ride not found' });
+    }
+
+    return res.status(200).json(ride);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 app.patch('/api/rides/:id', requireAuth, async (req, res) => {
   try {
     const result = await rideService.updateRide(req.params.id, req.body);
@@ -288,6 +308,7 @@ function getNormalizedUserUpdates(body) {
     rides_as_passenger: body.rides_as_passenger,
     requested_rides: body.requested_rides,
     previous_rides: body.previous_rides,
+    ratings: body.ratings,
   };
 
   return updates;
