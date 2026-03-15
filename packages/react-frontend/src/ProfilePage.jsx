@@ -4,7 +4,7 @@ import CreateRideWindow from './CreateRideWindow';
 import useSignOut from './utils/signOut';
 import ProfileEditWindow from './ProfileEditWindow';
 import fetchUser from './utils/fetchUser';
-import fetchRides from './utils/useRides';
+import fetchRides from './utils/fetchRides';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import './ProfilePage.css';
@@ -53,22 +53,31 @@ function ProfilePage() {
     .map((namePart) => namePart[0].toUpperCase())
     .join('');
 
-  const ridesGiven = user.rides_given ?? 0;
-  const ridesTaken = user.rides_taken ?? 0;
-  const numericRating = Number(user.rating);
-  const ratingValue = Number.isFinite(numericRating)
-    ? Math.max(0, Math.min(5, numericRating))
-    : null;
-  const ratingText = ratingValue !== null ? ratingValue.toFixed(1) : 'N/A';
-  const ratingCount =
-    Number(
-      user.rating_count ??
-        user.ratings_count ??
-        user.num_ratings ??
-        user.review_count ??
-        user.reviews_count ??
-        0,
-    ) || 0;
+  //get the amount of rides given and taken from the previous rides array. If the user is the driver, then it's a ride given, otherwise it's a ride taken
+  const previousRideIds = Array.isArray(user.previous_rides)
+    ? user.previous_rides.map(String)
+    : [];
+  const ridesGiven = previousRideIds.filter((rideId) =>
+    Array.isArray(user.rides_as_driver)
+      ? user.rides_as_driver.map(String).includes(rideId)
+      : false,
+  ).length;
+  const ridesTaken = previousRideIds.filter((rideId) =>
+    Array.isArray(user.rides_as_passenger)
+      ? user.rides_as_passenger.map(String).includes(rideId)
+      : false,
+  ).length;
+
+  //get the average rating from the ratings array. If there are no ratings, then the rating is null.
+  let ratingValue = 0;
+  user.ratings.map((rating) => ratingValue += rating)
+  if (user.ratings.length === 0) {
+    ratingValue = null;
+  } else {
+    ratingValue = ratingValue / user.ratings.length;
+  }
+  const ratingText = ratingValue !== null ? ratingValue.toFixed(1) : 'No Reviews';
+  const ratingCount = user.ratings.length || 0;
   const filledStars = ratingValue !== null ? Math.round(ratingValue) : 0;
   const stars = `${'★'.repeat(filledStars)}${'☆'.repeat(5 - filledStars)}`;
 
@@ -122,7 +131,7 @@ function ProfilePage() {
               <h1>{user.name || user.displayName || 'PolyPool Rider'}</h1>
               <div
                 className="profile-rating-summary"
-                aria-label={`Rating ${ratingText} out of 5 from ${ratingCount} ratings`}
+                aria-label={`Rating ${ratingValue} out of 5 from ${ratingCount} ratings`}
               >
                 <span className="profile-rating-stars">{stars}</span>
                 <span className="profile-rating-text">
