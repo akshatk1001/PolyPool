@@ -34,6 +34,9 @@ function CreateRideWindow({ onClose, onRideCreated }) {
 
   function handleChange(event) {
     const { name, value } = event.target;
+
+    //TODO: error checking must be handled here 
+    
     setRide({
       ...ride,
       [name]: value,
@@ -107,7 +110,6 @@ function CreateRideWindow({ onClose, onRideCreated }) {
         onClose();
         onRideCreated();
       } else {
-        // TODO: Show error message
         console.log('Server response error:', response.status);
       }
     } catch (error) {
@@ -116,7 +118,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
 
     // reset ride to default values
     setRide({
-      starting_point: 'San Luis Obispo',
+      starting_point: '',
       destination: '',
       start_date: '',
       start_time: '',
