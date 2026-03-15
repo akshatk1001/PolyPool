@@ -19,11 +19,15 @@ function HomePage() {
     : null;
 
   function loadRides() {
-    setIsLoadingRides(true);
     fetchRides()
       .then(setRides)
       .catch(console.error)
       .finally(() => setIsLoadingRides(false));
+  }
+
+  function refreshRides() {
+    setIsLoadingRides(true);
+    loadRides();
   }
 
   useEffect(() => {
@@ -41,21 +45,21 @@ function HomePage() {
         {showCreateRide && (
           <CreateRideWindow
             onClose={() => setShowCreateRide(false)}
-            onRideCreated={loadRides}
+            onRideCreated={refreshRides}
           />
         )}
       </AppNavbar>
       <AppMainContent
         rides={rides}
         isLoadingRides={isLoadingRides}
-        onRideUpdated={loadRides}
+        onRideUpdated={refreshRides}
       />
 
       {selectedRide && (
         <RideDetailsWindow
           ride={selectedRide}
           onClose={() => navigate('/home')}
-          onRideUpdated={loadRides}
+          onRideUpdated={refreshRides}
         />
       )}
     </div>
