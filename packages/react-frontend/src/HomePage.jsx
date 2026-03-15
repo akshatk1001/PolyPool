@@ -11,6 +11,7 @@ function HomePage() {
   const navigate = useNavigate();
   const [showCreateRide, setShowCreateRide] = useState(false);
   const [rides, setRides] = useState([]);
+  const [isLoadingRides, setIsLoadingRides] = useState(true);
   const signOut = useSignOut();
   let params = useParams();
   const selectedRide = params.rideId
@@ -18,7 +19,11 @@ function HomePage() {
     : null;
 
   function loadRides() {
-    fetchRides().then(setRides).catch(console.error);
+    setIsLoadingRides(true);
+    fetchRides()
+      .then(setRides)
+      .catch(console.error)
+      .finally(() => setIsLoadingRides(false));
   }
 
   useEffect(() => {
@@ -40,7 +45,11 @@ function HomePage() {
           />
         )}
       </AppNavbar>
-      <AppMainContent rides={rides} onRideUpdated={loadRides} />
+      <AppMainContent
+        rides={rides}
+        isLoadingRides={isLoadingRides}
+        onRideUpdated={loadRides}
+      />
 
       {selectedRide && (
         <RideDetailsWindow

@@ -3,7 +3,7 @@ import SearchBar from './SearchBar.jsx';
 import RidePreviewCard from './RidePreviewCard.jsx';
 import filterRides from './utils/filterRides';
 
-function AppMainContent({ rides, onRideUpdated }) {
+function AppMainContent({ rides, isLoadingRides, onRideUpdated }) {
   const [searchFilters, setSearchFilters] = useState({});
 
   const visibleRides = filterRides(rides, searchFilters).filter(
@@ -17,7 +17,7 @@ function AppMainContent({ rides, onRideUpdated }) {
       </div>
 
       <div className="ride-grid">
-        {visibleRides.length > 0 ? (
+        {isLoadingRides ? "Loading In Rides" : visibleRides.length > 0 ? (
           visibleRides.map((ride) => (
             <RidePreviewCard
               key={ride._id}
