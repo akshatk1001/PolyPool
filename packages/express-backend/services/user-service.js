@@ -128,17 +128,6 @@ async function findOrCreateMicrosoftUser(profile) {
   return newUser.save();
 }
 
-// Create a new Microsoft user after they have provided their phone number.
-async function createMicrosoftUser(microsoftId, name, email, phoneNum) {
-  const newUser = new userModel({
-    microsoftId: microsoftId,
-    name: name,
-    email: email,
-    phone_num: phoneNum,
-  });
-  return newUser.save().catch((err) => console.log(err));
-}
-
 export default {
   getUsers,
   getUserById,
@@ -148,6 +137,5 @@ export default {
   getPaypal,
   addRating,
   findOrCreateMicrosoftUser,
-  createMicrosoftUser,
   getUsersByMinRating,
 };
