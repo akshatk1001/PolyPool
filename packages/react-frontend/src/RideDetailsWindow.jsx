@@ -40,6 +40,9 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
     ? ride.other_riders.some((rider) => rider._id === user?._id) ||
       user?._id === ride.driver._id
     : false;
+  const isCurrentUserWaitlisted = Array.isArray(ride.waitlist_riders)
+    ? ride.waitlist_riders.some((rider) => rider._id === user?._id)
+    : false;
 
   // Call updateUserAPI to add this user to the drivers requested rides
   async function createRequest() {

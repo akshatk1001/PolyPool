@@ -13,6 +13,7 @@ import {
 } from './imagesAndIcons/RideIcons.jsx';
 
 function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
+  const [user, setUser] = useState(undefined);
   const [showEditRide, setShowEditRide] = useState(false);
   const [showReviewDriver, setShowReviewDriver] = useState(false);
 
