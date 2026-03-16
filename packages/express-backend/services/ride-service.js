@@ -1,13 +1,130 @@
 import mongoose from 'mongoose';
 import rideModel from '../models/ride.js';
+import userModel from '../models/user.js';
 import googleMapsService from './google-maps-service.js';
 
 mongoose.set('debug', true);
 
 function populateRideUsers(query) {
   return query
-    .populate('driver', '_id name profile_pic ratings')
-    .populate('other_riders', '_id name');
+    .populate('driver', 'name profile_pic ratings')
+    .populate('other_riders', 'name')
+    .populate('waitlist_riders', 'name');
+}
+function hasUser(users, userId) {
+  return Array.isArray(users) && users.some((id) => id.toString() === userId.toString());
+}
+
+async function addRideToPassengerList(userId, rideId) {
+  await userModel.findByIdAndUpdate(
+    userId,
+    { $addToSet: { rides_as_passenger: rideId } },
+    { new: false },
+  );
+}
+
+async function removeRideFromPassengerList(userId, rideId) {
+  await userModel.findByIdAndUpdate(
+    userId,
+    { $pull: { rides_as_passenger: rideId } },
+    { new: false },
+  );
+}
+
+async function promoteFromWaitlist(ride) {
+  const normalizedSeats = Number(ride.seats) || 0;
+  if (!Array.isArray(ride.other_riders)) {
+    ride.other_riders = [];
+  }
+  if (!Array.isArray(ride.waitlist_riders)) {
+    ride.waitlist_riders = [];
+  }
+
+  while (
+    ride.other_riders.length < normalizedSeats
+    && ride.waitlist_riders.length > 0
+  ) {
+    const nextRider = ride.waitlist_riders.shift();
+    if (!hasUser(ride.other_riders, nextRider)) {
+      ride.other_riders.push(nextRider);
+      await addRideToPassengerList(nextRider, ride._id);
+    }
+  }
+
+  await ride.save();
+  return getRideById(ride._id);
+}
+
+async function joinRide(rideId, userId) {
+  const ride = await rideModel.findById(rideId);
+  if (!ride) {
+    throw new Error('Ride not found');
+  }
+
+  if (!Array.isArray(ride.other_riders)) {
+    ride.other_riders = [];
+  }
+  if (!Array.isArray(ride.waitlist_riders)) {
+    ride.waitlist_riders = [];
+  }
+
+  if (ride.driver.toString() === userId.toString()) {
+    return { ride: await getRideById(rideId), status: 'driver_cannot_join' };
+  }
+
+  if (hasUser(ride.other_riders, userId)) {
+    return { ride: await getRideById(rideId), status: 'already_joined' };
+  }
+
+  if (hasUser(ride.waitlist_riders, userId)) {
+    return { ride: await getRideById(rideId), status: 'already_waitlisted' };
+  }
+
+  const normalizedSeats = Number(ride.seats) || 0;
+  if (ride.other_riders.length < normalizedSeats) {
+    ride.other_riders.push(userId);
+    await ride.save();
+    await addRideToPassengerList(userId, ride._id);
+    return { ride: await getRideById(rideId), status: 'joined' };
+  }
+
+  ride.waitlist_riders.push(userId);
+  await ride.save();
+  return { ride: await getRideById(rideId), status: 'waitlisted' };
+}
+
+async function leaveRide(rideId, userId) {
+  const ride = await rideModel.findById(rideId);
+  if (!ride) {
+    throw new Error('Ride not found');
+  }
+
+  if (!Array.isArray(ride.other_riders)) {
+    ride.other_riders = [];
+  }
+  if (!Array.isArray(ride.waitlist_riders)) {
+    ride.waitlist_riders = [];
+  }
+
+  const wasPassenger = hasUser(ride.other_riders, userId);
+  const wasWaitlisted = hasUser(ride.waitlist_riders, userId);
+
+  ride.other_riders = ride.other_riders.filter(
+    (id) => id.toString() !== userId.toString(),
+  );
+  ride.waitlist_riders = ride.waitlist_riders.filter(
+    (id) => id.toString() !== userId.toString(),
+  );
+
+  if (wasPassenger) {
+    await removeRideFromPassengerList(userId, ride._id);
+  }
+
+  const updatedRide = await promoteFromWaitlist(ride);
+  return {
+    ride: updatedRide,
+    status: wasPassenger ? 'left_ride' : wasWaitlisted ? 'left_waitlist' : 'not_joined',
+  };
 }
 
 function searchRide(dest, date, price) {
@@ -57,28 +174,26 @@ function getRidesByDate(dest, date) {
 }*/
 
 //function to get a ride by its id
-function getRideById(rideId) {
-  const promise = populateRideUsers(rideModel.findById(rideId)).catch((err) =>
-    console.log(err),
-  );
-  return promise;
+async function getRideById(rideId) {
+  return await populateRideUsers(rideModel.findById(rideId));
 }
 
 // Update ride details such as destination, date, or price.
-function updateRide(rideId, updates) {
+async function updateRide(rideId, updates) {
   if (updates.other_rider) {
-    const promise = rideModel
-      .findByIdAndUpdate(
-        rideId,
-        { $addToSet: { other_riders: updates.other_rider } },
-        { new: true },
-      )
-      .catch((err) => console.log(err));
-    return promise;
+    return joinRide(rideId, updates.other_rider).then((result) => result.ride);
   }
-  return rideModel
-    .findByIdAndUpdate(rideId, updates, { new: true })
-    .catch((err) => console.log(err));
+
+  const ride = await rideModel.findByIdAndUpdate(rideId, updates, { new: true }).catch((err) => {
+    console.log(err);
+    return null;
+  });
+
+  if (!ride) {
+    return null;
+  }
+
+  return promoteFromWaitlist(ride);
 }
 
 //function to delete a ride by its id
@@ -118,4 +233,6 @@ export default {
   deleteRide,
   createRide,
   updateRide,
+  joinRide,
+  leaveRide,
 };
