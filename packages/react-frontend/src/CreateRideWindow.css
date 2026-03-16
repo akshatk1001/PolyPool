@@ -118,3 +118,85 @@
 .create-button:active {
   transform: scale(0.96);
 }
+
+.deviation-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start; 
+  align-items: center;
+  gap: 20px; 
+  padding: 5px 0; 
+  box-sizing: border-box;
+}
+
+.deviation-text {
+  font-size: 16px; 
+  font-weight: 600; 
+  color: var(--color-text-primary); 
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.deviation-toggle-wrapper {
+  position: relative;
+  width: 80px;
+  height: 36px;
+  flex-shrink: 0;
+  margin-left: 15px;
+}
+
+.create-ride-form .deviation-checkbox {
+  display: none; 
+}
+
+.deviation-label {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #bbb;
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.deviation-label::before {
+  content: "NO";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  transition: 0.3s ease;
+  pointer-events: none; 
+}
+
+.deviation-switch {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 30px;
+  height: 30px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  pointer-events: none; 
+}
+
+.deviation-checkbox:checked + .deviation-label {
+  background: var(--color-brand-green);
+}
+
+.deviation-checkbox:checked + .deviation-label::before {
+  content: "YES";
+  left: 14px;
+  right: auto;
+}
+
+.deviation-checkbox:checked + .deviation-label .deviation-switch {
+  left: calc(100% - 33px);
+}
+

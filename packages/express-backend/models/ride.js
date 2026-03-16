@@ -40,7 +40,7 @@ const RideSchema = new mongoose.Schema(
       required: true,
     },
     deviation: {
-      type: Number,
+      type: Boolean,
       required: true,
     },
     description: {

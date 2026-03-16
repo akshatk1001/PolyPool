@@ -28,9 +28,8 @@ function AppNavbar({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  return (
-    <nav className="navbar">
-      <button
+
+  /*<button
         className="navbar-icon"
         onClick={goHome}
         type="button"
@@ -38,6 +37,11 @@ function AppNavbar({
       >
         <img src={PolyPoolIcon} alt="PolyPool Icon" />
       </button>
+      */
+
+  return (
+    <nav className="navbar">
+      
       <button
         className="navbar-logo"
         onClick={goHome}

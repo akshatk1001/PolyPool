@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import rideModel from '../models/ride.js';
 import googleMapsService from './google-maps-service.js';
+import cityService from './city-service.js';
 
 mongoose.set('debug', true);
 
@@ -34,27 +35,6 @@ function getRidesByDP(dest, date, price) {
   ).catch((err) => console.log(err));
   return promise;
 }
-/*
-likely don't need 
-//function to get rides going to that destination regardless of date
-function getRides(dest) {
-  const promise = populateRideUsers(
-    rideModel.find({ destination: { $regex: dest, $options: 'i' } }),
-  ).catch((err) => console.log(err));
-  return promise;
-}
-
-//function to get rides going to that destination on that date
-function getRidesByDate(dest, date) {
-  const search_Date = new Date(date);
-  const promise = populateRideUsers(
-    rideModel.find({
-      destination: { $regex: dest, $options: 'i' },
-      start_time: { $gte: search_Date },
-    }),
-  ).catch((err) => console.log(err));
-  return promise;
-}*/
 
 //function to get a ride by its id
 function getRideById(rideId) {
@@ -65,7 +45,21 @@ function getRideById(rideId) {
 }
 
 // Update ride details such as destination, date, or price.
-function updateRide(rideId, updates) {
+async function updateRide(rideId, updates) {
+  if (updates.starting_point || updates.destination){
+    let quality;
+    if (cityService.distanceBetween(updates.starting_point, updates.destination) <= 50){
+      quality = 'HIGH_QUALITY';
+    }else {
+      quality = 'OVERVIEW';
+    }
+    console.log(`quality of the line: ${quality}`);
+    updates.route = await googleMapsService.getRoute(updates.starting_point, updates.destination, quality);
+    if (updates.deviation != false){
+      updates.cities_along_route = await googleMapsService.getCitiesOnRoute(updates.route.polyline.encodedPolyline, updates.starting_point, updates.destination);
+    }
+  }
+
   if (updates.other_rider) {
     const promise = rideModel
       .findByIdAndUpdate(
@@ -94,16 +88,17 @@ async function createRide(ride) {
   try {
     const rideToAdd = new rideModel(ride);
 
-    rideToAdd.route = await googleMapsService.getRoute(
-      rideToAdd.starting_point,
-      rideToAdd.destination,
-    );
-    rideToAdd.cities_along_route = await googleMapsService.getCitiesOnRoute(
-      rideToAdd.route.polyline.encodedPolyline,
-      rideToAdd.starting_point,
-      rideToAdd.destination,
-    );
-
+    let quality;
+    if (cityService.distanceBetween(rideToAdd.starting_point, rideToAdd.destination) <= 50){
+      quality = 'HIGH_QUALITY';
+    }else {
+      quality = 'OVERVIEW';
+    }
+    console.log(`quality of the line: ${quality}`);
+    rideToAdd.route = await googleMapsService.getRoute(rideToAdd.starting_point, rideToAdd.destination, quality);
+    if (rideToAdd.deviation != false){
+      rideToAdd.cities_along_route = await googleMapsService.getCitiesOnRoute(rideToAdd.route.polyline.encodedPolyline, rideToAdd.starting_point, rideToAdd.destination);
+    }
     const promise = rideToAdd.save().catch((err) => console.log(err));
     return promise;
   } catch (error) {

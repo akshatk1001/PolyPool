@@ -34,6 +34,14 @@ function EditRideWindow({ onClose, onRideEdited, ride }) {
     });
   }
 
+  function handleSwitchChange(event){
+    const { name, checked } = event.target;
+    setRideData({
+      ...rideData,
+      [name]: checked,
+    });
+  }
+
   // Prevent scroll from changing number inputs
   function handleWheel(event) {
     event.target.blur();
@@ -168,19 +176,23 @@ function EditRideWindow({ onClose, onRideEdited, ride }) {
               onWheel={handleWheel}
             />
           </div>
-
-          <div className="form-field full-width">
-            <label htmlFor="deviation">Max Deviation Time (minutes)</label>
-            <input
-              className="full-width"
-              type="number"
-              placeholder="Max Deviation Time (minutes)"
-              name="deviation"
-              id="deviation"
-              value={rideData.deviation}
-              onChange={handleChange}
-              onWheel={handleWheel}
-            />
+    
+          <div className="deviation-container">
+            <span className="deviation-text">Willing to stop along the way?</span>
+            
+            <div className="deviation-toggle-wrapper">
+              <input 
+                type="checkbox" 
+                className="deviation-checkbox" 
+                name="deviation" 
+                id="deviation"
+                checked={rideData.deviation}
+                onChange={handleSwitchChange}
+              />
+              <label htmlFor="deviation" className="deviation-label"> 
+                <span className="deviation-switch"></span> 
+              </label>
+            </div>
           </div>
 
           <div className="form-field full-width">

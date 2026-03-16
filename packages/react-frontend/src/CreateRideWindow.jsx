@@ -25,15 +25,26 @@ function CreateRideWindow({ onClose, onRideCreated }) {
     start_time: '',
     driver: user?._id,
     other_riders: [],
-    cost: 0,
+    cost: null,
     car: '',
-    seats: 0,
-    deviation: 0,
+    seats: null,
+    deviation: true,
     description: '',
   });
 
+  function handleSwitchChange(event){
+    const { name, checked } = event.target;
+    setRide({
+      ...ride,
+      [name]: checked,
+    });
+  }
+
   function handleChange(event) {
     const { name, value } = event.target;
+
+    //TODO: error checking must be handled here 
+    
     setRide({
       ...ride,
       [name]: value,
@@ -107,7 +118,6 @@ function CreateRideWindow({ onClose, onRideCreated }) {
         onClose();
         onRideCreated();
       } else {
-        // TODO: Show error message
         console.log('Server response error:', response.status);
       }
     } catch (error) {
@@ -116,7 +126,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
 
     // reset ride to default values
     setRide({
-      starting_point: 'San Luis Obispo',
+      starting_point: '',
       destination: '',
       start_date: '',
       start_time: '',
@@ -125,7 +135,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       cost: 0,
       car: '',
       seats: 0,
-      deviation: 0,
+      deviation: true,
       description: '',
     });
   }
@@ -146,7 +156,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
               <label htmlFor="starting_point">Start Location</label>
               <input
                 type="text"
-                placeholder="Cal Poly"
+                placeholder="San Luis Obispo"
                 name="starting_point"
                 id="starting_point"
                 value={ride.starting_point}
@@ -222,18 +232,22 @@ function CreateRideWindow({ onClose, onRideCreated }) {
             />
           </div>
 
-          <div className="form-field full-width">
-            <label htmlFor="deviation">Max Deviation Time (minutes)</label>
-            <input
-              className="full-width"
-              type="number"
-              placeholder="Max Deviation Time (minutes)"
-              name="deviation"
-              id="deviation"
-              value={ride.deviation}
-              onChange={handleChange}
-              onWheel={handleWheel}
-            />
+          <div className="deviation-container">
+            <span className="deviation-text">Willing to stop along the way?</span>
+            
+            <div className="deviation-toggle-wrapper">
+              <input 
+                type="checkbox" 
+                className="deviation-checkbox" 
+                name="deviation" 
+                id="deviation"
+                checked={ride.deviation}
+                onChange={handleSwitchChange}
+              />
+              <label htmlFor="deviation" className="deviation-label"> 
+                <span className="deviation-switch"></span> 
+              </label>
+            </div>
           </div>
 
           <div className="form-field full-width">
