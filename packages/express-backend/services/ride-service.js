@@ -151,11 +151,8 @@ function getRidesByDate(dest, date) {
 }*/
 
 //function to get a ride by its id
-function getRideById(rideId) {
-  const promise = populateRideUsers(rideModel.findById(rideId)).catch((err) =>
-    console.log(err),
-  );
-  return promise;
+async function getRideById(rideId) {
+  return await populateRideUsers(rideModel.findById(rideId));
 }
 
 // Update ride details such as destination, date, or price.
