@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import rideModel from '../models/ride.js';
+import userModel from '../models/user.js';
 import googleMapsService from './google-maps-service.js';
 
 mongoose.set('debug', true);
@@ -12,6 +13,22 @@ function populateRideUsers(query) {
 }
 function hasUser(users, userId) {
   return Array.isArray(users) && users.some((id) => id.toString() === userId.toString());
+}
+
+async function addRideToPassengerList(userId, rideId) {
+  await userModel.findByIdAndUpdate(
+    userId,
+    { $addToSet: { rides_as_passenger: rideId } },
+    { new: false },
+  );
+}
+
+async function removeRideFromPassengerList(userId, rideId) {
+  await userModel.findByIdAndUpdate(
+    userId,
+    { $pull: { rides_as_passenger: rideId } },
+    { new: false },
+  );
 }
 
 async function promoteFromWaitlist(ride) {
@@ -30,6 +47,7 @@ async function promoteFromWaitlist(ride) {
     const nextRider = ride.waitlist_riders.shift();
     if (!hasUser(ride.other_riders, nextRider)) {
       ride.other_riders.push(nextRider);
+      await addRideToPassengerList(nextRider, ride._id);
     }
   }
 
@@ -66,6 +84,7 @@ async function joinRide(rideId, userId) {
   if (ride.other_riders.length < normalizedSeats) {
     ride.other_riders.push(userId);
     await ride.save();
+    await addRideToPassengerList(userId, ride._id);
     return { ride: await getRideById(rideId), status: 'joined' };
   }
 
@@ -96,6 +115,10 @@ async function leaveRide(rideId, userId) {
   ride.waitlist_riders = ride.waitlist_riders.filter(
     (id) => id.toString() !== userId.toString(),
   );
+
+  if (wasPassenger) {
+    await removeRideFromPassengerList(userId, ride._id);
+  }
 
   const updatedRide = await promoteFromWaitlist(ride);
   return {
