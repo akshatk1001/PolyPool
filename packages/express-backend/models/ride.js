@@ -40,7 +40,7 @@ const RideSchema = new mongoose.Schema(
       required: true,
     },
     deviation: {
-      type: Number,
+      type: Boolean,
       required: true,
     },
     description: {
@@ -57,24 +57,6 @@ const RideSchema = new mongoose.Schema(
       polyline: {
         encodedPolyline: String,
       },
-      legs: [
-        {
-          distanceMeters: Number,
-          duration: String,
-          startLocation: {
-            latLng: {
-              latitude: Number,
-              longitude: Number,
-            },
-          },
-          endLocation: {
-            latLng: {
-              latitude: Number,
-              longitude: Number,
-            },
-          },
-        },
-      ],
     },
     is_completed: {
       type: Boolean,

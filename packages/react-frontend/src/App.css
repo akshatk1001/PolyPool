@@ -12,18 +12,35 @@
   padding: 16px 24px;
   display: flex;
   align-items: center;
+  gap: 12px;
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* White bold logo text — centered between icon and buttons */
 .navbar-logo {
   flex: 1;
   display: flex;
-  justify-content: center;
   background: transparent;
   border: none;
   padding: 0;
   cursor: pointer;
+}
+
+.navbar-home-icon {
+  display: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.navbar-home-icon img {
+  height: 44px;
+  width: auto;
+  display: block;
 }
 
 .navbar-logo img {
@@ -32,7 +49,7 @@
   display: block;
 }
 
-/* car logo */
+/* car logo 
 .navbar-icon {
   background: transparent;
   border: none;
@@ -47,6 +64,7 @@
   width: auto;
   display: block;
 }
+  */
 
 /* Gray page background fills remaining space */
 .main-content {
@@ -74,6 +92,7 @@
   cursor: pointer;
   transition: var(--transition-fast);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .my-rides-button {
@@ -92,6 +111,7 @@
   cursor: pointer;
   transition: var(--transition-fast);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .signout-button {
@@ -189,6 +209,11 @@
   transition: var(--transition-fast);
 }
 
+.profile-dropdown {
+  position: relative;
+  flex-shrink: 0;
+}
+
 .profile-button:hover {
   background: var(--color-nav-hover-bg);
 }
@@ -242,6 +267,12 @@ input::-webkit-inner-spin-button {
   .navbar-logo {
     display: none;
   }
+
+  .navbar-home-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 600px) {
@@ -250,7 +281,7 @@ input::-webkit-inner-spin-button {
     gap: 6px;
   }
 
-  .navbar-icon img {
+  .navbar-home-icon img {
     height: 36px;
   }
 
@@ -286,6 +317,8 @@ input::-webkit-inner-spin-button {
   .profile-button {
     margin-left: 6px;
     padding: 4px;
+    height: 42px;
+    width: 42px;
   }
 
   .profile-button svg {
@@ -301,9 +334,33 @@ input::-webkit-inner-spin-button {
   }
 }
 
-/* Profile dropdown styles */
-.profile-dropdown {
-  position: relative;
+@media (max-width: 390px) {
+  .nav-button-label {
+    display: none;
+  }
+
+  .createRide-button,
+  .my-rides-button {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+  }
+
+  .createRide-button img,
+  .my-rides-button img {
+    height: 18px;
+  }
+
+  .my-rides-button {
+    margin-left: 4px;
+  }
+
+  .profile-button {
+    margin-left: 4px;
+    height: 40px;
+    width: 40px;
+  }
 }
 
 .dropdown-menu {

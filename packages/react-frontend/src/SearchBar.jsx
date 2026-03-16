@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react'; // Added useEffect
 import Slider from '@mui/material/Slider';
 import './SearchBar.css';
 import fetchCities from './utils/fetchCities';
@@ -17,6 +17,7 @@ const SearchBar = ({ onSearch }) => {
     : [];
 
   const valuetext = (value) => `$${value}`;
+  const searchContainerRef = useRef(null);
 
   const handleSlider = (event, newValue) => {
     setPriceSearch(newValue);
@@ -36,6 +37,20 @@ const SearchBar = ({ onSearch }) => {
     fetchAllCities();
   }, []);
 
+   useEffect(() =>{
+    const handleClickOutside = (event) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        setShowDropdown(false); // ...close the dropdown!
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []); 
+
   useEffect(() => {
     const filters = {
       query: citySearched,
@@ -54,7 +69,7 @@ const SearchBar = ({ onSearch }) => {
 
   return (
     <div className="search-container">
-      <div className="input-group">
+      <div className="input-group" ref={searchContainerRef}>
         <input
           type="text"
           className="search-bar"
@@ -83,6 +98,7 @@ const SearchBar = ({ onSearch }) => {
           <label htmlFor="search_date">Date / Time</label>
           <div className="dateTime-inputs">
             <input
+              className="date-input"
               type="date"
               name="search_date"
               id="search_date"
@@ -97,6 +113,7 @@ const SearchBar = ({ onSearch }) => {
               }}
             />
             <input
+              className="date-input"
               type="time"
               name="search_time"
               id="search_time"

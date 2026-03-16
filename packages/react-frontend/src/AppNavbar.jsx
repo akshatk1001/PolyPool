@@ -31,13 +31,14 @@ function AppNavbar({
   return (
     <nav className="navbar">
       <button
-        className="navbar-icon"
+        className="navbar-home-icon"
         onClick={goHome}
         type="button"
         aria-label="Go to home"
       >
-        <img src={PolyPoolIcon} alt="PolyPool Icon" />
+        <img src={PolyPoolIcon} alt="" />
       </button>
+
       <button
         className="navbar-logo"
         onClick={goHome}
@@ -47,14 +48,22 @@ function AppNavbar({
         <img src={PolyPoolLogo} alt="PolyPool Logo" />
       </button>
 
-      <button className="createRide-button" onClick={onCreateRideClick}>
+      <button
+        className="createRide-button"
+        onClick={onCreateRideClick}
+        aria-label="Create ride"
+      >
         <img src={PlusIcon} alt="Plus Icon"></img>
-        Create Ride
+        <span className="nav-button-label">Create Ride</span>
       </button>
 
-      <button className="my-rides-button" onClick={onMyRidesClick}>
+      <button
+        className="my-rides-button"
+        onClick={onMyRidesClick}
+        aria-label="My rides"
+      >
         <img src={CarIcon} alt="Car Icon" />
-        My Rides
+        <span className="nav-button-label">My Rides</span>
       </button>
 
       <div className="profile-dropdown" ref={dropdownRef}>

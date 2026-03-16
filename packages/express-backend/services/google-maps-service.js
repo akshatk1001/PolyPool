@@ -1,9 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-//Google maps Api requests
 
-async function getRoute(start, dest) {
+async function getRoute(start, dest, quality){
   let ComputeRoutesRequest = {
     origin: {
       address: `${start}, CA, USA`,
@@ -11,9 +10,9 @@ async function getRoute(start, dest) {
     destination: {
       address: `${dest}, CA, USA`,
     },
-    routingPreference: 'TRAFFIC_AWARE',
-    travelMode: 'DRIVE',
-    polylineQuality: 'OVERVIEW',
+    routingPreference: "TRAFFIC_AWARE",
+    travelMode: "DRIVE",
+    polylineQuality: quality,
     computeAlternativeRoutes: false,
     routeModifiers: {
       avoidTolls: false,
@@ -24,19 +23,15 @@ async function getRoute(start, dest) {
     units: 'METRIC',
   };
 
-  const response = await fetch(
-    'https://routes.googleapis.com/directions/v2:computeRoutes',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Goog-Api-Key': process.env.GOOGLE_API_KEY,
-        'X-Goog-FieldMask':
-          'routes.duration,routes.distanceMeters,routes.legs,routes.polyline.encodedPolyline',
-      },
-      body: JSON.stringify(ComputeRoutesRequest),
+  const response = await fetch('https://routes.googleapis.com/directions/v2:computeRoutes', {
+    method : 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': process.env.GOOGLE_API_KEY, 
+      'X-Goog-FieldMask': 'routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline'
     },
-  );
+    body: JSON.stringify(ComputeRoutesRequest),
+  });
 
   if (!response.ok) {
     throw new Error(`Google Routes API failed: ${response.statusText}`);
@@ -80,18 +75,14 @@ async function getCitiesOnRoute(polyline, start, dest) {
   if (data.places) {
     data.places.forEach((place) => {
       if (place.addressComponents) {
-        const cityComponent = place.addressComponents.find((component) =>
-          component.types.includes('locality'),
+        const cityComponent = place.addressComponents.find(component => 
+          component?.types?.includes("locality")
         );
 
         if (cityComponent) {
-          const cityName = cityComponent.longText;
-
-          if (
-            !cities.includes(cityName) &&
-            cityName !== start &&
-            cityName !== dest
-          ) {
+          const cityName = cityComponent.longText; 
+          
+          if (!cities.includes(cityName) && (cityName != start && cityName != dest)) {
             cities.push(cityName);
           }
         }
