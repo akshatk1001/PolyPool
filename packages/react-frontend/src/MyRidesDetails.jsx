@@ -97,6 +97,37 @@ function MyRidesDetails({ ride, isDriver, onRideUpdated }) {
     }
   };
 
+  const handleComplete = () => {
+    if (
+      window.confirm('Are you sure you want to mark this ride as completed?')
+    ) {
+      // Add this ride to previous_rides for everyone on the ride.
+      const riderIds = [
+        ...new Set(
+          [ride.driver, ...(ride.other_riders ?? [])].map((rider) => rider._id),
+        ),
+      ];
+      // Update each rider's previous_rides list with the completed ride
+      riderIds.forEach((riderId) => {
+        fetch(`${API_URL}/api/users/${riderId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ previous_rides: ride._id }),
+        }).then(() => {
+          onRideUpdated();
+        });
+      });
+      // Mark the ride as completed
+      fetch(`${API_URL}/api/rides/${ride._id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ is_completed: true }),
+      }).catch((err) => console.error(err));
+    }
+  };
+
   const driverName = ride.driver?.name || 'Unknown';
 
   const startDate = ride.start_time
