@@ -49,23 +49,6 @@
   display: block;
 }
 
-/* car logo 
-.navbar-icon {
-  background: transparent;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.navbar-icon img {
-  height: 40px;
-  width: auto;
-  display: block;
-}
-  */
-
 /* Gray page background fills remaining space */
 .main-content {
   flex: 1;
