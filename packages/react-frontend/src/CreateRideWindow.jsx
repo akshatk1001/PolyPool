@@ -28,8 +28,17 @@ function CreateRideWindow({ onClose, onRideCreated }) {
     cost: null,
     car: '',
     seats: null,
+    deviation: true,
     description: '',
   });
+
+  function handleSwitchChange(event){
+    const { name, checked } = event.target;
+    setRide({
+      ...ride,
+      [name]: checked,
+    });
+  }
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -77,6 +86,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       cost: ride.cost,
       car: ride.car,
       seats: ride.seats,
+      deviation: ride.deviation,
       description: ride.description,
     };
 
@@ -122,28 +132,13 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       start_time: '',
       driver: user._id,
       other_riders: [],
-      cost: null,
+      cost: 0,
       car: '',
-      seats: null,
+      seats: 0,
+      deviation: true,
       description: '',
     });
   }
-
-  /*Removed deviation time section
-  <div className="form-field full-width">
-    <label htmlFor="deviation">Max Deviation Time (minutes)</label>
-    <input
-      className="full-width"
-      type="number"
-      placeholder="Max Deviation Time (minutes)"
-      name="deviation"
-      id="deviation"
-      value={ride.deviation}
-      onChange={handleChange}
-      onWheel={handleWheel}
-    />
-  </div>
-  */
 
   return (
     <div className="create-ride-window">
@@ -235,6 +230,24 @@ function CreateRideWindow({ onClose, onRideCreated }) {
               onChange={handleChange}
               onWheel={handleWheel}
             />
+          </div>
+
+          <div className="deviation-container">
+            <span className="deviation-text">Willing to stop along the way?</span>
+            
+            <div className="deviation-toggle-wrapper">
+              <input 
+                type="checkbox" 
+                className="deviation-checkbox" 
+                name="deviation" 
+                id="deviation"
+                checked={ride.deviation}
+                onChange={handleSwitchChange}
+              />
+              <label htmlFor="deviation" className="deviation-label"> 
+                <span className="deviation-switch"></span> 
+              </label>
+            </div>
           </div>
 
           <div className="form-field full-width">

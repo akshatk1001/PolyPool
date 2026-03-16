@@ -170,7 +170,7 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
             {ride.car && (
               <div className="rd-info-item">
                 <WavyIcon />
-                <span>Max Deviation: {ride.deviation ?? 0} minutes</span>
+                <span>Willing to stop along the way? {ride.deviation? "Yes" : "No"}</span>
               </div>
             )}
           </div>
