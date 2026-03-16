@@ -42,6 +42,11 @@ function MyRidesPage() {
         )
       : false,
   );
+  const waitlistedRides = rides.filter((ride) =>
+    Array.isArray(ride.waitlist_riders)
+      ? ride.waitlist_riders.some((rider) => rider._id === user?._id)
+      : false,
+  );
   // all rides where the users ID is listed as a previous ride
   const previousRides = rides.filter((ride) =>
     Array.isArray(user?.previous_rides)
@@ -95,6 +100,19 @@ function MyRidesPage() {
       </div>
 
       <div className="rides-list">
+        <h2 className="section-header">Waitlisted</h2>
+        {waitlistedRides.length > 0 ? (
+          waitlistedRides.map((ride) => (
+            <MyRidesDetails
+              key={ride._id}
+              ride={ride}
+              isDriver={false}
+              onRideUpdated={loadRides}
+            />
+          ))
+        ) : (
+          <p>No rides found matching your search.</p>
+        )}
         <h2 className="section-header">Previous Rides</h2>
         {previousRides.length > 0 ? (
           previousRides.map((ride) => (

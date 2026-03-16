@@ -26,6 +26,12 @@ const RideSchema = new mongoose.Schema(
       ref: 'User',
       required: false,
     },
+    waitlist_riders: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'User',
+      required: false,
+      default: [],
+    },
     cost: {
       type: Number,
       required: true,
@@ -50,6 +56,10 @@ const RideSchema = new mongoose.Schema(
     cities_along_route: {
       type: [String],
       required: false,
+    },
+    is_completed: {
+      type: Boolean,
+      default: false,
     },
     route: {
       distanceMeters: Number,

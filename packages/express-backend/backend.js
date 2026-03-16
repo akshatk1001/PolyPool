@@ -175,6 +175,24 @@ app.patch('/api/rides/:id', requireAuth, async (req, res) => {
   }
 });
 
+app.post('/api/rides/:id/join', requireAuth, async (req, res) => {
+  try {
+    const result = await rideService.joinRide(req.params.id, req.user._id);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/rides/:id/leave', requireAuth, async (req, res) => {
+  try {
+    const result = await rideService.leaveRide(req.params.id, req.user._id);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.delete('/api/rides/:id', requireAuth, async (req, res) => {
   try {
     await rideService.deleteRide(req.params.id);

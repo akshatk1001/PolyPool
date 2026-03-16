@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
   const [user, setUser] = useState(undefined);
   const [isRequesting, setIsRequesting] = useState(false); // if the user has clicked to request ride
-  const [requestSuccess, setRequestSuccess] = useState(false);
+  const [joinStatus, setJoinStatus] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,19 +29,24 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
     ? ride.other_riders.map((otherRider) => otherRider.name || '')
     : [];
 
+  const waitlistNames = Array.isArray(ride.waitlist_riders)
+    ? ride.waitlist_riders.map((waitlistedRider) => waitlistedRider.name || '')
+    : [];
+
   const totalSeats = ride.seats;
   const takenSeats = passengerNames.length;
-  const remainingSeats = Math.max(totalSeats - takenSeats, 0);
-  // Check if the current user is already a passenger in this ride
+  const remainingSeats = Math.max(totalSeats - takenSeats, 0); //extra safety check for race conditions or bad data
   const isCurrentUserPassenger = Array.isArray(ride.other_riders)
     ? ride.other_riders.some((rider) => rider._id === user?._id) ||
       user?._id === ride.driver._id
     : false;
+  const isCurrentUserWaitlisted = Array.isArray(ride.waitlist_riders)
+    ? ride.waitlist_riders.some((rider) => rider._id === user?._id)
+    : false;
 
   // Call updateUserAPI to add this user to the drivers requested rides
   async function createRequest() {
-    // don't allow req if its full or user is alr in requesting state or user is already a passenger
-    if (remainingSeats === 0 || isRequesting || isCurrentUserPassenger) {
+    if (isRequesting || isCurrentUserPassenger || isCurrentUserWaitlisted) {
       return;
     }
 
@@ -52,37 +57,20 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
 
     try {
       setIsRequesting(true);
-      setRequestSuccess(false);
+      setJoinStatus(null);
 
-      // update ride to list this user as passenger
-      console.log('Requesting ride with ID:', ride._id);
-      const rideResponse = await fetch(`${API_URL}/api/rides/${ride._id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ other_rider: user._id }),
+      const rideResponse = await fetch(`${API_URL}/api/rides/${ride._id}/join`, {
+        method: 'POST',
         credentials: 'include',
       });
 
       if (!rideResponse.ok) {
-        console.error('Failed to add passenger to ride:', rideResponse.status);
+        console.error('Failed to join ride:', rideResponse.status);
         return;
       }
 
-      // update user list to add this ride as a ride the user is a passenger in
-      console.log('Updating user to be as a passenger in their profile');
-      const userResponse = await fetch(`${API_URL}/api/users/${user._id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rides_as_passenger: ride._id }),
-        credentials: 'include',
-      });
-
-      if (!userResponse.ok) {
-        console.error('Failed to add ride to user:', userResponse.status);
-        return;
-      }
-
-      setRequestSuccess(true);
+      const responsePayload = await rideResponse.json();
+      setJoinStatus(responsePayload.status || 'joined');
       onRideUpdated();
     } catch (err) {
       console.error('Error requesting ride:', err);
@@ -172,6 +160,14 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
               </span>
             </div>
 
+            <div className="rd-info-item">
+              <PersonIcon />
+              <span>
+                Waitlist:{' '}
+                {waitlistNames.length > 0 ? waitlistNames.join(', ') : 'None'}
+              </span>
+            </div>
+
             {ride.car && (
               <div className="rd-info-item">
                 <CarIcon />
@@ -197,19 +193,22 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
           <div className="rd-action-row">
             <button
               className="rd-request-btn"
-              disabled={
-                !user ||
-                remainingSeats === 0 ||
-                isRequesting ||
-                isCurrentUserPassenger
-              }
+              disabled={!user || isRequesting || isCurrentUserPassenger || isCurrentUserWaitlisted}
               onClick={() => createRequest()}
             >
-              {isCurrentUserPassenger || requestSuccess
-                ? 'Already In Ride'
+              {isCurrentUserPassenger
+                ? 'Joined Ride'
+                : isCurrentUserWaitlisted
+                  ? 'On Waitlist'
+                  : joinStatus === 'waitlisted'
+                    ? 'On Waitlist'
+                    : joinStatus === 'joined'
+                      ? 'Joined Ride'
                 : isRequesting
-                  ? 'Requesting...'
-                  : 'Request Ride'}
+                  ? 'Joining...'
+                  : remainingSeats > 0
+                    ? 'Join Ride'
+                    : 'Join Waitlist'}
             </button>
           </div>
         </div>
