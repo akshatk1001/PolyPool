@@ -98,6 +98,7 @@ const SearchBar = ({ onSearch }) => {
           <label htmlFor="search_date">Date / Time</label>
           <div className="dateTime-inputs">
             <input
+              className="date-input"
               type="date"
               name="search_date"
               id="search_date"
@@ -112,6 +113,7 @@ const SearchBar = ({ onSearch }) => {
               }}
             />
             <input
+              className="date-input"
               type="time"
               name="search_time"
               id="search_time"
