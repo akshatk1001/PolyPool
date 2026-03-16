@@ -97,31 +97,6 @@
   flex-shrink: 0;
 }
 
-.signout-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 15px;
-  background: var(--color-brand-gold);
-  color: var(--color-brand-green);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 25px;
-  font-size: 20px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  white-space: nowrap;
-}
-
-.signout-button:hover {
-  background: var(--color-brand-gold-hover);
-}
-
-.signout-button:active {
-  transform: scale(0.96);
-}
-
 .createRide-button img {
   height: 30px;
   padding: 0%;
@@ -288,13 +263,6 @@ input::-webkit-inner-spin-button {
 
   .my-rides-button img {
     height: 16px;
-  }
-
-  .signout-button {
-    font-size: 13px;
-    padding: 7px 10px;
-    margin-left: 6px;
-    white-space: nowrap;
   }
 
   .profile-button {

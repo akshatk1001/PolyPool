@@ -115,10 +115,6 @@
   color: var(--color-text-primary);
 }
 
-.rd-driver-item {
-  grid-column: 1 / -1;
-}
-
 .profile-pic-btn {
   background: none;
   border: none;

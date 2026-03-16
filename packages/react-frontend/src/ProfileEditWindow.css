@@ -72,12 +72,6 @@
   outline: none;
 }
 
-.profile-name {
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
 .save-button {
   align-self: flex-end;
   background: var(--color-brand-gold);

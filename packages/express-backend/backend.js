@@ -9,7 +9,6 @@ import { Strategy as MicrosoftStrategy } from 'passport-microsoft';
 import userService from './services/user-service.js';
 import rideService from './services/ride-service.js';
 import cityService from './services/city-service.js';
-import mapService from './services/google-maps-service.js';
 
 dotenv.config();
 
