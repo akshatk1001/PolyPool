@@ -156,7 +156,7 @@ function EditRideWindow({ onClose, onRideEdited, ride }) {
                 placeholder="0"
                 name="cost"
                 id="cost"
-                value={rideData.cost}
+                value={rideData.cost ?? ''}
                 onChange={handleChange}
                 onWheel={handleWheel}
               />
@@ -171,7 +171,7 @@ function EditRideWindow({ onClose, onRideEdited, ride }) {
               placeholder="Number of seats"
               name="seats"
               id="seats"
-              value={rideData.seats}
+              value={rideData.seats ?? ''}
               onChange={handleChange}
               onWheel={handleWheel}
             />

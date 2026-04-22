@@ -211,7 +211,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
                 placeholder="0"
                 name="cost"
                 id="cost"
-                value={ride.cost}
+                value={ride.cost ?? ''}
                 onChange={handleChange}
                 onWheel={handleWheel}
               />
@@ -226,7 +226,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
               placeholder="Number of seats"
               name="seats"
               id="seats"
-              value={ride.seats}
+              value={ride.seats ?? ''}
               onChange={handleChange}
               onWheel={handleWheel}
             />
