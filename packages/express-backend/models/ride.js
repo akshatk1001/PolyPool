@@ -26,6 +26,10 @@ const RideSchema = new mongoose.Schema(
       ref: 'User',
       required: false,
     },
+    waypoints: {
+      type: [String],
+      required: false,
+    },
     cost: {
       type: Number,
       required: true,
