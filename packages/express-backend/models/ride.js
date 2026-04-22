@@ -67,6 +67,10 @@ const RideSchema = new mongoose.Schema(
       default: false,
       required: false,
     },
+    maps_URL: {
+      type: String,
+      required: false,
+    }
   },
 
   { collection: 'rides_list' },

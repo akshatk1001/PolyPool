@@ -1,8 +1,20 @@
 import dotenv from 'dotenv';
+import cityService from './city-service.js';
 dotenv.config();
 
 
-async function getRoute(start, dest, quality){
+async function getRoute(start, dest, waypoints){
+  let quality;
+  if (cityService.distanceBetween(start, dest) <= 50){
+    quality = 'HIGH_QUALITY';
+  }else {
+    quality = 'OVERVIEW';
+  }
+  let WaypointStops = [];
+  for (let i = 0; i < waypoints.length; i++){
+    let loc = {location: `${waypoints[i]}, CA, USA`};
+    WaypointStops.push(loc);
+  }
   let ComputeRoutesRequest = {
     origin: {
       address: `${start}, CA, USA`,
@@ -10,10 +22,12 @@ async function getRoute(start, dest, quality){
     destination: {
       address: `${dest}, CA, USA`,
     },
+    intermediates: WaypointStops,
     routingPreference: "TRAFFIC_AWARE",
     travelMode: "DRIVE",
     polylineQuality: quality,
     computeAlternativeRoutes: false,
+    optimizeWaypointOrder: true,
     routeModifiers: {
       avoidTolls: false,
       avoidHighways: false,
@@ -44,8 +58,7 @@ async function getRoute(start, dest, quality){
 //generates the cities along a given encoded polyline
 async function getCitiesOnRoute(polyline, start, dest) {
   let RouteData = {
-    textQuery: 'City Hall',
-    includedType: 'local_government_office',
+    textQuery: 'gas station',
     searchAlongRouteParameters: {
       polyline: {
         encodedPolyline: polyline,
