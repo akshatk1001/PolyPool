@@ -15,27 +15,32 @@ async function getRoute(start, dest, waypoints){
     let loc = {location: `${waypoints[i]}, CA, USA`};
     WaypointStops.push(loc);
   }
-  let ComputeRoutesRequest = {
-    origin: {
-      address: `${start}, CA, USA`,
-    },
-    destination: {
-      address: `${dest}, CA, USA`,
-    },
+
+  const ComputeRoutesRequest = {
+  origin: {
+    address: `${start}, CA, USA`,
+  },
+  destination: {
+    address: `${dest}, CA, USA`,
+  },
+  routingPreference: "TRAFFIC_AWARE",
+  travelMode: "DRIVE",
+  polylineQuality: quality,
+  computeAlternativeRoutes: false,
+  routeModifiers: {
+    avoidTolls: false,
+    avoidHighways: false,
+    avoidFerries: true,
+  },
+  languageCode: 'en-US',
+  units: 'METRIC',
+  
+  ...(WaypointStops && {
     intermediates: WaypointStops,
-    routingPreference: "TRAFFIC_AWARE",
-    travelMode: "DRIVE",
-    polylineQuality: quality,
-    computeAlternativeRoutes: false,
-    optimizeWaypointOrder: true,
-    routeModifiers: {
-      avoidTolls: false,
-      avoidHighways: false,
-      avoidFerries: false,
-    },
-    languageCode: 'en-US',
-    units: 'METRIC',
-  };
+    optimizeWaypointOrder: true
+  })
+};
+  
 
   const response = await fetch('https://routes.googleapis.com/directions/v2:computeRoutes', {
     method : 'POST',
