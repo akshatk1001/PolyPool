@@ -5,7 +5,7 @@ dotenv.config();
 
 async function getRoute(start, dest, waypoints){
   let quality;
-  if (cityService.distanceBetween(start, dest) <= 50){
+  if (cityService.distanceBetween(start, dest) <= 100){
     quality = 'HIGH_QUALITY';
   }else {
     quality = 'OVERVIEW';
@@ -17,30 +17,31 @@ async function getRoute(start, dest, waypoints){
   }
 
   const ComputeRoutesRequest = {
-  origin: {
-    address: `${start}, CA, USA`,
-  },
-  destination: {
-    address: `${dest}, CA, USA`,
-  },
-  routingPreference: "TRAFFIC_AWARE",
-  travelMode: "DRIVE",
-  polylineQuality: quality,
-  computeAlternativeRoutes: false,
-  routeModifiers: {
-    avoidTolls: false,
-    avoidHighways: false,
-    avoidFerries: true,
-  },
-  languageCode: 'en-US',
-  units: 'METRIC',
-  
-  ...(WaypointStops && {
-    intermediates: WaypointStops,
-    optimizeWaypointOrder: true
-  })
-};
-  
+    origin: {
+      address: `${start}, CA, USA`,
+    },
+    destination: {
+      address: `${dest}, CA, USA`,
+    },
+    routingPreference: "TRAFFIC_AWARE",
+    travelMode: "DRIVE",
+    polylineQuality: quality,
+    computeAlternativeRoutes: false,
+    routeModifiers: {
+      avoidTolls: false,
+      avoidHighways: false,
+      avoidFerries: true,
+    },
+    languageCode: 'en-US',
+    units: 'METRIC',
+    
+    ...((WaypointStops.length != 0) && {
+      intermediates: WaypointStops,
+      optimizeWaypointOrder: true
+    })
+  };
+
+  console.log(ComputeRoutesRequest);
 
   const response = await fetch('https://routes.googleapis.com/directions/v2:computeRoutes', {
     method : 'POST',
