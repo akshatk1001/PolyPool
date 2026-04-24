@@ -32,7 +32,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
     description: '',
   });
 
-  function handleSwitchChange(event){
+  function handleSwitchChange(event) {
     const { name, checked } = event.target;
     setRide({
       ...ride,
@@ -43,8 +43,8 @@ function CreateRideWindow({ onClose, onRideCreated }) {
   function handleChange(event) {
     const { name, value } = event.target;
 
-    //TODO: error checking must be handled here 
-    
+    //TODO: error checking must be handled here
+
     setRide({
       ...ride,
       [name]: value,
@@ -233,19 +233,21 @@ function CreateRideWindow({ onClose, onRideCreated }) {
           </div>
 
           <div className="deviation-container">
-            <span className="deviation-text">Willing to stop along the way?</span>
-            
+            <span className="deviation-text">
+              Willing to stop along the way?
+            </span>
+
             <div className="deviation-toggle-wrapper">
-              <input 
-                type="checkbox" 
-                className="deviation-checkbox" 
-                name="deviation" 
+              <input
+                type="checkbox"
+                className="deviation-checkbox"
+                name="deviation"
                 id="deviation"
                 checked={ride.deviation}
                 onChange={handleSwitchChange}
               />
-              <label htmlFor="deviation" className="deviation-label"> 
-                <span className="deviation-switch"></span> 
+              <label htmlFor="deviation" className="deviation-label">
+                <span className="deviation-switch"></span>
               </label>
             </div>
           </div>

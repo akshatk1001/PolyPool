@@ -34,7 +34,7 @@ function EditRideWindow({ onClose, onRideEdited, ride }) {
     });
   }
 
-  function handleSwitchChange(event){
+  function handleSwitchChange(event) {
     const { name, checked } = event.target;
     setRideData({
       ...rideData,
@@ -176,21 +176,23 @@ function EditRideWindow({ onClose, onRideEdited, ride }) {
               onWheel={handleWheel}
             />
           </div>
-    
+
           <div className="deviation-container">
-            <span className="deviation-text">Willing to stop along the way?</span>
-            
+            <span className="deviation-text">
+              Willing to stop along the way?
+            </span>
+
             <div className="deviation-toggle-wrapper">
-              <input 
-                type="checkbox" 
-                className="deviation-checkbox" 
-                name="deviation" 
+              <input
+                type="checkbox"
+                className="deviation-checkbox"
+                name="deviation"
                 id="deviation"
                 checked={rideData.deviation}
                 onChange={handleSwitchChange}
               />
-              <label htmlFor="deviation" className="deviation-label"> 
-                <span className="deviation-switch"></span> 
+              <label htmlFor="deviation" className="deviation-label">
+                <span className="deviation-switch"></span>
               </label>
             </div>
           </div>

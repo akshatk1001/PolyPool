@@ -46,17 +46,30 @@ function getRideById(rideId) {
 
 // Update ride details such as destination, date, or price.
 async function updateRide(rideId, updates) {
-  if (updates.starting_point || updates.destination){
+  if (updates.starting_point || updates.destination) {
     let quality;
-    if (cityService.distanceBetween(updates.starting_point, updates.destination) <= 50){
+    if (
+      cityService.distanceBetween(
+        updates.starting_point,
+        updates.destination,
+      ) <= 50
+    ) {
       quality = 'HIGH_QUALITY';
-    }else {
+    } else {
       quality = 'OVERVIEW';
     }
     console.log(`quality of the line: ${quality}`);
-    updates.route = await googleMapsService.getRoute(updates.starting_point, updates.destination, quality);
-    if (updates.deviation != false){
-      updates.cities_along_route = await googleMapsService.getCitiesOnRoute(updates.route.polyline.encodedPolyline, updates.starting_point, updates.destination);
+    updates.route = await googleMapsService.getRoute(
+      updates.starting_point,
+      updates.destination,
+      quality,
+    );
+    if (updates.deviation != false) {
+      updates.cities_along_route = await googleMapsService.getCitiesOnRoute(
+        updates.route.polyline.encodedPolyline,
+        updates.starting_point,
+        updates.destination,
+      );
     }
   }
 
@@ -89,15 +102,28 @@ async function createRide(ride) {
     const rideToAdd = new rideModel(ride);
 
     let quality;
-    if (cityService.distanceBetween(rideToAdd.starting_point, rideToAdd.destination) <= 50){
+    if (
+      cityService.distanceBetween(
+        rideToAdd.starting_point,
+        rideToAdd.destination,
+      ) <= 50
+    ) {
       quality = 'HIGH_QUALITY';
-    }else {
+    } else {
       quality = 'OVERVIEW';
     }
     console.log(`quality of the line: ${quality}`);
-    rideToAdd.route = await googleMapsService.getRoute(rideToAdd.starting_point, rideToAdd.destination, quality);
-    if (rideToAdd.deviation != false){
-      rideToAdd.cities_along_route = await googleMapsService.getCitiesOnRoute(rideToAdd.route.polyline.encodedPolyline, rideToAdd.starting_point, rideToAdd.destination);
+    rideToAdd.route = await googleMapsService.getRoute(
+      rideToAdd.starting_point,
+      rideToAdd.destination,
+      quality,
+    );
+    if (rideToAdd.deviation != false) {
+      rideToAdd.cities_along_route = await googleMapsService.getCitiesOnRoute(
+        rideToAdd.route.polyline.encodedPolyline,
+        rideToAdd.starting_point,
+        rideToAdd.destination,
+      );
     }
     const promise = rideToAdd.save().catch((err) => console.log(err));
     return promise;
