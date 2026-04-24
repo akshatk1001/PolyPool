@@ -81,9 +81,8 @@ async function compressImageToDataUrl(
 }
 
 function ProfileEditWindow({ currentUser, onClose, onSaved }) {
-  // profile holds all the user fields from the backew, setProfilePicPreview] = useState(
-  //   currentUser?.profile_pic || '',
-  // );
+  // profile holds all the user fields from the backend
+  const [profile, setProfile] = useState(normalizeProfileForForm(currentUser));
 
   const userId = currentUser?._id || currentUser?.id;
 
@@ -119,7 +118,7 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
     }
 
     if (name === 'car') {
-      norma  // Handles profile picture file input, compresses the image, and stores it as a data URL in the profile state lizedValue = sanitizeCarValue(value);
+      normalizedValue = sanitizeCarValue(value);
     }
 
     setProfile({
