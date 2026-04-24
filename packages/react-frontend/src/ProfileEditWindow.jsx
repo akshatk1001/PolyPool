@@ -81,11 +81,9 @@ async function compressImageToDataUrl(
 }
 
 function ProfileEditWindow({ currentUser, onClose, onSaved }) {
-  // profile holds all the user fields from the backend
-  const [profile, setProfile] = useState(normalizeProfileForForm(currentUser));
-  const [profilePicPreview, setProfilePicPreview] = useState(
-    currentUser?.profile_pic || '',
-  );
+  // profile holds all the user fields from the backew, setProfilePicPreview] = useState(
+  //   currentUser?.profile_pic || '',
+  // );
 
   const userId = currentUser?._id || currentUser?.id;
 
@@ -110,9 +108,6 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
       .catch((err) => console.log('Failed to load profile:', err));
   }, [currentUser, userId]);
 
-  useEffect(() => {
-    setProfilePicPreview(profile?.profile_pic || '');
-  }, [profile?.profile_pic]);
 
   // Updates a single field in the profile state when an input changes
   function handleChange(event) {
@@ -124,7 +119,7 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
     }
 
     if (name === 'car') {
-      normalizedValue = sanitizeCarValue(value);
+      norma  // Handles profile picture file input, compresses the image, and stores it as a data URL in the profile state lizedValue = sanitizeCarValue(value);
     }
 
     setProfile({
@@ -147,7 +142,6 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
         ...currentProfile,
         profile_pic: dataUrl,
       }));
-      setProfilePicPreview(dataUrl);
     } catch (error) {
       console.log('Failed to read profile picture:', error);
     }
@@ -244,9 +238,9 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
               accept="image/*"
               onChange={handleProfilePicChange}
             />
-            {profilePicPreview ? (
+            {profile.profile_pic ? (
               <img
-                src={profilePicPreview}
+                src={profile.profile_pic}
                 alt="Profile preview"
                 className="profile-pic-preview"
               />
