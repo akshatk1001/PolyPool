@@ -167,6 +167,14 @@
   transition: var(--transition-fast);
 }
 
+.profile-button img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
 .profile-dropdown {
   position: relative;
   flex-shrink: 0;
