@@ -49,6 +49,10 @@
   --transition-fast: 0.2s ease;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   margin: 0;
   min-width: 320px;

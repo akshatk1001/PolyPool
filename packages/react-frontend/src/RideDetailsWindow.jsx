@@ -182,7 +182,9 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
             {ride.car && (
               <div className="rd-info-item">
                 <WavyIcon />
-                <span>Willing to stop along the way? {ride.deviation? "Yes" : "No"}</span>
+                <span>
+                  Willing to stop along the way? {ride.deviation ? 'Yes' : 'No'}
+                </span>
               </div>
             )}
           </div>

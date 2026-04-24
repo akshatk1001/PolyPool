@@ -10,4 +10,3 @@ All the project docs are in the [docs](docs/) folder.
 - [Contributing](docs/CONTRIBUTING.md)
 - [UI Prototype](docs/UI-Prototype.md)
 - [Testing Overview](docs/testing-overview.md)
-

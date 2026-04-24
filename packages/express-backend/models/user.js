@@ -63,7 +63,7 @@ const UserSchema = new mongoose.Schema(
     profile_pic: {
       type: String,
       required: false,
-      trim: true,
+      trim: false,
     },
     rides_as_driver: {
       type: [mongoose.Schema.Types.ObjectId],
