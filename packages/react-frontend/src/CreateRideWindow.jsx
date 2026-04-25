@@ -1,15 +1,37 @@
 import { useState, useEffect } from 'react';
 import './CreateRideWindow.css';
 import fetchUser from './utils/fetchUser';
+import fetchCities from './utils/fetchCities';
+import filterCities from './utils/filterCities';
 import { API_URL } from './constants/api';
 
 function CreateRideWindow({ onClose, onRideCreated }) {
   const [user, setUser] = useState(undefined);
+  const [citySearched, setCitySearched] = useState('');
+  const [showStartLocDropdown, setShowStartLocDropdown] = useState(false);
+  const [showDestDropdown, setShowDestDropdown] = useState(false);
+  const [cities, setCities] = useState([]);
+  const cityOptions = citySearched.trim()
+    ? filterCities(cities, citySearched)
+    : [];
 
   useEffect(() => {
     fetchUser()
       .then(setUser)
       .catch(() => setUser(null));
+  }, []);
+
+  useEffect(() => {
+    async function fetchAllCities() {
+      try {
+        const data = await fetchCities();
+        setCities(data);
+      } catch (error) {
+        console.log('Fetch error: ', error);
+      }
+    }
+
+    fetchAllCities();
   }, []);
 
   useEffect(() => {
@@ -42,8 +64,30 @@ function CreateRideWindow({ onClose, onRideCreated }) {
     });
   }
 
+  function handleOptionClick(optionName, option) {
+    setRide({
+      ...ride,
+      [optionName]: option,
+    });
+    setShowStartLocDropdown(false);
+    setShowDestDropdown(false);
+  }
+
   function handleChange(event) {
     const { name, value } = event.target;
+    console.log('got to handleChange with name:', name, 'and value:', value);
+
+    if (name === 'starting_point') {
+      setShowDestDropdown(false);
+      setCitySearched(value);
+      setShowStartLocDropdown(true);
+    }
+
+    if (name === 'destination') {
+      setShowStartLocDropdown(false);
+      setCitySearched(value);
+      setShowDestDropdown(true);
+    }
 
     //TODO: error checking must be handled here
 
@@ -71,11 +115,13 @@ function CreateRideWindow({ onClose, onRideCreated }) {
   }
 
   async function submitForm(event) {
+    onClose();
     event.preventDefault();
     const datetime = new Date(`${ride.start_date}T${ride.start_time}`);
 
     if (!user) {
       console.error('No user found. Cannot create ride without a driver.');
+      alert('You must be signed in to create a ride.');
       return;
     }
 
@@ -94,12 +140,16 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       maps_URL: ride.maps_URL,
     };
 
+    console.log(rideData);
+
     try {
       const response = await postRide(rideData);
+      // if ride created successfully:
       if (response.status === 201) {
         // Parse the response to get the created ride with its ID
         const createdRide = await response.json();
         console.log('Ride created successfully', response.status, createdRide);
+        alert('Ride created successfully!');
 
         // Add this ride to the user's rides_as_driver list using the created ride's ID
         const userResponse = await fetch(`${API_URL}/api/users/${user._id}`, {
@@ -114,18 +164,23 @@ function CreateRideWindow({ onClose, onRideCreated }) {
             'Error updating user with new ride:',
             userResponse.status,
           );
+          alert('Created ride, but unable to add to your ride list.');
         } else {
           const updatedUser = await userResponse.json();
           console.log('User updated with new ride:', updatedUser);
         }
 
-        onClose();
+        // onClose();
         onRideCreated();
       } else {
         console.log('Server response error:', response.status);
+        alert(
+          'Connected to server but failed to create ride. Please try again with valid inputs.',
+        );
       }
     } catch (error) {
       console.log('Request completely failed:', error);
+      alert('Failed to create ride. Please try again with valid inputs.');
     }
 
     // reset ride to default values
@@ -168,6 +223,20 @@ function CreateRideWindow({ onClose, onRideCreated }) {
                 value={ride.starting_point}
                 onChange={handleChange}
               />
+              {showStartLocDropdown && cityOptions.length > 0 && (
+                <ul className="city-suggestions-dropdown">
+                  {cityOptions.map((city, index) => (
+                    <li
+                      key={index}
+                      onClick={() =>
+                        handleOptionClick('starting_point', city.name)
+                      }
+                    >
+                      {city.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             <div className="form-field">
@@ -180,6 +249,20 @@ function CreateRideWindow({ onClose, onRideCreated }) {
                 value={ride.destination}
                 onChange={handleChange}
               />
+              {showDestDropdown && cityOptions.length > 0 && (
+                <ul className="city-suggestions-dropdown">
+                  {cityOptions.map((city, index) => (
+                    <li
+                      key={index}
+                      onClick={() =>
+                        handleOptionClick('destination', city.name)
+                      }
+                    >
+                      {city.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
 

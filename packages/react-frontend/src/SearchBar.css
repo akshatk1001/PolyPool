@@ -77,6 +77,14 @@
   flex: 1 1 360px;
 }
 
+.dateTime-header {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
 .slider-container {
   flex: 1 1 260px;
 }
@@ -88,6 +96,29 @@
   margin-bottom: 8px;
   color: #555;
   line-height: 1.4;
+}
+
+.dateTime-header label {
+  margin-bottom: 0;
+}
+
+.reset-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #555;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0;
+}
+
+.reset-button:hover {
+  background: rgba(0, 0, 0, 0.07);
 }
 
 .dateTime-inputs {
