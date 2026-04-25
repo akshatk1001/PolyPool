@@ -4,6 +4,7 @@ import './SearchBar.css';
 import fetchCities from './utils/fetchCities';
 import filterCities from './utils/filterCities';
 import { DEFAULT_MAX_PRICE } from './utils/filterRides';
+import { FaRedo } from 'react-icons/fa';
 
 const SearchBar = ({ onSearch }) => {
   const [citySearched, setCitySearched] = useState('');
@@ -98,7 +99,20 @@ const SearchBar = ({ onSearch }) => {
       </div>
       <div className="filter-row">
         <div className="dateTime-container">
-          <label htmlFor="search_date">Date / Time</label>
+          <div className="dateTime-header">
+            <label htmlFor="search_date">Date / Time</label>
+            <button
+              type="button"
+              className="reset-button"
+              aria-label="Reset date and time"
+              onClick={() => {
+                setDateValue('');
+                setTimeValue('');
+              }}
+            >
+              <FaRedo />
+            </button>
+          </div>
           <div className="dateTime-inputs">
             <input
               className="date-input"
