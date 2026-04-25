@@ -12,6 +12,9 @@ const YEAR_OPTIONS = [
   { label: 'Graduate Student', value: '6' },
 ];
 
+const PROFILE_PIC_MAX_DIMENSION = 512;
+const PROFILE_PIC_QUALITY = 0.7;
+
 function formatPhoneNumber(value) {
   const digits = String(value || '')
     .replace(/\D/g, '')
@@ -53,6 +56,30 @@ function sanitizeCarValue(value) {
     .slice(0, 60);
 }
 
+async function compressImageToDataUrl(
+  file,
+  maxDimension = PROFILE_PIC_MAX_DIMENSION,
+  quality = PROFILE_PIC_QUALITY,
+) {
+  const imageBitmap = await createImageBitmap(file);
+  const largestSide = Math.max(imageBitmap.width, imageBitmap.height);
+  const scale = Math.min(1, maxDimension / largestSide);
+  const width = Math.round(imageBitmap.width * scale);
+  const height = Math.round(imageBitmap.height * scale);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+
+  const context = canvas.getContext('2d');
+  if (!context) {
+    throw new Error('Unable to process image for upload.');
+  }
+
+  context.drawImage(imageBitmap, 0, 0, width, height);
+  return canvas.toDataURL('image/webp', quality);
+}
+
 function ProfileEditWindow({ currentUser, onClose, onSaved }) {
   // profile holds all the user fields from the backend
   const [profile, setProfile] = useState(normalizeProfileForForm(currentUser));
@@ -80,6 +107,7 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
       .catch((err) => console.log('Failed to load profile:', err));
   }, [currentUser, userId]);
 
+
   // Updates a single field in the profile state when an input changes
   function handleChange(event) {
     const { name, value } = event.target;
@@ -97,6 +125,25 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
       ...profile,
       [name]: normalizedValue,
     });
+  }
+
+  async function handleProfilePicChange(event) {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    try {
+      const dataUrl = await compressImageToDataUrl(file);
+
+      setProfile((currentProfile) => ({
+        ...currentProfile,
+        profile_pic: dataUrl,
+      }));
+    } catch (error) {
+      console.log('Failed to read profile picture:', error);
+    }
   }
 
   // Sends the updated fields to the backend via PATCH
@@ -122,6 +169,7 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
           venmo_username: profile.venmo_username,
           paypal_id: profile.paypal_id,
           instagram: profile.instagram,
+          profile_pic: profile.profile_pic,
         }),
       });
       if (res.ok) {
@@ -178,6 +226,24 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
               value={profile.name || ''}
               onChange={handleChange}
             />
+          </div>
+
+          <div className="form-field full-width">
+            <label htmlFor="profile_pic">Profile Picture</label>
+            <input
+              type="file"
+              name="profile_pic"
+              id="profile_pic"
+              accept="image/*"
+              onChange={handleProfilePicChange}
+            />
+            {profile.profile_pic ? (
+              <img
+                src={profile.profile_pic}
+                alt="Profile preview"
+                className="profile-pic-preview"
+              />
+            ) : null}
           </div>
 
           <div className="form-field full-width">

@@ -37,19 +37,22 @@ const SearchBar = ({ onSearch }) => {
     fetchAllCities();
   }, []);
 
-   useEffect(() =>{
+  useEffect(() => {
     const handleClickOutside = (event) => {
-      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target)
+      ) {
         setShowDropdown(false); // ...close the dropdown!
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    
+    document.addEventListener('mousedown', handleClickOutside);
+
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []); 
+  }, []);
 
   useEffect(() => {
     const filters = {

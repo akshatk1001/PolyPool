@@ -1,7 +1,9 @@
 import PolyPoolLogo from './imagesAndIcons/PolyPoolLogo.png';
 import PolyPoolIcon from './imagesAndIcons/PolyPoolIcon.png';
 import PlusIcon from './imagesAndIcons/PlusIcon.png';
+import ProfileIcon from './imagesAndIcons/ProfilePic.png';
 import CarIcon from './imagesAndIcons/CarIcon.png';
+import fetchUser from './utils/fetchUser';
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 
@@ -14,6 +16,7 @@ function AppNavbar({
 }) {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [profilePicSrc, setProfilePicSrc] = useState(ProfileIcon);
   const dropdownRef = useRef(null);
 
   const goHome = () => navigate('/home');
@@ -26,6 +29,12 @@ function AppNavbar({
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    fetchUser()
+      .then((user) => setProfilePicSrc(user?.profile_pic || ProfileIcon))
+      .catch(() => setProfilePicSrc(ProfileIcon));
   }, []);
 
   return (
@@ -72,10 +81,11 @@ function AppNavbar({
           onClick={() => setDropdownOpen((prev) => !prev)}
           aria-label="Profile menu"
         >
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
-            <circle cx="12" cy="8" r="4" />
-            <path d="M4 20c0-4 4-7 8-7s8 3 8 7" />
-          </svg>
+          <img
+            src={profilePicSrc}
+            alt="Profile Icon"
+            onError={() => setProfilePicSrc(ProfileIcon)}
+          />
         </button>
 
         {dropdownOpen && (

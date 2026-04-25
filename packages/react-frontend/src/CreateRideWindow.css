@@ -122,17 +122,17 @@
 .deviation-container {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start; 
+  justify-content: flex-start;
   align-items: center;
-  gap: 20px; 
-  padding: 5px 0; 
+  gap: 20px;
+  padding: 5px 0;
   box-sizing: border-box;
 }
 
 .deviation-text {
-  font-size: 16px; 
-  font-weight: 600; 
-  color: var(--color-text-primary); 
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
   font-family: inherit;
   white-space: nowrap;
 }
@@ -146,7 +146,7 @@
 }
 
 .create-ride-form .deviation-checkbox {
-  display: none; 
+  display: none;
 }
 
 .deviation-label {
@@ -161,7 +161,7 @@
 }
 
 .deviation-label::before {
-  content: "NO";
+  content: 'NO';
   position: absolute;
   right: 14px;
   top: 50%;
@@ -170,7 +170,7 @@
   font-size: 14px;
   font-weight: bold;
   transition: 0.3s ease;
-  pointer-events: none; 
+  pointer-events: none;
 }
 
 .deviation-switch {
@@ -182,8 +182,8 @@
   background: white;
   border-radius: 50%;
   transition: 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  pointer-events: none; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
 }
 
 .deviation-checkbox:checked + .deviation-label {
@@ -191,7 +191,7 @@
 }
 
 .deviation-checkbox:checked + .deviation-label::before {
-  content: "YES";
+  content: 'YES';
   left: 14px;
   right: auto;
 }
@@ -199,4 +199,3 @@
 .deviation-checkbox:checked + .deviation-label .deviation-switch {
   left: calc(100% - 33px);
 }
-
