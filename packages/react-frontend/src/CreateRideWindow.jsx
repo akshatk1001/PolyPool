@@ -1,18 +1,42 @@
 import { useState, useEffect } from 'react';
 import './CreateRideWindow.css';
 import fetchUser from './utils/fetchUser';
+import fetchCities from './utils/fetchCities';
+import filterCities from './utils/filterCities';
 import { API_URL } from './constants/api';
 
 function CreateRideWindow({ onClose, onRideCreated }) {
   const [user, setUser] = useState(undefined);
+  const [citySearched, setCitySearched] = useState('');
+  const [showStartLocDropdown, setShowStartLocDropdown] = useState(false);
+  const [showDestDropdown, setShowDestDropdown] = useState(false);
+  const [cities, setCities] = useState([]);
+  const cityOptions = citySearched.trim()
+    ? filterCities(cities, citySearched)
+    : [];
+
 
   useEffect(() => {
     fetchUser()
       .then(setUser)
-      .catch(() => setUser(null));
+      .catch(() => setUser(null))
   }, []);
 
   useEffect(() => {
+  async function fetchAllCities() {
+    try {
+      const data = await fetchCities();
+      setCities(data);
+    } catch (error) {
+      console.log('Fetch error: ', error);
+    }
+  }
+
+  fetchAllCities();
+}, []);
+
+  useEffect(() => {
+    console.log(typeof cities, cities);
     if (user === null) {
       console.error('User is not signed in');
     }
@@ -42,9 +66,32 @@ function CreateRideWindow({ onClose, onRideCreated }) {
     });
   }
 
+  function handleOptionClick(optionName, option) {
+      setRide({
+        ...ride,
+        [optionName]: option
+      });
+      setShowStartLocDropdown(false);
+      setShowDestDropdown(false);
+  }
+
+
   function handleChange(event) {
     const { name, value } = event.target;
+    console.log("got to handleChange with name:", name, "and value:", value);
 
+    if (name === 'starting_point') {
+      setShowDestDropdown(false);
+      setCitySearched(value);
+      setShowStartLocDropdown(true);
+    }
+
+    if (name === 'destination') {
+      setShowStartLocDropdown(false);
+      setCitySearched(value);
+      setShowDestDropdown(true);
+    }
+    
     //TODO: error checking must be handled here
 
     setRide({
@@ -168,6 +215,15 @@ function CreateRideWindow({ onClose, onRideCreated }) {
                 value={ride.starting_point}
                 onChange={handleChange}
               />
+              {showStartLocDropdown && cityOptions.length > 0 && (
+                <ul className="city-suggestions-dropdown">
+                  {cityOptions.map((city, index) => (
+                    <li key={index} onClick={() => handleOptionClick("starting_point", city.name)}>
+                      {city.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             <div className="form-field">
@@ -180,6 +236,15 @@ function CreateRideWindow({ onClose, onRideCreated }) {
                 value={ride.destination}
                 onChange={handleChange}
               />
+              {showDestDropdown && cityOptions.length > 0 && (
+                <ul className="city-suggestions-dropdown">
+                  {cityOptions.map((city, index) => (
+                    <li key={index} onClick={() => handleOptionClick("destination", city.name)}>
+                      {city.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
 
