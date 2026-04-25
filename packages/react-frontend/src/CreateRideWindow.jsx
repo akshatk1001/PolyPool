@@ -118,11 +118,13 @@ function CreateRideWindow({ onClose, onRideCreated }) {
   }
 
   async function submitForm(event) {
+    onClose();
     event.preventDefault();
     const datetime = new Date(`${ride.start_date}T${ride.start_time}`);
 
     if (!user) {
       console.error('No user found. Cannot create ride without a driver.');
+      alert('You must be signed in to create a ride.');
       return;
     }
 
@@ -141,8 +143,11 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       maps_URL: ride.maps_URL,
     };
 
+    console.log(rideData);
+    
     try {
       const response = await postRide(rideData);
+      // if ride created successfully:
       if (response.status === 201) {
         // Parse the response to get the created ride with its ID
         const createdRide = await response.json();
@@ -161,18 +166,21 @@ function CreateRideWindow({ onClose, onRideCreated }) {
             'Error updating user with new ride:',
             userResponse.status,
           );
+          alert('Created ride, but unable to add to your ride list.');
         } else {
           const updatedUser = await userResponse.json();
           console.log('User updated with new ride:', updatedUser);
         }
 
-        onClose();
+        // onClose();
         onRideCreated();
       } else {
         console.log('Server response error:', response.status);
+        alert('Connected to server but failed to create ride. Please try again with valid inputs.');
       }
     } catch (error) {
       console.log('Request completely failed:', error);
+      alert('Failed to create ride. Please try again with valid inputs.');
     }
 
     // reset ride to default values
