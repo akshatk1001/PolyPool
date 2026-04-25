@@ -62,14 +62,16 @@ function EditRideWindow({ onClose, onRideEdited, ride }) {
   async function submitForm(event) {
     event.preventDefault();
 
-    const { start_date, start_time: start_time_str, ...rest } = rideData;
-    const payload = {
+    // get start date and time, and combine since they're stored as one in backend
+    const { start_date, start_time, ...rest } = rideData;
+
+    setRideData({
       ...rest,
-      start_time: new Date(`${start_date}T${start_time_str}`),
-    };
+      start_time: new Date(`${start_date}T${start_time}`),
+    });
 
     try {
-      const response = await editRide(payload);
+      const response = await editRide(rideData);
       if (response.status === 200) {
         // Parse the response to get the updated ride with its ID
         const updatedRide = await response.json();
@@ -156,7 +158,7 @@ function EditRideWindow({ onClose, onRideEdited, ride }) {
                 placeholder="0"
                 name="cost"
                 id="cost"
-                value={rideData.cost}
+                value={rideData.cost ?? ''}
                 onChange={handleChange}
                 onWheel={handleWheel}
               />
@@ -171,7 +173,7 @@ function EditRideWindow({ onClose, onRideEdited, ride }) {
               placeholder="Number of seats"
               name="seats"
               id="seats"
-              value={rideData.seats}
+              value={rideData.seats ?? ''}
               onChange={handleChange}
               onWheel={handleWheel}
             />

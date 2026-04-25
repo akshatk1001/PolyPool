@@ -25,11 +25,13 @@ function CreateRideWindow({ onClose, onRideCreated }) {
     start_time: '',
     driver: user?._id,
     other_riders: [],
+    waypoints: [],
     cost: null,
     car: '',
     seats: null,
     deviation: true,
     description: '',
+    map_URL: '',
   });
 
   function handleSwitchChange(event) {
@@ -83,11 +85,13 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       start_time: datetime,
       driver: user._id,
       other_riders: ride.other_riders,
+      waypoints: ride.waypoints,
       cost: ride.cost,
       car: ride.car,
       seats: ride.seats,
       deviation: ride.deviation,
       description: ride.description,
+      maps_URL: ride.maps_URL,
     };
 
     try {
@@ -130,13 +134,15 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       destination: '',
       start_date: '',
       start_time: '',
-      driver: user._id,
+      driver: user?._id,
       other_riders: [],
+      waypoints: [],
       cost: 0,
       car: '',
       seats: 0,
       deviation: true,
       description: '',
+      maps_URL: '',
     });
   }
 
@@ -211,7 +217,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
                 placeholder="0"
                 name="cost"
                 id="cost"
-                value={ride.cost}
+                value={ride.cost ?? ''}
                 onChange={handleChange}
                 onWheel={handleWheel}
               />
@@ -226,7 +232,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
               placeholder="Number of seats"
               name="seats"
               id="seats"
-              value={ride.seats}
+              value={ride.seats ?? ''}
               onChange={handleChange}
               onWheel={handleWheel}
             />

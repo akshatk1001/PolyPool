@@ -47,22 +47,10 @@ function getRideById(rideId) {
 // Update ride details such as destination, date, or price.
 async function updateRide(rideId, updates) {
   if (updates.starting_point || updates.destination) {
-    let quality;
-    if (
-      cityService.distanceBetween(
-        updates.starting_point,
-        updates.destination,
-      ) <= 50
-    ) {
-      quality = 'HIGH_QUALITY';
-    } else {
-      quality = 'OVERVIEW';
-    }
-    console.log(`quality of the line: ${quality}`);
     updates.route = await googleMapsService.getRoute(
       updates.starting_point,
       updates.destination,
-      quality,
+      updates.waypoints,
     );
     if (updates.deviation != false) {
       updates.cities_along_route = await googleMapsService.getCitiesOnRoute(
@@ -83,6 +71,19 @@ async function updateRide(rideId, updates) {
       .catch((err) => console.log(err));
     return promise;
   }
+
+  if (updates.waypoints) {
+    updates.route = await googleMapsService.getRoute(
+      updates.starting_point,
+      updates.destination,
+      updates.waypoints,
+    );
+    updates.cities_along_route = await googleMapsService.getCitiesOnRoute(
+      updates.route.polyline.encodedPolyline,
+      updates.starting_point,
+      updates.destination,
+    );
+  }
   return rideModel
     .findByIdAndUpdate(rideId, updates, { new: true })
     .catch((err) => console.log(err));
@@ -100,23 +101,10 @@ function deleteRide(rideId) {
 async function createRide(ride) {
   try {
     const rideToAdd = new rideModel(ride);
-
-    let quality;
-    if (
-      cityService.distanceBetween(
-        rideToAdd.starting_point,
-        rideToAdd.destination,
-      ) <= 50
-    ) {
-      quality = 'HIGH_QUALITY';
-    } else {
-      quality = 'OVERVIEW';
-    }
-    console.log(`quality of the line: ${quality}`);
     rideToAdd.route = await googleMapsService.getRoute(
       rideToAdd.starting_point,
       rideToAdd.destination,
-      quality,
+      rideToAdd.waypoints,
     );
     if (rideToAdd.deviation != false) {
       rideToAdd.cities_along_route = await googleMapsService.getCitiesOnRoute(
