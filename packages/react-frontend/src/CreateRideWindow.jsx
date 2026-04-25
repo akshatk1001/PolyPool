@@ -15,28 +15,26 @@ function CreateRideWindow({ onClose, onRideCreated }) {
     ? filterCities(cities, citySearched)
     : [];
 
-
   useEffect(() => {
     fetchUser()
       .then(setUser)
-      .catch(() => setUser(null))
+      .catch(() => setUser(null));
   }, []);
 
   useEffect(() => {
-  async function fetchAllCities() {
-    try {
-      const data = await fetchCities();
-      setCities(data);
-    } catch (error) {
-      console.log('Fetch error: ', error);
+    async function fetchAllCities() {
+      try {
+        const data = await fetchCities();
+        setCities(data);
+      } catch (error) {
+        console.log('Fetch error: ', error);
+      }
     }
-  }
 
-  fetchAllCities();
-}, []);
+    fetchAllCities();
+  }, []);
 
   useEffect(() => {
-    console.log(typeof cities, cities);
     if (user === null) {
       console.error('User is not signed in');
     }
@@ -67,18 +65,17 @@ function CreateRideWindow({ onClose, onRideCreated }) {
   }
 
   function handleOptionClick(optionName, option) {
-      setRide({
-        ...ride,
-        [optionName]: option
-      });
-      setShowStartLocDropdown(false);
-      setShowDestDropdown(false);
+    setRide({
+      ...ride,
+      [optionName]: option,
+    });
+    setShowStartLocDropdown(false);
+    setShowDestDropdown(false);
   }
-
 
   function handleChange(event) {
     const { name, value } = event.target;
-    console.log("got to handleChange with name:", name, "and value:", value);
+    console.log('got to handleChange with name:', name, 'and value:', value);
 
     if (name === 'starting_point') {
       setShowDestDropdown(false);
@@ -91,7 +88,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       setCitySearched(value);
       setShowDestDropdown(true);
     }
-    
+
     //TODO: error checking must be handled here
 
     setRide({
@@ -144,7 +141,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
     };
 
     console.log(rideData);
-    
+
     try {
       const response = await postRide(rideData);
       // if ride created successfully:
@@ -152,6 +149,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
         // Parse the response to get the created ride with its ID
         const createdRide = await response.json();
         console.log('Ride created successfully', response.status, createdRide);
+        alert('Ride created successfully!');
 
         // Add this ride to the user's rides_as_driver list using the created ride's ID
         const userResponse = await fetch(`${API_URL}/api/users/${user._id}`, {
@@ -176,7 +174,9 @@ function CreateRideWindow({ onClose, onRideCreated }) {
         onRideCreated();
       } else {
         console.log('Server response error:', response.status);
-        alert('Connected to server but failed to create ride. Please try again with valid inputs.');
+        alert(
+          'Connected to server but failed to create ride. Please try again with valid inputs.',
+        );
       }
     } catch (error) {
       console.log('Request completely failed:', error);
@@ -226,7 +226,12 @@ function CreateRideWindow({ onClose, onRideCreated }) {
               {showStartLocDropdown && cityOptions.length > 0 && (
                 <ul className="city-suggestions-dropdown">
                   {cityOptions.map((city, index) => (
-                    <li key={index} onClick={() => handleOptionClick("starting_point", city.name)}>
+                    <li
+                      key={index}
+                      onClick={() =>
+                        handleOptionClick('starting_point', city.name)
+                      }
+                    >
                       {city.name}
                     </li>
                   ))}
@@ -247,7 +252,12 @@ function CreateRideWindow({ onClose, onRideCreated }) {
               {showDestDropdown && cityOptions.length > 0 && (
                 <ul className="city-suggestions-dropdown">
                   {cityOptions.map((city, index) => (
-                    <li key={index} onClick={() => handleOptionClick("destination", city.name)}>
+                    <li
+                      key={index}
+                      onClick={() =>
+                        handleOptionClick('destination', city.name)
+                      }
+                    >
                       {city.name}
                     </li>
                   ))}

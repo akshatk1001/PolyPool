@@ -71,7 +71,6 @@
   flex-direction: column;
   justify-content: flex-end;
   min-width: 0;
-
 }
 
 .dateTime-container {
@@ -175,7 +174,6 @@
     width: 100%;
     flex: 0 1 auto;
     justify-content: flex-start;
-    
   }
 
   .dateTime-container label,
