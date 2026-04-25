@@ -46,10 +46,18 @@ function getRideById(rideId) {
 
 // Update ride details such as destination, date, or price.
 async function updateRide(rideId, updates) {
-  if (updates.starting_point || updates.destination){
-    updates.route = await googleMapsService.getRoute(updates.starting_point, updates.destination, updates.waypoints);
-    if (updates.deviation != false){
-      updates.cities_along_route = await googleMapsService.getCitiesOnRoute(updates.route.polyline.encodedPolyline, updates.starting_point, updates.destination);
+  if (updates.starting_point || updates.destination) {
+    updates.route = await googleMapsService.getRoute(
+      updates.starting_point,
+      updates.destination,
+      updates.waypoints,
+    );
+    if (updates.deviation != false) {
+      updates.cities_along_route = await googleMapsService.getCitiesOnRoute(
+        updates.route.polyline.encodedPolyline,
+        updates.starting_point,
+        updates.destination,
+      );
     }
   }
 
@@ -65,8 +73,16 @@ async function updateRide(rideId, updates) {
   }
 
   if (updates.waypoints) {
-    updates.route = await googleMapsService.getRoute(updates.starting_point, updates.destination, updates.waypoints);
-    updates.cities_along_route = await googleMapsService.getCitiesOnRoute(updates.route.polyline.encodedPolyline, updates.starting_point, updates.destination);
+    updates.route = await googleMapsService.getRoute(
+      updates.starting_point,
+      updates.destination,
+      updates.waypoints,
+    );
+    updates.cities_along_route = await googleMapsService.getCitiesOnRoute(
+      updates.route.polyline.encodedPolyline,
+      updates.starting_point,
+      updates.destination,
+    );
   }
   return rideModel
     .findByIdAndUpdate(rideId, updates, { new: true })
@@ -85,9 +101,17 @@ function deleteRide(rideId) {
 async function createRide(ride) {
   try {
     const rideToAdd = new rideModel(ride);
-    rideToAdd.route = await googleMapsService.getRoute(rideToAdd.starting_point, rideToAdd.destination, rideToAdd.waypoints);
-    if (rideToAdd.deviation != false){
-      rideToAdd.cities_along_route = await googleMapsService.getCitiesOnRoute(rideToAdd.route.polyline.encodedPolyline, rideToAdd.starting_point, rideToAdd.destination);
+    rideToAdd.route = await googleMapsService.getRoute(
+      rideToAdd.starting_point,
+      rideToAdd.destination,
+      rideToAdd.waypoints,
+    );
+    if (rideToAdd.deviation != false) {
+      rideToAdd.cities_along_route = await googleMapsService.getCitiesOnRoute(
+        rideToAdd.route.polyline.encodedPolyline,
+        rideToAdd.starting_point,
+        rideToAdd.destination,
+      );
     }
     const promise = rideToAdd.save().catch((err) => console.log(err));
     return promise;

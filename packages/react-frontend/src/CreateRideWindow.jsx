@@ -142,7 +142,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       seats: 0,
       deviation: true,
       description: '',
-      maps_URL: ''
+      maps_URL: '',
     });
   }
 

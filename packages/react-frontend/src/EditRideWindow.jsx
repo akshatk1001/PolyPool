@@ -64,7 +64,7 @@ function EditRideWindow({ onClose, onRideEdited, ride }) {
 
     // get start date and time, and combine since they're stored as one in backend
     const { start_date, start_time, ...rest } = rideData;
-    
+
     setRideData({
       ...rest,
       start_time: new Date(`${start_date}T${start_time}`),

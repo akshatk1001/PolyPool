@@ -107,7 +107,6 @@ function ProfileEditWindow({ currentUser, onClose, onSaved }) {
       .catch((err) => console.log('Failed to load profile:', err));
   }, [currentUser, userId]);
 
-
   // Updates a single field in the profile state when an input changes
   function handleChange(event) {
     const { name, value } = event.target;

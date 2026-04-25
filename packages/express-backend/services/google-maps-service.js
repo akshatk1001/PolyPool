@@ -2,17 +2,16 @@ import dotenv from 'dotenv';
 import cityService from './city-service.js';
 dotenv.config();
 
-
-async function getRoute(start, dest, waypoints){
+async function getRoute(start, dest, waypoints) {
   let quality;
-  if (cityService.distanceBetween(start, dest) <= 100){
+  if (cityService.distanceBetween(start, dest) <= 100) {
     quality = 'HIGH_QUALITY';
-  }else {
+  } else {
     quality = 'OVERVIEW';
   }
   let WaypointStops = [];
-  for (let i = 0; i < waypoints.length; i++){
-    let loc = {location: `${waypoints[i]}, CA, USA`};
+  for (let i = 0; i < waypoints.length; i++) {
+    let loc = { location: `${waypoints[i]}, CA, USA` };
     WaypointStops.push(loc);
   }
 
@@ -34,11 +33,11 @@ async function getRoute(start, dest, waypoints){
     },
     languageCode: 'en-US',
     units: 'METRIC',
-    
-    ...((WaypointStops.length != 0) && {
+
+    ...(WaypointStops.length != 0 && {
       intermediates: WaypointStops,
-      optimizeWaypointOrder: true
-    })
+      optimizeWaypointOrder: true,
+    }),
   };
 
   console.log(ComputeRoutesRequest);
