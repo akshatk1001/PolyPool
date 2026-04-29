@@ -114,10 +114,34 @@ function CreateRideWindow({ onClose, onRideCreated }) {
     return promise;
   }
 
+  function validateCity(cityName) {
+    return cities.some(
+      (city) => city.name.toLowerCase() === cityName.toLowerCase(),
+    );
+  }
+  
+  function validDate(given){
+    const today = new Date();
+    return given > today;
+  }
+
   async function submitForm(event) {
-    onClose();
-    event.preventDefault();
     const datetime = new Date(`${ride.start_date}T${ride.start_time}`);
+    event.preventDefault();
+
+    if (!validateCity(ride.starting_point) || !validateCity(ride.destination)) {
+      console.error('didnt input a valid starting city or dest');
+      alert(
+        'Please try again, enter a valid city name for starting point and destination.',
+      );
+      return;
+    }
+
+    if (!validDate(datetime)) {
+      console.error('Entered date is not valid');
+      alert('Please try again, enter a date and time after right now',);
+      return;
+    }
 
     if (!user) {
       console.error('No user found. Cannot create ride without a driver.');
@@ -125,6 +149,8 @@ function CreateRideWindow({ onClose, onRideCreated }) {
       return;
     }
 
+    onClose();
+    
     const rideData = {
       starting_point: ride.starting_point,
       destination: ride.destination,
