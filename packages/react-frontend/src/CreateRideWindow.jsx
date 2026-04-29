@@ -75,7 +75,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
 
   function handleChange(event) {
     const { name, value } = event.target;
-    console.log('got to handleChange with name:', name, 'and value:', value);
+    //console.log('got to handleChange with name:', name, 'and value:', value);
 
     if (name === 'starting_point') {
       setShowDestDropdown(false);
@@ -100,6 +100,12 @@ function CreateRideWindow({ onClose, onRideCreated }) {
   // Prevent scroll from changing number inputs
   function handleWheel(event) {
     event.target.blur();
+  }
+
+  function handleFormKeyDown(event) {
+    if (event.key === 'Enter' && event.target.tagName !== 'TEXTAREA') {
+      event.preventDefault();
+    }
   }
 
   function postRide(rideData) {
@@ -237,7 +243,7 @@ function CreateRideWindow({ onClose, onRideCreated }) {
           </span>
         </div>
 
-        <form className="create-ride-form">
+        <form className="create-ride-form" onKeyDown={handleFormKeyDown}>
           <div className="form-row">
             <div className="form-field">
               <label htmlFor="starting_point">Start Location</label>
