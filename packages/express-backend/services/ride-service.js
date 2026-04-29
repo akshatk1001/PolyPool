@@ -46,47 +46,60 @@ function getRideById(rideId) {
 
 // Update ride details such as destination, date, or price.
 async function updateRide(rideId, updates) {
-  if (updates.starting_point || updates.destination) {
+  // NOTE: EditRideWindow passes in the entire ride object with all params, everything else does not
+  
+  // if driver changes start/end 
+  if (updates?.starting_point || updates?.destination) {
     updates.route = await googleMapsService.getRoute(
       updates.starting_point,
       updates.destination,
       updates.waypoints,
-    );
-    if (updates.deviation != false) {
-      updates.cities_along_route = await googleMapsService.getCitiesOnRoute(
-        updates.route.polyline.encodedPolyline,
-        updates.starting_point,
-        updates.destination,
-      );
-    }
+    );  
   }
-
-  if (updates.other_rider) {
-    const promise = rideModel
-      .findByIdAndUpdate(
-        rideId,
-        { $addToSet: { other_riders: updates.other_rider } },
-        { new: true },
-      )
-      .catch((err) => console.log(err));
-    return promise;
-  }
-
-  if (updates.waypoints) {
-    updates.route = await googleMapsService.getRoute(
-      updates.starting_point,
-      updates.destination,
-      updates.waypoints,
-    );
+  
+  // if they are willing to deviate get cities along route
+  if (updates?.deviation == true) {
     updates.cities_along_route = await googleMapsService.getCitiesOnRoute(
       updates.route.polyline.encodedPolyline,
       updates.starting_point,
       updates.destination,
     );
   }
-  return rideModel
-    .findByIdAndUpdate(rideId, updates, { new: true })
+  else if (updates?.deviation == false) {
+    updates.cities_along_route = [];
+  }
+
+  // new rider joining the ride
+  if (updates.other_rider) {
+    const curRide = await rideModel.findById(rideId);
+    let updatedRoute = curRide.route;
+    
+    if (curRide.waypoints.length != updates.waypoints.length){
+       updatedRoute = await googleMapsService.getRoute(
+        curRide.starting_point,
+        curRide.destination,
+        updates.waypoints,
+      );
+    }
+
+    const updatedRide = rideModel
+    .findByIdAndUpdate(
+      rideId,
+      { $Set: { waypoints: updates.waypoints}},
+      { $addToSet: { other_riders: updates.other_rider }},
+      { $Set: { route: updatedRoute } },
+      { new: true },
+    )
     .catch((err) => console.log(err));
+    
+    return updatedRide;
+  }
+
+  return rideModel.findByIdAndUpdate(
+    rideId,
+    updates,
+    { new: true},
+  ).catch((err) => console.log(err));
 }
 
 //function to delete a ride by its id

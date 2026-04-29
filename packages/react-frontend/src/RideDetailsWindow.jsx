@@ -18,6 +18,7 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
   const [isRequesting, setIsRequesting] = useState(false); // if the user has clicked to request ride
   const [requestSuccess, setRequestSuccess] = useState(false);
   const navigate = useNavigate();
+  const [newWaypoint, setNewWaypoint] = useState('');
 
   useEffect(() => {
     fetchUser()
@@ -56,10 +57,17 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
 
       // update ride to list this user as passenger
       console.log('Requesting ride with ID:', ride._id);
+      let newWaypoints = []
+      if (newWaypoint != ride.destination) {
+        newWaypoints = [...ride.waypoints, newWaypoint];
+      } else {
+        newWaypoints = [...ride.waypoints];
+      }
+
       const rideResponse = await fetch(`${API_URL}/api/rides/${ride._id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ other_rider: user._id }),
+        body: JSON.stringify({ other_rider: user._id , waypoints: newWaypoints }),
         credentials: 'include',
       });
 
@@ -197,6 +205,14 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
           )}
 
           <div className="rd-action-row">
+            <label htmlFor="rd-info-item"> Where would you like to be dropped off? </label>
+              <input
+                type="text"
+                name="waypoint"
+                id="waypoint"
+                value={newWaypoint}
+                onChange={(e) => setNewWaypoint(e.target.value)}
+              />
             <button
               className="rd-request-btn"
               disabled={
