@@ -73,21 +73,31 @@ async function updateRide(rideId, updates) {
   if (updates.other_rider) {
     const curRide = await rideModel.findById(rideId);
     let updatedRoute = curRide.route;
-    
+
     if (curRide.waypoints.length != updates.waypoints.length){
-       updatedRoute = await googleMapsService.getRoute(
-        curRide.starting_point,
-        curRide.destination,
-        updates.waypoints,
-      );
+      try {
+        updatedRoute = await googleMapsService.getRoute(
+          curRide.starting_point,
+          curRide.destination,
+          updates.waypoints,
+        );
+      } catch (error) {
+        console.error('Failed to update ride route:', error);
+      }
     }
 
     const updatedRide = rideModel
     .findByIdAndUpdate(
       rideId,
-      { $Set: { waypoints: updates.waypoints}},
-      { $addToSet: { other_riders: updates.other_rider }},
-      { $Set: { route: updatedRoute } },
+      { 
+        $set: { 
+          waypoints: updates.waypoints,
+          route: updatedRoute,
+        },
+        $addToSet: { 
+          other_riders: updates.other_rider 
+        },
+      },
       { new: true },
     )
     .catch((err) => console.log(err));
