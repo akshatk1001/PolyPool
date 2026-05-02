@@ -9,11 +9,9 @@ async function getRoute(start, dest, waypoints) {
   } else {
     quality = 'OVERVIEW';
   }
-  let WaypointStops = [];
-  for (let i = 0; i < waypoints.length; i++) {
-    let loc = { location: `${waypoints[i]}, CA, USA` };
-    WaypointStops.push(loc);
-  }
+  const WaypointStops = Array.isArray(waypoints)
+    ? waypoints.map((waypoint) => ({ address: `${waypoint}, CA, USA` }))
+    : [];
 
   const ComputeRoutesRequest = {
     origin: {
@@ -50,14 +48,17 @@ async function getRoute(start, dest, waypoints) {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': process.env.GOOGLE_API_KEY,
         'X-Goog-FieldMask':
-          'routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline',
+          'routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline,routes.optimizedIntermediateWaypointIndex',
       },
       body: JSON.stringify(ComputeRoutesRequest),
     },
   );
 
   if (!response.ok) {
-    throw new Error(`Google Routes API failed: ${response.statusText}`);
+    const errorBody = await response.text();
+    throw new Error(
+      `Google Routes API failed: ${response.status} ${response.statusText} - ${errorBody}`,
+    );
   }
 
   const route = await response.json();

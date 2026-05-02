@@ -86,7 +86,7 @@ async function updateRide(rideId, updates) {
       }
     }
 
-    const updatedRide = rideModel
+    const updatedRide = await rideModel
     .findByIdAndUpdate(
       rideId,
       { 

@@ -57,11 +57,13 @@ function RideDetailsWindow({ ride, onClose, onRideUpdated }) {
 
       // update ride to list this user as passenger
       console.log('Requesting ride with ID:', ride._id);
-      let newWaypoints = []
-      if (newWaypoint != ride.destination) {
-        newWaypoints = [...ride.waypoints, newWaypoint];
-      } else {
-        newWaypoints = [...ride.waypoints];
+      const baseWaypoints = Array.isArray(ride.waypoints) ? ride.waypoints : [];
+      let newWaypoints = [...baseWaypoints];
+      if (
+        newWaypoint.trim() !== ride.destination &&
+        !baseWaypoints.includes(newWaypoint.trim())
+      ) {
+        newWaypoints = [...baseWaypoints, newWaypoint.trim()];
       }
 
       const rideResponse = await fetch(`${API_URL}/api/rides/${ride._id}`, {
